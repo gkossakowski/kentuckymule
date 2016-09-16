@@ -5,16 +5,16 @@ package reporting
 import core.Contexts._
 import util.{SourcePosition, NoSourcePosition}
 import util.{SourceFile, NoSource}
-import core.Decorators.PhaseListDecorator
 import collection.mutable
 import config.Settings.Setting
-import config.Printers
 import java.lang.System.currentTimeMillis
 import core.Mode
-import interfaces.Diagnostic.{ERROR, WARNING, INFO}
-import dotty.tools.dotc.core.Symbols.Symbol
 
 object Reporter {
+  val ERROR = 1
+  val WARNING = 2
+  val INFO = 3
+
   class Error(msgFn: => String, pos: SourcePosition) extends Diagnostic(msgFn, pos, ERROR)
   class Warning(msgFn: => String, pos: SourcePosition) extends Diagnostic(msgFn, pos, WARNING)
   class Info(msgFn: => String, pos: SourcePosition) extends Diagnostic(msgFn, pos, INFO)
@@ -35,15 +35,15 @@ object Reporter {
     def enablingOption(implicit ctx: Context) = ctx.settings.migration
   }
 
-  /** Convert a SimpleReporter into a real Reporter */
-  def fromSimpleReporter(simple: interfaces.SimpleReporter): Reporter =
-    new Reporter with UniqueMessagePositions with HideNonSensicalMessages {
-      override def doReport(d: Diagnostic)(implicit ctx: Context): Unit = d match {
-        case d: ConditionalWarning if !d.enablingOption.value =>
-        case _ =>
-          simple.report(d)
-      }
-    }
+//  /** Convert a SimpleReporter into a real Reporter */
+//  def fromSimpleReporter(simple: interfaces.SimpleReporter): Reporter =
+//    new Reporter with UniqueMessagePositions with HideNonSensicalMessages {
+//      override def doReport(d: Diagnostic)(implicit ctx: Context): Unit = d match {
+//        case d: ConditionalWarning if !d.enablingOption.value =>
+//        case _ =>
+//          simple.report(d)
+//      }
+//    }
 }
 
 import Reporter._
@@ -118,8 +118,7 @@ trait Reporting { this: Context =>
    *  "contains" here.
    */
   def log(msg: => String, pos: SourcePosition = NoSourcePosition): Unit =
-    if (this.settings.log.value.containsPhase(phase))
-      echo(s"[log ${ctx.phasesStack.reverse.mkString(" -> ")}] $msg", pos)
+      echo(s"[log parser] $msg", pos)
 
   def debuglog(msg: => String): Unit =
     if (ctx.debug) log(msg)
@@ -139,27 +138,6 @@ trait Reporting { this: Context =>
 
   def debugwarn(msg: => String, pos: SourcePosition = NoSourcePosition): Unit =
     if (this.settings.debug.value) warning(msg, pos)
-
-  def debugTraceIndented[T](question: => String, printer: Printers.Printer = Printers.default, show: Boolean = false)(op: => T): T =
-    conditionalTraceIndented(this.settings.debugTrace.value, question, printer, show)(op)
-
-  def conditionalTraceIndented[T](cond: Boolean, question: => String, printer: Printers.Printer = Printers.default, show: Boolean = false)(op: => T): T =
-    if (cond) traceIndented(question, printer, show)(op)
-    else op
-
-  def traceIndented[T](question: => String, printer: Printers.Printer = Printers.default, show: Boolean = false)(op: => T): T = {
-    def resStr(res: Any): String = res match {
-      case res: printing.Showable if show => res.show
-      case _ => String.valueOf(res)
-    }
-    if (printer eq config.Printers.noPrinter) op
-    else {
-      // Avoid evaluating question multiple time, since each evaluation
-      // may cause some extra logging output.
-      lazy val q: String = question
-      traceIndented[T](s"==> $q?", (res: Any) => s"<== $q = ${resStr(res)}")(op)
-    }
-  }
 
   def traceIndented[T](leading: => String, trailing: Any => String)(op: => T): T =
     if (ctx.mode.is(Mode.Printing)) op
@@ -191,7 +169,7 @@ trait Reporting { this: Context =>
  * This interface provides methods to issue information, warning and
  * error messages.
  */
-abstract class Reporter extends interfaces.ReporterResult {
+abstract class Reporter {
 
   /** Report a diagnostic */
   def doReport(d: Diagnostic)(implicit ctx: Context): Unit

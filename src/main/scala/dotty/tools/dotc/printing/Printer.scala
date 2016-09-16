@@ -3,8 +3,8 @@ package printing
 
 import core._
 import Texts._, ast.Trees._
-import Types.Type, Symbols.Symbol, Contexts.Context, Scopes.Scope, Constants.Constant,
-       Names.Name, Denotations._, Annotations.Annotation
+import Types.Type, Contexts.Context, Constants.Constant,
+       Names.Name, Annotations.Annotation
 
 /** The base class of all printers
  */
@@ -59,9 +59,6 @@ abstract class Printer {
   /** Textual representation of symbol's declaration */
   def dclText(sym: Symbol): Text
 
-  /** Textual representation of single denotation's declaration */
-  def dclText(sd: SingleDenotation): Text
-
   /** If symbol's owner is a printable class C, the text "in C", otherwise "" */
   def locationText(sym: Symbol): Text
 
@@ -70,9 +67,6 @@ abstract class Printer {
 
   /** A description of sym's location */
   def extendedLocationText(sym: Symbol): Text
-
-  /** Textual representation of denotation */
-  def toText(denot: Denotation): Text
 
   /** Textual representation of constant */
   def toText(const: Constant): Text
@@ -87,9 +81,6 @@ abstract class Printer {
    *  using `dclText` for displaying each.
    */
   def dclsText(syms: List[Symbol], sep: String = "\n"): Text
-
-  /** Textual representation of all definitions in a scope using `dclText` for each */
-  def toText(sc: Scope): Text
 
   /** Textual representation of tree */
   def toText[T >: Untyped](tree: Tree[T]): Text

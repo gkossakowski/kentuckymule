@@ -2,11 +2,9 @@ package dotty.tools.dotc
 package core
 
 import annotation.tailrec
-import Symbols._
-import Contexts._, Names._, Phases._, printing.Texts._, printing.Printer, printing.Showable
+import Contexts._, Names._, printing.Texts._, printing.Printer, printing.Showable
 import util.Positions.Position, util.SourcePosition
 import collection.mutable.ListBuffer
-import dotty.tools.dotc.transform.TreeTransforms._
 import scala.language.implicitConversions
 import printing.Formatting._
 
@@ -18,19 +16,6 @@ object Decorators {
     def toTypeName: TypeName = typeName(s)
     def toTermName: TermName = termName(s)
     def toText(printer: Printer): Text = Str(s)
-  }
-
-  /** Implements a findSymbol method on iterators of Symbols that
-   *  works like find but avoids Option, replacing None with NoSymbol.
-   */
-  implicit class SymbolIteratorDecorator(val it: Iterator[Symbol]) extends AnyVal {
-    final def findSymbol(p: Symbol => Boolean): Symbol = {
-      while (it.hasNext) {
-        val sym = it.next
-        if (p(sym)) return sym
-      }
-      NoSymbol
-    }
   }
 
   final val MaxFilterRecursions = 1000
@@ -129,25 +114,6 @@ object Decorators {
     def show(implicit ctx: Context) = text.mkString(ctx.settings.pageWidth.value)
   }
 
-  /** Test whether a list of strings representing phases contains
-   *  a given phase. See [[config.CompilerCommand#explainAdvanced]] for the
-   *  exact meaning of "contains" here.
-   */
-  implicit class PhaseListDecorator(val names: List[String]) extends AnyVal {
-    def containsPhase(phase: Phase): Boolean = phase match {
-      case phase: TreeTransformer => phase.miniPhases.exists(containsPhase)
-      case _ =>
-        names exists { name =>
-          name == "all" || {
-            val strippedName = name.stripSuffix("+")
-            val logNextPhase = name ne strippedName
-            phase.phaseName.startsWith(strippedName) ||
-              (logNextPhase && phase.prev.phaseName.startsWith(strippedName))
-          }
-        }
-    }
-  }
-
   implicit def sourcePos(pos: Position)(implicit ctx: Context): SourcePosition =
     ctx.source.atPos(pos)
 
@@ -167,7 +133,7 @@ object Decorators {
      *  give more info about type variables and to disambiguate where needed.
      */
     def ex(args: Any*)(implicit ctx: Context): String =
-      explained2(implicit ctx => em(args: _*))
+      ??? //explained2(implicit ctx => em(args: _*))
   }
 }
 

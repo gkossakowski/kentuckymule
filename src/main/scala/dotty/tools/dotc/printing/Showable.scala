@@ -4,7 +4,6 @@ package printing
 import core._
 
 import Contexts._, Texts._, Decorators._
-import config.Config.summarizeDepth
 import scala.util.control.NonFatal
 
 trait Showable extends Any {
@@ -30,5 +29,5 @@ trait Showable extends Any {
   def showSummary(depth: Int)(implicit ctx: Context): String =
     ctx.printer.summarized(depth)(show)
 
-  def showSummary(implicit ctx: Context): String = showSummary(summarizeDepth)
+  def showSummary(implicit ctx: Context): String = ??? //showSummary(summarizeDepth)
 }

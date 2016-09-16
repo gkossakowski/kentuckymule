@@ -12,12 +12,12 @@ object Diagnostic {
 }
 
 class Diagnostic(msgFn: => String, val pos: SourcePosition, val level: Int)
-    extends Exception with interfaces.Diagnostic {
+    extends Exception {
   import Diagnostic._
   private var myMsg: String = null
   private var myIsNonSensical: Boolean = false
 
-  override def position: Optional[interfaces.SourcePosition] =
+  def position: Optional[SourcePosition] =
     if (pos.exists && pos.source.exists) Optional.of(pos) else Optional.empty()
 
   /** The message to report */

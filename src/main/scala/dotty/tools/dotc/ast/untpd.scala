@@ -4,13 +4,13 @@ package ast
 
 import core._
 import util.Positions._, Types._, Contexts._, Constants._, Names._, NameOps._, Flags._
-import Denotations._, SymDenotations._, Symbols._, StdNames._, Annotations._, Trees._
+import StdNames._, Annotations._, Trees._
 import Decorators._
 import util.Attachment
 import language.higherKinds
 import collection.mutable.ListBuffer
 
-object untpd extends Trees.Instance[Untyped] with UntypedTreeInfo {
+object untpd extends Trees.Instance[Untyped] {
 
   // ----- Tree cases that exist in untyped form only ------------------
 
@@ -159,24 +159,24 @@ object untpd extends Trees.Instance[Untyped] with UntypedTreeInfo {
    *  ==>
    *      (new pre.C).<init>[Ts](args1)...(args_n)
    */
-  def New(tpt: Tree, argss: List[List[Tree]])(implicit ctx: Context): Tree = {
-    val (tycon, targs) = tpt match {
-      case AppliedTypeTree(tycon, targs) =>
-        (tycon, targs)
-      case TypedSplice(AppliedTypeTree(tycon, targs)) =>
-        (TypedSplice(tycon), targs map TypedSplice)
-      case TypedSplice(tpt1: Tree) =>
-        val argTypes = tpt1.tpe.argTypes
-        val tycon = tpt1.tpe.withoutArgs(argTypes)
-        def wrap(tpe: Type) = TypeTree(tpe) withPos tpt.pos
-        (wrap(tycon), argTypes map wrap)
-      case _ =>
-        (tpt, Nil)
-    }
-    var prefix: Tree = Select(New(tycon), nme.CONSTRUCTOR)
-    if (targs.nonEmpty) prefix = TypeApply(prefix, targs)
-    ensureApplied((prefix /: argss)(Apply(_, _)))
-  }
+//  def New(tpt: Tree, argss: List[List[Tree]])(implicit ctx: Context): Tree = {
+//    val (tycon, targs) = tpt match {
+//      case AppliedTypeTree(tycon, targs) =>
+//        (tycon, targs)
+//      case TypedSplice(AppliedTypeTree(tycon, targs)) =>
+//        (TypedSplice(tycon), targs map TypedSplice)
+//      case TypedSplice(tpt1: Tree) =>
+//        val argTypes = tpt1.tpe.argTypes
+//        val tycon = tpt1.tpe.withoutArgs(argTypes)
+//        def wrap(tpe: Type) = TypeTree(tpe) withPos tpt.pos
+//        (wrap(tycon), argTypes map wrap)
+//      case _ =>
+//        (tpt, Nil)
+//    }
+//    var prefix: Tree = Select(New(tycon), nme.CONSTRUCTOR)
+//    if (targs.nonEmpty) prefix = TypeApply(prefix, targs)
+//    ensureApplied((prefix /: argss)(Apply(_, _)))
+//  }
 
   def Block(stat: Tree, expr: Tree): Block =
     Block(stat :: Nil, expr)
@@ -199,8 +199,8 @@ object untpd extends Trees.Instance[Untyped] with UntypedTreeInfo {
 
   def unitLiteral = Literal(Constant(()))
 
-  def ref(tp: NamedType)(implicit ctx: Context): Tree =
-    TypedSplice(tpd.ref(tp))
+//  def ref(tp: NamedType)(implicit ctx: Context): Tree =
+//    TypedSplice(tpd.ref(tp))
 
   def rootDot(name: Name) = Select(Ident(nme.ROOTPKG), name)
   def scalaDot(name: Name) = Select(rootDot(nme.scala_), name)

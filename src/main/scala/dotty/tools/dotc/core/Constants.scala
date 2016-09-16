@@ -1,7 +1,7 @@
 package dotty.tools.dotc
 package core
 
-import Types._, Symbols._, Contexts._
+import Types._, Contexts._
 import printing.Printer
 
 object Constants {
@@ -53,21 +53,21 @@ object Constants {
     def isNonUnitAnyVal       = BooleanTag <= tag && tag <= DoubleTag
     def isAnyVal              = UnitTag <= tag && tag <= DoubleTag
 
-    def tpe(implicit ctx: Context): Type = tag match {
-      case UnitTag    => defn.UnitType
-      case BooleanTag => defn.BooleanType
-      case ByteTag    => defn.ByteType
-      case ShortTag   => defn.ShortType
-      case CharTag    => defn.CharType
-      case IntTag     => defn.IntType
-      case LongTag    => defn.LongType
-      case FloatTag   => defn.FloatType
-      case DoubleTag  => defn.DoubleType
-      case StringTag  => defn.StringType
-      case NullTag    => defn.NullType
-      case ClazzTag   => defn.ClassType(typeValue)
-      case EnumTag    => defn.EnumType(symbolValue)
-    }
+//    def tpe(implicit ctx: Context): Type = tag match {
+//      case UnitTag    => defn.UnitType
+//      case BooleanTag => defn.BooleanType
+//      case ByteTag    => defn.ByteType
+//      case ShortTag   => defn.ShortType
+//      case CharTag    => defn.CharType
+//      case IntTag     => defn.IntType
+//      case LongTag    => defn.LongType
+//      case FloatTag   => defn.FloatType
+//      case DoubleTag  => defn.DoubleType
+//      case StringTag  => defn.StringType
+//      case NullTag    => defn.NullType
+//      case ClazzTag   => defn.ClassType(typeValue)
+//      case EnumTag    => defn.EnumType(symbolValue)
+//    }
 
     /** We need the equals method to take account of tags as well as values.
      */
@@ -162,42 +162,6 @@ object Constants {
       case FloatTag  => value.asInstanceOf[Float].toDouble
       case DoubleTag => value.asInstanceOf[Double]
       case _         => throw new Error("value " + value + " is not a Double")
-    }
-
-    /** Convert constant value to conform to given type.
-     */
-    def convertTo(pt: Type)(implicit ctx: Context): Constant = {
-      def classBound(pt: Type): Type = pt.dealias.stripTypeVar match {
-        case tref: TypeRef if !tref.symbol.isClass => classBound(tref.info.bounds.lo)
-        case param: PolyParam =>
-          ctx.typerState.constraint.entry(param) match {
-            case TypeBounds(lo, hi) =>
-              if (hi.classSymbol.isPrimitiveValueClass) hi //constrain further with high bound
-              else classBound(lo)
-            case NoType => classBound(param.binder.paramBounds(param.paramNum).lo)
-            case inst => classBound(inst)
-          }
-        case pt => pt
-      }
-      val target = classBound(pt).typeSymbol
-      if (target == tpe.typeSymbol)
-        this
-      else if ((target == defn.ByteClass) && isByteRange)
-        Constant(byteValue)
-      else if (target == defn.ShortClass && isShortRange)
-        Constant(shortValue)
-      else if (target == defn.CharClass && isCharRange)
-        Constant(charValue)
-      else if (target == defn.IntClass && isIntRange)
-        Constant(intValue)
-      else if (target == defn.LongClass && isLongRange)
-        Constant(longValue)
-      else if (target == defn.FloatClass && isFloatRange)
-        Constant(floatValue)
-      else if (target == defn.DoubleClass && isNumeric)
-        Constant(doubleValue)
-      else
-        null
     }
 
     def stringValue: String = value.toString

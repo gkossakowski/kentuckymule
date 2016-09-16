@@ -7,7 +7,6 @@ import scala.collection.immutable.BitSet
 import util.{ SourceFile, SourcePosition }
 import Tokens._
 import Scanners._
-import MarkupParsers._
 import core._
 import Flags._
 import Contexts._
@@ -26,7 +25,38 @@ import Scanners.Comment
 
 object Parsers {
 
+  /** Is name a left-associative operator? copied from TreeInfo */
+  def isLeftAssoc(operator: Name) = operator.nonEmpty && (operator.last != ':')
+
+  // Note: the <: Type constraint looks necessary (and is needed to make the file compile in dotc).
+  // But Scalac accepts the program happily without it. Need to find out why.
+
+  def unsplice[T >: Untyped](tree: Tree[T]): Tree[T] = tree.asInstanceOf[ast.untpd.Tree] match {
+    case ast.untpd.TypedSplice(tree1) => tree1.asInstanceOf[Tree[T]]
+    case _ => tree
+  }
+
   import ast.untpd._
+
+  import core.NameOps.NameDecorator
+  def isVarPattern(pat: ast.untpd.Tree): Boolean = unsplice(pat) match {
+    case x: BackquotedIdent => false
+    case x: Ident => x.name.isVariableName
+    case _  => false
+  }
+
+  /** The underlying pattern ignoring any bindings */
+  def unbind(x: Tree): Tree = unsplice(x) match {
+    case Bind(_, y) => unbind(y)
+    case y          => y
+  }
+
+  /** Is the argument a wildcard argument of the form `_` or `x @ _`?
+    */
+  def isWildcardArg(tree: Tree): Boolean = unbind(tree) match {
+    case Ident(nme.WILDCARD) => true
+    case _                   => false
+  }
 
   case class OpInfo(operand: Tree, operator: Name, offset: Offset)
 
@@ -344,15 +374,9 @@ object Parsers {
       case _ => false
     }
 
-/* -------------- XML ---------------------------------------------------- */
 
-    /** the markup parser */
-    lazy val xmlp = new MarkupParser(this, true)
-
-    object symbXMLBuilder extends SymbolicXMLBuilder(this, true) // DEBUG choices
-
-    def xmlLiteral() : Tree = xmlp.xLiteral
-    def xmlLiteralPattern() : Tree = xmlp.xLiteralPattern
+    def xmlLiteral() : Tree = sys.error("XML parsing is not supported")
+    def xmlLiteralPattern() : Tree = sys.error("XML parsing is not supported")
 
 /* -------- COMBINATORS -------------------------------------------------------- */
 
@@ -1009,23 +1033,9 @@ object Parsers {
               in.nextToken()
               expr()
             } else EmptyTree
-
-          handler match {
-            case Block(Nil, EmptyTree) => syntaxError(
-              "`catch` block does not contain a valid expression, try adding a case like - `case e: Exception =>` to the block",
-              handler.pos
-            )
-            case _ =>
-          }
-
           val finalizer =
-            if (in.token == FINALLY) { accept(FINALLY); expr() }
-            else {
-              if (handler.isEmpty)
-                warning("A try without `catch` or `finally` is equivalent to putting its body in a block; no exceptions are handled.")
-
-              EmptyTree
-            }
+            if (handler.isEmpty || in.token == FINALLY) { accept(FINALLY); expr() }
+            else EmptyTree
           ParsedTry(body, handler, finalizer)
         }
       case THROW =>
@@ -1136,7 +1146,7 @@ object Parsers {
       var canApply = true
       val t = in.token match {
         case XMLSTART =>
-          xmlLiteral()
+          sys.error("XML parsing is not supported")
         case IDENTIFIER | BACKQUOTED_IDENT | THIS | SUPER =>
           path(thisOK = true)
         case USCORE =>

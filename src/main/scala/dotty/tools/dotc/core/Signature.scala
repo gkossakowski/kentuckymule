@@ -2,7 +2,6 @@ package dotty.tools.dotc
 package core
 
 import Names._, Types._, Contexts._, StdNames._
-import TypeErasure.sigName
 
 /** The signature of a denotation.
  *  Overloaded denotations with the same name are distinguished by
@@ -57,7 +56,6 @@ case class Signature(paramsSig: List[TypeName], resSig: TypeName) {
   final def matchDegree(that: Signature)(implicit ctx: Context): MatchDegree =
     if (consistentParams(that))
       if (resSig == that.resSig || isWildcard(resSig) || isWildcard(that.resSig)) FullMatch
-      else if (!ctx.erasedTypes) ParamMatch
       else NoMatch
     else NoMatch
 
@@ -67,8 +65,9 @@ case class Signature(paramsSig: List[TypeName], resSig: TypeName) {
   /** Construct a signature by prepending the signature names of the given `params`
    *  to the parameter part of this signature.
    */
-  def prepend(params: List[Type], isJava: Boolean)(implicit ctx: Context) =
-    Signature((params.map(sigName(_, isJava))) ++ paramsSig, resSig)
+  def prepend(params: List[Type], isJava: Boolean)(implicit ctx: Context): Signature =
+    ???
+    //Signature((params.map(sigName(_, isJava))) ++ paramsSig, resSig)
 
   /** A signature is under-defined if its paramsSig part contains at least one
    *  `tpnme.Uninstantiated`. Under-defined signatures arise when taking a signature
@@ -97,7 +96,8 @@ object Signature {
 
   /** The signature of a method with no parameters and result type `resultType`. */
   def apply(resultType: Type, isJava: Boolean)(implicit ctx: Context): Signature = {
-    assert(!resultType.isInstanceOf[ExprType])
-    apply(Nil, sigName(resultType, isJava))
+//    assert(!resultType.isInstanceOf[ExprType])
+//    apply(Nil, sigName(resultType, isJava))
+    ???
   }
 }

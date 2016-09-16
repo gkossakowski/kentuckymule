@@ -1,7 +1,7 @@
 package dotty.tools.dotc
 package config
 
-import PathResolver.Defaults
+//import PathResolver.Defaults
 import rewrite.Rewrites
 
 class ScalaSettings extends Settings.SettingGroup {
@@ -10,10 +10,10 @@ class ScalaSettings extends Settings.SettingGroup {
 
   /** Path related settings.
    */
-  val bootclasspath = PathSetting("-bootclasspath", "Override location of bootstrap class files.", Defaults.scalaBootClassPath)
-  val extdirs = PathSetting("-extdirs", "Override location of installed extensions.", Defaults.scalaExtDirs)
-  val javabootclasspath = PathSetting("-javabootclasspath", "Override java boot classpath.", Defaults.javaBootClassPath)
-  val javaextdirs = PathSetting("-javaextdirs", "Override java extdirs classpath.", Defaults.javaExtDirs)
+//  val bootclasspath = PathSetting("-bootclasspath", "Override location of bootstrap class files.", Defaults.scalaBootClassPath)
+//  val extdirs = PathSetting("-extdirs", "Override location of installed extensions.", Defaults.scalaExtDirs)
+//  val javabootclasspath = PathSetting("-javabootclasspath", "Override java boot classpath.", Defaults.javaBootClassPath)
+//  val javaextdirs = PathSetting("-javaextdirs", "Override java extdirs classpath.", Defaults.javaExtDirs)
   val sourcepath = PathSetting("-sourcepath", "Specify location(s) of source files.", "") // Defaults.scalaSourcePath
 
   /** Other settings.
@@ -57,7 +57,7 @@ class ScalaSettings extends Settings.SettingGroup {
   val Xhelp = BooleanSetting("-X", "Print a synopsis of advanced options.")
   val assemname = StringSetting("-Xassem-name", "file", "(Requires -target:msil) Name of the output assembly.", "").dependsOn(target, "msil")
   val assemrefs = StringSetting("-Xassem-path", "path", "(Requires -target:msil) List of assemblies referenced by the program.", ".").dependsOn(target, "msil")
-  val assemextdirs = StringSetting("-Xassem-extdirs", "dirs", "(Requires -target:msil) List of directories containing assemblies.  default:lib", Defaults.scalaLibDir.path).dependsOn(target, "msil")
+//  val assemextdirs = StringSetting("-Xassem-extdirs", "dirs", "(Requires -target:msil) List of directories containing assemblies.  default:lib", Defaults.scalaLibDir.path).dependsOn(target, "msil")
   val sourcedir = StringSetting("-Xsourcedir", "directory", "(Requires -target:msil) Mirror source folder structure in output directory.", ".").dependsOn(target, "msil")
   val checkInit = BooleanSetting("-Xcheckinit", "Wrap field accessors to throw an exception on uninitialized access.")
   val noassertions = BooleanSetting("-Xdisable-assertions", "Generate no assertions or assumptions.")
@@ -79,7 +79,7 @@ class ScalaSettings extends Settings.SettingGroup {
   val disable = MultiStringSetting("-Xplugin-disable", "plugin", "Disable the given plugin(s).")
   val showPlugins = BooleanSetting("-Xplugin-list", "Print a synopsis of loaded plugins.")
   val require = MultiStringSetting("-Xplugin-require", "plugin", "Abort unless the given plugin(s) are available.")
-  val pluginsDir = StringSetting("-Xpluginsdir", "path", "Path to search compiler plugins.", Defaults.scalaPluginPath)
+//  val pluginsDir = StringSetting("-Xpluginsdir", "path", "Path to search compiler plugins.", Defaults.scalaPluginPath)
   val Xprint = PhasesSetting("-Xprint", "Print out program after")
   val writeICode = PhasesSetting("-Xprint-icode", "Log internal icode to *.icode files after", "icode")
   val Xprintpos = BooleanSetting("-Xprint-pos", "Print tree positions, as offsets.")

@@ -3,8 +3,11 @@ package dotc
 package ast
 
 import core._
-import Types._, Names._, Flags._, util.Positions._, Contexts._, Constants._, SymDenotations._, Symbols._
-import Denotations._, StdNames._
+import Types._
+import Names._, Flags._, util.Positions._, Contexts._, Constants._
+//import SymDenotations._, Symbols._
+//import Denotations._
+import StdNames._
 import annotation.tailrec
 import language.higherKinds
 import collection.IndexedSeqOptimized
@@ -126,7 +129,7 @@ object Trees {
      *  where we overwrite with a simplified version of the type itself.
      */
     private[dotc] def overwriteType(tpe: T) = {
-      if (this.isInstanceOf[Template[_]]) assert(tpe.isInstanceOf[WithFixedSym], s"$this <--- $tpe")
+//      if (this.isInstanceOf[Template[_]]) assert(tpe.isInstanceOf[WithFixedSym], s"$this <--- $tpe")
       myTpe = tpe
     }
 
@@ -153,10 +156,10 @@ object Trees {
     /** Return a typed tree that's isomorphic to this tree, but has given
      *  type. (Overridden by empty trees)
      */
-    def withType(tpe: Type)(implicit ctx: Context): ThisTree[Type] = {
-      if (tpe == ErrorType) assert(ctx.reporter.errorsReported)
-      withTypeUnchecked(tpe)
-    }
+//    def withType(tpe: Type)(implicit ctx: Context): ThisTree[Type] = {
+//      if (tpe == ErrorType) assert(ctx.reporter.errorsReported)
+//      withTypeUnchecked(tpe)
+//    }
 
     def withTypeUnchecked(tpe: Type): ThisTree[Type] = {
       val tree =
@@ -174,19 +177,19 @@ object Trees {
      */
     final def hasType: Boolean = myTpe != null
 
-    final def typeOpt: Type = myTpe match {
-      case tp: Type => tp
-      case _ => NoType
-    }
+//    final def typeOpt: Type = myTpe match {
+//      case tp: Type => tp
+//      case _ => NoType
+//    }
 
     /** The denotation referred tno by this tree.
      *  Defined for `DenotingTree`s and `ProxyTree`s, NoDenotation for other
      *  kinds of trees
      */
-    def denot(implicit ctx: Context): Denotation = NoDenotation
+//    def denot(implicit ctx: Context): Denotation = NoDenotation
 
     /** Shorthand for `denot.symbol`. */
-    final def symbol(implicit ctx: Context): Symbol = denot.symbol
+//    final def symbol(implicit ctx: Context): Symbol = denot.symbol
 
     /** Does this tree represent a type? */
     def isType: Boolean = false
@@ -268,16 +271,16 @@ object Trees {
   /** Tree's denotation can be derived from its type */
   abstract class DenotingTree[-T >: Untyped] extends Tree[T] {
     type ThisTree[-T >: Untyped] <: DenotingTree[T]
-    override def denot(implicit ctx: Context) = tpe match {
-      case tpe: NamedType => tpe.denot
-      case tpe: ThisType => tpe.cls.denot
-      case tpe: AnnotatedType => tpe.stripAnnots match {
-        case tpe: NamedType => tpe.denot
-        case tpe: ThisType => tpe.cls.denot
-        case _ => NoDenotation
-      }
-      case _ => NoDenotation
-    }
+//    override def denot(implicit ctx: Context) = tpe match {
+//      case tpe: NamedType => tpe.denot
+//      case tpe: ThisType => tpe.cls.denot
+//      case tpe: AnnotatedType => tpe.stripAnnots match {
+//        case tpe: NamedType => tpe.denot
+//        case tpe: ThisType => tpe.cls.denot
+//        case _ => NoDenotation
+//      }
+//      case _ => NoDenotation
+//    }
   }
 
   /** Tree's denot/isType/isTerm properties come from a subtree
@@ -286,7 +289,7 @@ object Trees {
   abstract class ProxyTree[-T >: Untyped] extends Tree[T] {
     type ThisTree[-T >: Untyped] <: ProxyTree[T]
     def forwardTo: Tree[T]
-    override def denot(implicit ctx: Context): Denotation = forwardTo.denot
+//    override def denot(implicit ctx: Context): Denotation = forwardTo.denot
     override def isTerm = forwardTo.isTerm
     override def isType = forwardTo.isType
   }
@@ -382,14 +385,14 @@ object Trees {
     extends DenotingTree[T] with TermTree[T] {
     type ThisTree[-T >: Untyped] = This[T]
     // Denotation of a This tree is always the underlying class; needs correction for modules.
-    override def denot(implicit ctx: Context): Denotation = {
-      tpe match {
-        case tpe @ TermRef(pre, _) if tpe.symbol is Module =>
-          tpe.symbol.moduleClass.denot.asSeenFrom(pre)
-        case _ =>
-          super.denot
-      }
-    }
+//    override def denot(implicit ctx: Context): Denotation = {
+//      tpe match {
+//        case tpe @ TermRef(pre, _) if tpe.symbol is Module =>
+//          tpe.symbol.moduleClass.denot.asSeenFrom(pre)
+//        case _ =>
+//          super.denot
+//      }
+//    }
   }
 
   /** C.super[mix], where qual = C.this */
@@ -551,7 +554,7 @@ object Trees {
     override def initialPos = NoPosition
     override def isEmpty = !hasType && original.isEmpty
     override def toString =
-      s"TypeTree${if (hasType) s"[$typeOpt]" else s"($original)"}"
+      s"TypeTree$original"
   }
 
   /** ref.type */
@@ -719,8 +722,8 @@ object Trees {
   }
 
   trait WithoutTypeOrPos[-T >: Untyped] extends Tree[T] {
-    override def tpe: T @uncheckedVariance = NoType.asInstanceOf[T]
-    override def withTypeUnchecked(tpe: Type) = this.asInstanceOf[ThisTree[Type]]
+    override def tpe: T @uncheckedVariance = ??? ///NoType.asInstanceOf[T]
+//    override def withTypeUnchecked(tpe: Type) = this.asInstanceOf[ThisTree[Type]]
     override def pos = NoPosition
     override def setPos(pos: Position) = {}
   }
@@ -1221,8 +1224,8 @@ object Trees {
       def apply(x: X, tree: Tree)(implicit ctx: Context): X
       def apply(x: X, trees: Traversable[Tree])(implicit ctx: Context): X = (x /: trees)(apply)
       def foldOver(x: X, tree: Tree)(implicit ctx: Context): X = {
-        def localCtx =
-          if (tree.hasType && tree.symbol.exists) ctx.withOwner(tree.symbol) else ctx
+        def localCtx: Context =
+          ??? //if (tree.hasType && tree.symbol.exists) ctx.withOwner(tree.symbol) else ctx
         tree match {
           case Ident(name) =>
             x

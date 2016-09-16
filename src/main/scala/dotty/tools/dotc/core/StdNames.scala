@@ -5,7 +5,6 @@ import scala.language.implicitConversions
 import scala.collection.{mutable, immutable}
 import scala.annotation.switch
 import Names._
-import Symbols._
 import Contexts._
 import Decorators.StringDecorator
 import util.NameTransformer
