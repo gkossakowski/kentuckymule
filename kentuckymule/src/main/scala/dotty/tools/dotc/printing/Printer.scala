@@ -4,7 +4,7 @@ package printing
 import core._
 import Texts._, ast.Trees._
 import Types.Type, Contexts.Context, Constants.Constant,
-       Names.Name, Annotations.Annotation
+       Names.Name
 
 /** The base class of all printers
  */
@@ -70,9 +70,6 @@ abstract class Printer {
 
   /** Textual representation of constant */
   def toText(const: Constant): Text
-
-  /** Textual representation of annotation */
-  def toText(annot: Annotation): Text
 
   /** Textual representation of type */
   def toText(tp: Type): Text

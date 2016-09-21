@@ -3,7 +3,7 @@ package printing
 
 import core._
 import Texts._, Types._, Flags._, Names._, NameOps._, Constants._
-import Contexts.Context, Annotations.Annotation
+import Contexts.Context
 import StdNames.{nme, tpnme}
 import ast.Trees._, ast._
 import java.lang.Integer.toOctalString
@@ -184,9 +184,6 @@ class PlainPrinter(_ctx: Context) extends Printer {
 
   /** A description of sym's location */
   override def extendedLocationText(sym: Symbol): Text = ???
-
-  /** Textual representation of annotation */
-  override def toText(annot: Annotation): Text = ???
 
   /** Textual representation of type */
   override def toText(tp: Type): Text = ???
