@@ -10,4 +10,6 @@ val kentuckymule = project.
     libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.11.8"
   )
 
-val root = (project in file(".")).aggregate(kentuckymule)
+lazy val bench = project.dependsOn(kentuckymule).enablePlugins(JmhPlugin).settings(common:_*)
+
+lazy val root = (project in file(".")).aggregate(kentuckymule, bench)

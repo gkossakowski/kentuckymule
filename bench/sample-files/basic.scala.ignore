@@ -1,0 +1,11 @@
+class Foo {
+  def x: Int = 12
+}
+
+class Foo2 {
+  def y: Int = 12
+}
+
+class Foo3 {
+  def z: Int = 12
+}
