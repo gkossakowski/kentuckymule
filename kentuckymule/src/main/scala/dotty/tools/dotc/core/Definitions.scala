@@ -2,7 +2,9 @@ package dotty.tools
 package dotc
 package core
 
-import Types._, Contexts._
+import Types._
+import Contexts._
+import dotty.tools.dotc.core.Symbols.{NoSymbol, PackageSymbol}
 //import Flags._, Scopes._, Decorators._, NameOps._, util.Positions._, Periods._
 //import unpickleScala2.Scala2Unpickler.ensureConstructor
 //import scala.annotation.{ switch, meta }
@@ -49,6 +51,8 @@ class Definitions {
   object DoubleType extends Type
   object FloatType extends Type
   object BooleanType extends Type
+
+  val rootPackage = new PackageSymbol(NoSymbol.name)
 
   def init()(implicit ctx: Context) = {
     this.ctx = ctx
