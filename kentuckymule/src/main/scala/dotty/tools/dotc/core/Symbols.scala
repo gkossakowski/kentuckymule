@@ -3,6 +3,9 @@ package dotty.tools.dotc.core
 import Names.Name
 
 import scala.collection.mutable.{ListBuffer, Map}
+
+import com.google.common.collect.{ArrayListMultimap, ListMultimap}
+
 import Decorators._
 
 class Symbols { this: Contexts.Context =>
@@ -13,10 +16,10 @@ object Symbols {
   abstract class Symbol(val name: Name) {
     // the map is here to perform quick lookups by name
     // a single name can be overloaded hence we a collection as a value in the map
-    private val childrenMap: Map[Name, ListBuffer[Symbol]] = Map.empty.withDefault(_ => ListBuffer.empty)
+    private val childrenMap: ListMultimap[Name, Symbol] = ArrayListMultimap.create()
     private val childrenSeq: ListBuffer[Symbol] = ListBuffer.empty
     def addChild(sym: Symbol): Unit = {
-      childrenMap(sym.name) = childrenMap(sym.name) += sym
+      childrenMap.put(sym.name, sym)
       childrenSeq += sym
     }
     def childrenIterator: Iterator[Symbol] = childrenSeq.iterator

@@ -7,7 +7,9 @@ val kentuckymule = project.
   settings(common:_*).
   settings(
     // https://mvnrepository.com/artifact/org.scala-lang/scala-reflect
-    libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.11.8"
+    libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.11.8",
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    libraryDependencies += "com.google.guava" % "guava" % "19.0"
   )
 
 lazy val bench = project.dependsOn(kentuckymule).enablePlugins(JmhPlugin).settings(common:_*)
