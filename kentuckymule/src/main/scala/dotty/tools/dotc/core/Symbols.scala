@@ -6,6 +6,8 @@ import scala.collection.mutable.{ListBuffer, Map}
 
 import com.google.common.collect.{ArrayListMultimap, ListMultimap}
 
+import scala.collection.JavaConverters._
+
 import Decorators._
 
 class Symbols { this: Contexts.Context =>
@@ -27,6 +29,8 @@ object Symbols {
       childrenMap.clear()
       childrenSeq.clear()
     }
+    def lookup(name: Name): Symbol = childrenMap.get(name).get(0)
+    def lookupAll(name: Name): Seq[Symbol] = childrenMap.get(name).asScala
   }
   abstract class TermSymbol(name: Name) extends Symbol(name)
   abstract class TypeSymbol(name: Name) extends Symbol(name)
