@@ -29,7 +29,11 @@ object Symbols {
       childrenMap.clear()
       childrenSeq.clear()
     }
-    def lookup(name: Name): Symbol = childrenMap.get(name).get(0)
+    def lookup(name: Name): Symbol =
+      if (childrenMap.containsKey(name))
+        childrenMap.get(name).get(0)
+      else
+        NoSymbol
     def lookupAll(name: Name): Seq[Symbol] = childrenMap.get(name).asScala
   }
   abstract class TermSymbol(name: Name) extends Symbol(name)

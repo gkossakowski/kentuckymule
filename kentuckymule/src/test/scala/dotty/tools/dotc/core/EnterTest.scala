@@ -31,6 +31,21 @@ object EnterTest extends TestSuite {
         )
       )
     }
+    'duplicatePackageDeclaration {
+      val src = "package foo; package bar { class Abc }; package bar { class Xyz }"
+      enterToSymbolTable(src, ctx)
+      val descendants = descendantPaths(ctx.definitions.rootPackage)
+      val descendantNames = descendants.map(_.map(_.name))
+      val barName = "bar".toTermName
+      val allBarPkgs = descendants.flatMap(_.filter(_.name == barName)).toSet
+      assert(allBarPkgs.size == 1)
+      assert(descendantNames ==
+        List(
+          List(StdNames.nme.ROOTPKG, "foo".toTermName, "bar".toTermName, "Abc".toTypeName),
+          List(StdNames.nme.ROOTPKG, "foo".toTermName, "bar".toTermName, "Xyz".toTypeName)
+        )
+      )
+    }
   }
 
   private def enterToSymbolTable(src: String, ctx: Context): Unit = {

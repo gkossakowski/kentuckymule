@@ -46,14 +46,24 @@ class Enter {
 
   private def expandQualifiedPackageDeclaration(pkgDecl: RefTree, owner: Symbol): Symbol = pkgDecl match {
     case Ident(name: Name) =>
-      val pkgSym = new PackageSymbol(name)
-      owner.addChild(pkgSym)
-      pkgSym
+      val lookedUp = owner.lookup(name)
+      if (lookedUp != NoSymbol)
+        lookedUp
+      else {
+        val pkgSym = new PackageSymbol(name)
+        owner.addChild(pkgSym)
+        pkgSym
+      }
     case Select(qualifier: RefTree, name: Name) =>
       val qualPkg = expandQualifiedPackageDeclaration(qualifier, owner)
-      val pkgSym = new PackageSymbol(name)
-      qualPkg.addChild(pkgSym)
-      pkgSym
+      val lookedUp = owner.lookup(name)
+      if (lookedUp != NoSymbol)
+        lookedUp
+      else {
+        val pkgSym = new PackageSymbol(name)
+        qualPkg.addChild(pkgSym)
+        pkgSym
+      }
   }
 
 }
