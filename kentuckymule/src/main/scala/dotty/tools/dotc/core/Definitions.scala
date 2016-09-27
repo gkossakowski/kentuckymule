@@ -52,7 +52,7 @@ class Definitions {
   object FloatType extends Type
   object BooleanType extends Type
 
-  val rootPackage = new PackageSymbol(NoSymbol.name)
+  val rootPackage = new PackageSymbol(StdNames.nme.ROOTPKG)
 
   def init()(implicit ctx: Context) = {
     this.ctx = ctx

@@ -4,39 +4,32 @@ import dotty.tools.dotc.{CompilationUnit, parsing}
 import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
 import Symbols._
 import Decorators._
+import Names._
 import utest._
 
 object EnterTest extends TestSuite {
   def initCtx = (new ContextBase).initialCtx
   val tests = this {
     val ctx = initCtx.fresh
-    'flatPackageDecl {
+    'flatPackageDeclaration {
       val src = "package foo.bar; class Abc"
       enterToSymbolTable(src, ctx)
-      val rootPkg = ctx.definitions.rootPackage
-      // these are commented out because of a bug in Enter's implementation
-      // of package handling
-      val rootChildren = childrenNames(rootPkg)
-      assert(rootChildren == Seq("foo"))
-      val fooPkg = rootPkg.lookup("foo".toTermName)
-      val fooChildren = childrenNames(fooPkg)
-      assert(fooChildren == Seq("bar"))
-      val barPkg = fooPkg.lookup("bar".toTermName)
-      val barChildren = childrenNames(barPkg)
-      assert(barChildren == Seq("Abc"))
+      val descendants = descendantNames(ctx.definitions.rootPackage)
+      assert(descendants ==
+        List(
+          List(StdNames.nme.ROOTPKG, "foo".toTermName, "bar".toTermName, "Abc".toTypeName)
+        )
+      )
     }
-    'nestedPackageDecl {
+    'nestedPackageDeclaration {
       val src = "package foo; package bar; class Abc"
       enterToSymbolTable(src, ctx)
-      val rootPkg = ctx.definitions.rootPackage
-      val rootChildren = childrenNames(rootPkg)
-      assert(rootChildren == Seq("foo"))
-      val fooPkg = rootPkg.lookup("foo".toTermName)
-      val fooChildren = childrenNames(fooPkg)
-      assert(fooChildren == Seq("bar"))
-      val barPkg = fooPkg.lookup("bar".toTermName)
-      val barChildren = childrenNames(barPkg)
-      assert(barChildren == Seq("Abc"))
+      val descendants = descendantNames(ctx.definitions.rootPackage)
+      assert(descendants ==
+        List(
+          List(StdNames.nme.ROOTPKG, "foo".toTermName, "bar".toTermName, "Abc".toTypeName)
+        )
+      )
     }
   }
 
@@ -46,8 +39,20 @@ object EnterTest extends TestSuite {
     enter.enterCompilationUnit(unit)(ctx)
   }
 
-  private def childrenNames(s: Symbol): List[String] =
-    s.childrenIterator.toList.map(_.name.toString)
+  private def descendantPaths(s: Symbol): List[List[Symbol]] = {
+    val children = s.childrenIterator.toList
+    if (children.isEmpty)
+      List(List(s))
+    else {
+      for {
+        child <- children
+        path <- descendantPaths(child)
+      } yield s :: path
+    }
+  }
+
+  private def descendantNames(s: Symbol): List[List[Name]] =
+    descendantPaths(s).map(_.map(_.name))
 
   private def compilationUnitFromString(contents: String, ctx: Context): CompilationUnit = {
     IOUtils.withTemporarySourceFile(contents, ctx) { source =>
