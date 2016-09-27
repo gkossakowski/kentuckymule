@@ -16,14 +16,14 @@ object EnterTest extends TestSuite {
       val rootPkg = ctx.definitions.rootPackage
       // these are commented out because of a bug in Enter's implementation
       // of package handling
-//      val rootChildren = childrenNames(rootPkg)
-//      assert(rootChildren == Seq("foo"))
-//      val fooPkg = rootPkg.lookup("foo".toTermName)
-//      val fooChildren = childrenNames(fooPkg)
-//      assert(fooChildren == Seq("bar"))
-//      val barPkg = fooPkg.lookup("bar".toTermName)
-//      val barChildren = childrenNames(barPkg)
-//      assert(barChildren == Seq("Abc"))
+      val rootChildren = childrenNames(rootPkg)
+      assert(rootChildren == Seq("foo"))
+      val fooPkg = rootPkg.lookup("foo".toTermName)
+      val fooChildren = childrenNames(fooPkg)
+      assert(fooChildren == Seq("bar"))
+      val barPkg = fooPkg.lookup("bar".toTermName)
+      val barChildren = childrenNames(barPkg)
+      assert(barChildren == Seq("Abc"))
     }
     'nestedPackageDecl {
       val src = "package foo; package bar; class Abc"

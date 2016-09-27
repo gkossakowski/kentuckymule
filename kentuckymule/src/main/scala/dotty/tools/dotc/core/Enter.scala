@@ -3,7 +3,8 @@ package core
 
 import dotty.tools.dotc.core.Contexts.Context
 import Symbols._
-import ast.Trees.{Template => _, Tree => _, _}
+import ast.Trees.{RefTree => _, Template => _, Tree => _, _}
+import Names.Name
 import ast.untpd._
 
 /**
@@ -17,8 +18,7 @@ class Enter {
 
   private def enterTree(tree: Tree, owner: Symbol)(implicit context: Context): Unit = tree match {
     case PackageDef(ident, stats) =>
-      val pkgSym = new PackageSymbol(ident.name)
-      owner.addChild(pkgSym)
+      val pkgSym = expandQualifiedPackageDeclaration(ident, owner)
       for (stat <- stats) enterTree(stat, pkgSym)
     case ModuleDef(name, tmpl) =>
       val modSym = new ModuleSymbol(name)
@@ -42,6 +42,18 @@ class Enter {
       val valSym = new DefDefSymbol(name)
       owner.addChild(valSym)
     case _ =>
+  }
+
+  private def expandQualifiedPackageDeclaration(pkgDecl: RefTree, owner: Symbol): Symbol = pkgDecl match {
+    case Ident(name: Name) =>
+      val pkgSym = new PackageSymbol(name)
+      owner.addChild(pkgSym)
+      pkgSym
+    case Select(qualifier: RefTree, name: Name) =>
+      val qualPkg = expandQualifiedPackageDeclaration(qualifier, owner)
+      val pkgSym = new PackageSymbol(name)
+      qualPkg.addChild(pkgSym)
+      pkgSym
   }
 
 }
