@@ -44,7 +44,8 @@ class Enter {
     case _ =>
   }
 
-  private def expandQualifiedPackageDeclaration(pkgDecl: RefTree, owner: Symbol): Symbol = pkgDecl match {
+  private def expandQualifiedPackageDeclaration(pkgDecl: RefTree, owner: Symbol)(implicit ctx: Context): Symbol =
+    pkgDecl match {
     case Ident(name: Name) =>
       val lookedUp = owner.lookup(name)
       if (lookedUp != NoSymbol)

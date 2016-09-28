@@ -9,6 +9,8 @@ import com.google.common.collect.{ArrayListMultimap, ListMultimap}
 import scala.collection.JavaConverters._
 
 import Decorators._
+import Scopes.{Scope, MutableScope}
+import Contexts.Context
 
 class Symbols { this: Contexts.Context =>
   import Symbols._
@@ -16,25 +18,20 @@ class Symbols { this: Contexts.Context =>
 
 object Symbols {
   abstract class Symbol(val name: Name) {
-    // the map is here to perform quick lookups by name
-    // a single name can be overloaded hence we a collection as a value in the map
-    private val childrenMap: ListMultimap[Name, Symbol] = ArrayListMultimap.create()
-    private val childrenSeq: ListBuffer[Symbol] = ListBuffer.empty
-    def addChild(sym: Symbol): Unit = {
-      childrenMap.put(sym.name, sym)
-      childrenSeq += sym
+
+    private var scope: MutableScope = Scopes.newScope
+    def addChild(sym: Symbol)(implicit ctx: Context): Unit = {
+      scope.enter(sym)
     }
-    def childrenIterator: Iterator[Symbol] = childrenSeq.iterator
+    def childrenIterator: Iterator[Symbol] = scope.iterator
     def clear(): Unit = {
-      childrenMap.clear()
-      childrenSeq.clear()
+      // this is wrong if one obtained an iterator for children; to be fixed
+      scope = Scopes.newScope
     }
-    def lookup(name: Name): Symbol =
-      if (childrenMap.containsKey(name))
-        childrenMap.get(name).get(0)
-      else
-        NoSymbol
-    def lookupAll(name: Name): Seq[Symbol] = childrenMap.get(name).asScala
+    def lookup(name: Name)(implicit ctx: Context): Symbol =
+      scope.lookup(name)
+    def lookupAll(name: Name)(implicit ctx: Context): Seq[Symbol] =
+      scope.lookupAll(name).toSeq
   }
   abstract class TermSymbol(name: Name) extends Symbol(name)
   abstract class TypeSymbol(name: Name) extends Symbol(name)
