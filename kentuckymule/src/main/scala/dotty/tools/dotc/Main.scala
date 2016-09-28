@@ -3,11 +3,10 @@ package dotc
 
 import dotty.tools.dotc.core.Contexts.ContextBase
 import dotty.tools.dotc.core.Contexts.Context
+import dotty.tools.dotc.core.Enter
 import dotty.tools.dotc.util.{NoSource, SourceFile}
+import dotc.core.Symbols._
 
-import scala.concurrent.{Await, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
 import scala.reflect.io.PlainFile
 
 object Main {
@@ -23,20 +22,37 @@ object Main {
     }
   }
 
+  def countSymbols(ctx: Context): Int = {
+    def countAllChildren(s: Symbol): Int = 1 + s.childrenIterator.map(countAllChildren).sum
+    countAllChildren(ctx.definitions.rootPackage)
+  }
+
   def main(args: Array[String]): Unit = {
-//    val filePath = "sample-files/abc.scala.ignore"
-val filePath = "sample-files/Typer.scala.ignore"
+    val filePath = "bench/sample-files/Typer.scala.ignore"
+    val ctx = initCtx.fresh
+    val source = getSource(filePath)(ctx)
+
     val start = System.currentTimeMillis()
-    val context = initCtx.fresh
-    val sizes = for (i <- 1 to 5000) yield Future {
-      val source = getSource(filePath)(context)
-      val parser = new parsing.Parsers.Parser(source)(context)
-      val tree = parser.parse()
-//      tree.treeSize
-      1
+
+    val compilationUnit = {
+      val unit = new CompilationUnit(source)
+      val parser = new parsing.Parsers.Parser(source)(ctx)
+      unit.untpdTree = parser.parse()
+      unit
     }
-    val totalSize = Await.result(Future.sequence(sizes), 1 minute).sum
-    println(s"Total size is ${totalSize}")
+
+    for (i <- 1 to 50000) {
+      ctx.definitions.rootPackage.clear()
+
+      val enter = new Enter
+      enter.enterCompilationUnit(compilationUnit)(ctx)
+
+    }
+
     println(s"It took ${System.currentTimeMillis() - start}")
+
+    val totalSize = countSymbols(ctx)
+
+    println(s"Total size is ${totalSize}")
   }
 }
