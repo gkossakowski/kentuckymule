@@ -19,7 +19,7 @@ object BenchmarkEnter {
 
   @State(Scope.Thread)
   class ThreadState {
-    @Param(Array("sample-files/Typer.scala.ignore"))
+    @Param(Array("sample-files/Typer.scala.ignore", "sample-files/10k.scala.ignore"))
     var filePath: String = _
     var source: SourceFile = _
     var compilationUnit: CompilationUnit = _
