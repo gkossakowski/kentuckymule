@@ -14,106 +14,11 @@ import Names.Name
 class Enter {
 
   import ast.untpd._
+  import Enter._
 
-  abstract sealed class LookupAnswer
-  case class LookedupSymbol(sym: Symbol) extends LookupAnswer
-  case class IncompleteDependency(sym: Symbol) extends LookupAnswer
-  case object NotFound extends LookupAnswer
-
-  abstract class LookupScope {
-    def lookup(name: Name, imports: ImportsLookupScope)(implicit context: Context): LookupAnswer
-  }
-
-  private class ImportCompleter(val importNode: Import, val name: Name) {
-    private var sym0: Symbol = _
-    def complete(parentLookupScope: LookupScope, previousImports: ImportsLookupScope)(implicit context: Context): LookupAnswer = {
-      val Import(expr, List(Ident(name))) = importNode
-      val exprAns = resolveSelectors(expr, parentLookupScope, previousImports)
-      exprAns match {
-        case LookedupSymbol(exprSym) =>
-          if (exprSym.isComplete) {
-            sym0 = exprSym.lookup(name)
-            LookedupSymbol(sym0)
-          }
-          else IncompleteDependency(exprSym)
-        case _ => exprAns
-      }
-    }
-    private def resolveSelectors(t: Tree, parentLookupScope: LookupScope, previousImports: ImportsLookupScope)(implicit context: Context): LookupAnswer =
-      t match {
-        case Ident(identName) => parentLookupScope.lookup(identName, previousImports)
-        case Select(qual, selName) =>
-          val ans = resolveSelectors(qual, parentLookupScope, previousImports)
-          ans match {
-            case LookedupSymbol(qualSym) =>
-              if (qualSym.isComplete)
-                LookedupSymbol(qualSym.lookup(selName))
-              else
-                IncompleteDependency(qualSym)
-            case _ => ans
-          }
-      }
-    def symbol: Symbol = {
-      if (sym0 == null)
-        sys.error("this import hasn't been completed " + importNode)
-      sym0
-    }
-  }
-
-  class ImportsCollector(parentLookupScope: LookupScope) {
-    private val importCompleters: util.ArrayList[ImportCompleter] = new util.ArrayList[ImportCompleter]()
-    def append(imp: Import): Unit = {
-//      val Import(expr, List(Ident(name))) = imp
-      // TODO: support multiple selectors and renames
-      val name: Name = imp match {
-        case Import(_, Ident(nme) :: _) => nme
-        case Import(_, Pair(_, Ident(nme)) :: _) => nme
-      }
-      importCompleters.add(new ImportCompleter(imp, name))
-    }
-    def snapshot(): ImportsLookupScope = {
-      new ImportsLookupScope(importCompleters, parentLookupScope)()
-    }
-    def isEmpty: Boolean = importCompleters.isEmpty
-  }
-
-  class ImportsLookupScope(importCompleters: util.ArrayList[ImportCompleter], parentLookupScope: LookupScope)
-                          (lastCompleterIndex: Int = importCompleters.size - 1) {
-    private var allComplete: Boolean = false
+  val templateCompleters: util.Queue[TemplateCompleter] = new util.ArrayDeque[TemplateCompleter]()
 
 
-    private def resolveImports()(implicit context: Context): Symbol = {
-      var i: Int = 0
-      while (i <= lastCompleterIndex) {
-        val importsCompletedSoFar = new ImportsLookupScope(importCompleters, parentLookupScope)(lastCompleterIndex = i-1)
-        importsCompletedSoFar.allComplete = true
-        val impCompleter = importCompleters.get(i)
-        impCompleter.complete(parentLookupScope, importsCompletedSoFar) match {
-          case _: LookedupSymbol =>
-          case IncompleteDependency(sym) => return sym
-          case NotFound => sys.error("couldn't resolve import")
-        }
-        i += 1
-      }
-      allComplete = true
-      null
-    }
-    def lookup(name: Name)(implicit context: Context): LookupAnswer = {
-      if (!allComplete) {
-        val sym = resolveImports()
-        if (sym != null)
-          return IncompleteDependency(sym)
-      }
-      var i = lastCompleterIndex
-      while (i > 0) {
-        val completedImport = importCompleters.get(i)
-        if (completedImport.name == name)
-          return LookedupSymbol(completedImport.symbol)
-        i -= 1
-      }
-      NotFound
-    }
-  }
 
   class LookupCompilationUnitScope(imports: List[Import], pkgLookupScope: PackageLookupScope) {
 
@@ -121,6 +26,21 @@ class Enter {
   class LookupClassTemplateScope(classSym: Symbol, visibleImports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
     override def lookup(name: Name, imports: ImportsLookupScope)(implicit context: Context): LookupAnswer = {
       val foundSym = classSym.lookup(name)
+      if (foundSym != NoSymbol)
+        LookedupSymbol(foundSym)
+      else {
+        val ans = imports.lookup(name)
+        ans match {
+          case _: LookedupSymbol | _: IncompleteDependency => ans
+          case _ => parentScope.lookup(name, visibleImports)
+        }
+      }
+    }
+  }
+
+  class LookupModuleTemplateScope(moduleSym: Symbol, visibleImports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
+    override def lookup(name: Name, imports: ImportsLookupScope)(implicit context: Context): LookupAnswer = {
+      val foundSym = moduleSym.lookup(name)
       if (foundSym != NoSymbol)
         LookedupSymbol(foundSym)
       else {
@@ -171,10 +91,12 @@ class Enter {
       for (stat <- stats) enterTree(stat, pkgSym, pkgImports, pkgLookupScope)
     case imp: Import =>
       imports.append(imp)
-//    case ModuleDef(name, tmpl) =>
-//      val modSym = new ModuleSymbol(name)
-//      owner.addChild(modSym)
-//      enterTree(tmpl, modSym)
+    case ModuleDef(name, tmpl) =>
+      val modSym = new ModuleSymbol(name)
+      owner.addChild(modSym)
+      val moduleLookupScope = new LookupModuleTemplateScope(modSym, imports.snapshot(), parentScope)
+      val moduleImports = new ImportsCollector(parentScope)
+      enterTree(tmpl, modSym, moduleImports, moduleLookupScope)
     // class or trait
     case t@TypeDef(name, tmpl) if t.isClassDef =>
       val classSym = new ClassSymbol(name)
@@ -183,6 +105,7 @@ class Enter {
       val classImports = new ImportsCollector(parentScope)
       enterTree(tmpl, classSym, classImports, classLookupScope)
     case t: Template =>
+      templateCompleters.add(new TemplateCompleter(owner, parentScope))
       for (stat <- t.body) enterTree(stat, owner, imports, parentScope)
     // type alias or type member
     case TypeDef(name, _) =>
@@ -220,4 +143,131 @@ class Enter {
       }
   }
 
+}
+
+object Enter {
+  import ast.untpd._
+
+  abstract sealed class LookupAnswer
+  case class LookedupSymbol(sym: Symbol) extends LookupAnswer
+  case class IncompleteDependency(sym: Symbol) extends LookupAnswer
+  case object NotFound extends LookupAnswer
+
+  abstract class LookupScope {
+    def lookup(name: Name, imports: ImportsLookupScope)(implicit context: Context): LookupAnswer
+  }
+
+  private class ImportCompleter(val importNode: Import) {
+    private var termSym0: Symbol = _
+    private var typeSym0: Symbol = _
+    private var isComplete: Boolean = false
+    def complete(parentLookupScope: LookupScope, previousImports: ImportsLookupScope)(implicit context: Context): LookupAnswer = {
+      isComplete = true
+      val Import(expr, List(Ident(name))) = importNode
+      val exprAns = resolveSelectors(expr, parentLookupScope, previousImports)
+      exprAns match {
+        case LookedupSymbol(exprSym) =>
+          if (exprSym.isComplete) {
+            termSym0 = exprSym.lookup(name)
+            typeSym0 = exprSym.lookup(name.toTypeName)
+            if (termSym0 != NoSymbol)
+              LookedupSymbol(termSym0)
+            else if (typeSym0 != NoSymbol)
+              LookedupSymbol(typeSym0)
+            else
+              NotFound
+          }
+          else IncompleteDependency(exprSym)
+        case _ => exprAns
+      }
+    }
+    private def resolveSelectors(t: Tree, parentLookupScope: LookupScope, previousImports: ImportsLookupScope)(implicit context: Context): LookupAnswer =
+      t match {
+        case Ident(identName) => parentLookupScope.lookup(identName, previousImports)
+        case Select(qual, selName) =>
+          val ans = resolveSelectors(qual, parentLookupScope, previousImports)
+          ans match {
+            case LookedupSymbol(qualSym) =>
+              if (qualSym.isComplete)
+                LookedupSymbol(qualSym.lookup(selName))
+              else
+                IncompleteDependency(qualSym)
+            case _ => ans
+          }
+      }
+    def termSymbol: Symbol = {
+      if (!isComplete)
+        sys.error("this import hasn't been completed " + importNode)
+      if (termSym0 != null)
+        termSym0
+      else
+        NoSymbol
+    }
+    def typeSymbol: Symbol = {
+      if (!isComplete)
+        sys.error("this import hasn't been completed " + importNode)
+      if (typeSym0 != null)
+        typeSym0
+      else
+        NoSymbol
+    }
+    def matches(name: Name): Symbol = {
+      if (name.isTermName)
+        termSymbol
+      else
+        typeSymbol
+    }
+  }
+
+  class ImportsCollector(parentLookupScope: LookupScope) {
+    private val importCompleters: util.ArrayList[ImportCompleter] = new util.ArrayList[ImportCompleter]()
+    def append(imp: Import): Unit = {
+      importCompleters.add(new ImportCompleter(imp))
+    }
+    def snapshot(): ImportsLookupScope = {
+      new ImportsLookupScope(importCompleters, parentLookupScope)()
+    }
+    def isEmpty: Boolean = importCompleters.isEmpty
+  }
+
+  class ImportsLookupScope(importCompleters: util.ArrayList[ImportCompleter], parentLookupScope: LookupScope)
+                          (lastCompleterIndex: Int = importCompleters.size - 1) {
+    private var allComplete: Boolean = false
+
+
+    private def resolveImports()(implicit context: Context): Symbol = {
+      var i: Int = 0
+      while (i <= lastCompleterIndex) {
+        val importsCompletedSoFar = new ImportsLookupScope(importCompleters, parentLookupScope)(lastCompleterIndex = i-1)
+        importsCompletedSoFar.allComplete = true
+        val impCompleter = importCompleters.get(i)
+        impCompleter.complete(parentLookupScope, importsCompletedSoFar) match {
+          case _: LookedupSymbol =>
+          case IncompleteDependency(sym) => return sym
+          case NotFound => sys.error("couldn't resolve import")
+        }
+        i += 1
+      }
+      allComplete = true
+      null
+    }
+    def lookup(name: Name)(implicit context: Context): LookupAnswer = {
+      if (!allComplete) {
+        val sym = resolveImports()
+        if (sym != null)
+          return IncompleteDependency(sym)
+      }
+      var i = lastCompleterIndex
+      while (i >= 0) {
+        val completedImport = importCompleters.get(i)
+        val sym = completedImport.matches(name)
+        if (sym != NoSymbol)
+          return LookedupSymbol(completedImport.termSymbol)
+        i -= 1
+      }
+      NotFound
+    }
+  }
+
+  class TemplateCompleter(val sym: Symbol, val lookupScope: LookupScope)
 }
