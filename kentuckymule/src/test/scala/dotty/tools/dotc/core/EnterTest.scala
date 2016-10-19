@@ -46,12 +46,23 @@ object EnterTest extends TestSuite {
         )
       )
     }
+    'resolveImport {
+      val src = "object A { class B }; class X { import A.B; class Y }"
+      val templateCompleters = enterToSymbolTable(src, ctx)
+      val Some(ycompleter) = templateCompleters.find(_.sym.name == "Y".toTypeName)
+      val ylookupScope = ycompleter.lookupScope
+      val emptyImports = new Enter.ImportsLookupScope(new java.util.ArrayList(), ylookupScope)()
+      val ans = ylookupScope.lookup("B".toTypeName, emptyImports)(ctx)
+      assert(ans.isInstanceOf[Enter.LookedupSymbol])
+    }
   }
 
-  private def enterToSymbolTable(src: String, ctx: Context): Unit = {
+  private def enterToSymbolTable(src: String, ctx: Context): collection.Iterable[Enter.TemplateCompleter] = {
+    import scala.collection.JavaConverters._
     val unit = compilationUnitFromString(src, ctx)
     val enter = new Enter
     enter.enterCompilationUnit(unit)(ctx)
+    enter.templateCompleters.asScala
   }
 
   private def descendantPaths(s: Symbol): List[List[Symbol]] = {
