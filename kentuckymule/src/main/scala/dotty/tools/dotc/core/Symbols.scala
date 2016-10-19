@@ -33,7 +33,7 @@ object Symbols {
     def lookupAll(name: Name)(implicit ctx: Context): Seq[Symbol] =
       scope.lookupAll(name).toSeq
 
-    def isComplete: Boolean = ???
+    def isComplete: Boolean = true
   }
   abstract class TermSymbol(name: Name) extends Symbol(name)
   abstract class TypeSymbol(name: Name) extends Symbol(name)
