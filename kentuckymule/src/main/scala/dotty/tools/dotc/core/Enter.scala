@@ -23,8 +23,8 @@ class Enter {
   class LookupCompilationUnitScope(imports: List[Import], pkgLookupScope: PackageLookupScope) {
 
   }
-  class LookupClassTemplateScope(classSym: Symbol, visibleImports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
-    override def lookup(name: Name, imports: ImportsLookupScope)(implicit context: Context): LookupAnswer = {
+  class LookupClassTemplateScope(classSym: Symbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
+    override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
       val foundSym = classSym.lookup(name)
       if (foundSym != NoSymbol)
         LookedupSymbol(foundSym)
@@ -32,14 +32,17 @@ class Enter {
         val ans = imports.lookup(name)
         ans match {
           case _: LookedupSymbol | _: IncompleteDependency => ans
-          case _ => parentScope.lookup(name, visibleImports)
+          case _ => parentScope.lookup(name)
         }
       }
     }
+
+    override def replaceImports(imports: ImportsLookupScope): LookupScope =
+      new LookupClassTemplateScope(classSym, imports, parentScope)
   }
 
-  class LookupModuleTemplateScope(moduleSym: Symbol, visibleImports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
-    override def lookup(name: Name, imports: ImportsLookupScope)(implicit context: Context): LookupAnswer = {
+  class LookupModuleTemplateScope(moduleSym: Symbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
+    override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
       val foundSym = moduleSym.lookup(name)
       if (foundSym != NoSymbol)
         LookedupSymbol(foundSym)
@@ -47,20 +50,25 @@ class Enter {
         val ans = imports.lookup(name)
         ans match {
           case _: LookedupSymbol | _: IncompleteDependency => ans
-          case _ => parentScope.lookup(name, visibleImports)
+          case _ => parentScope.lookup(name)
         }
       }
     }
+    override def replaceImports(imports: ImportsLookupScope): LookupScope =
+      new LookupModuleTemplateScope(moduleSym, imports, parentScope)
   }
 
   object RootPackageLookupScope extends LookupScope {
-    override def lookup(name: Name, imports: ImportsLookupScope)(implicit context: Context): LookupAnswer = {
+    override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
       val sym = context.definitions.rootPackage.lookup(name)
       if (sym == NoSymbol)
         NotFound
       else
         LookedupSymbol(sym)
     }
+
+    override def replaceImports(imports: ImportsLookupScope): LookupScope =
+      sys.error("unsupported operation")
   }
 
   def enterCompilationUnit(unit: CompilationUnit)(implicit context: Context): Unit = {
@@ -68,8 +76,8 @@ class Enter {
     enterTree(unit.untpdTree, context.definitions.rootPackage, importsInCompilationUnit, RootPackageLookupScope)
   }
 
-  class PackageLookupScope(val pkgSym: Symbol, val parent: LookupScope, val parentImports: ImportsLookupScope) extends LookupScope {
-    override def lookup(name: Name, imports: ImportsLookupScope)(implicit context: Context): LookupAnswer = {
+  class PackageLookupScope(val pkgSym: Symbol, val parent: LookupScope, val imports: ImportsLookupScope) extends LookupScope {
+    override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
       val foundSym = pkgSym.lookup(name)
       if (foundSym != NoSymbol)
         LookedupSymbol(foundSym)
@@ -77,10 +85,13 @@ class Enter {
         val ans = imports.lookup(name)
         ans match {
           case _: LookedupSymbol | _: IncompleteDependency => ans
-          case _ => parent.lookup(name, parentImports)
+          case _ => parent.lookup(name)
         }
       }
     }
+
+    override def replaceImports(imports: ImportsLookupScope): LookupScope =
+      new PackageLookupScope(pkgSym, parent, imports)
   }
 
   private def enterTree(tree: Tree, owner: Symbol, imports: ImportsCollector, parentScope: LookupScope)(implicit context: Context): Unit = tree match {
@@ -154,17 +165,18 @@ object Enter {
   case object NotFound extends LookupAnswer
 
   abstract class LookupScope {
-    def lookup(name: Name, imports: ImportsLookupScope)(implicit context: Context): LookupAnswer
+    def lookup(name: Name)(implicit context: Context): LookupAnswer
+    def replaceImports(imports: ImportsLookupScope): LookupScope
   }
 
   private class ImportCompleter(val importNode: Import) {
     private var termSym0: Symbol = _
     private var typeSym0: Symbol = _
     private var isComplete: Boolean = false
-    def complete(parentLookupScope: LookupScope, previousImports: ImportsLookupScope)(implicit context: Context): LookupAnswer = {
+    def complete(parentLookupScope: LookupScope)(implicit context: Context): LookupAnswer = {
       isComplete = true
       val Import(expr, List(Ident(name))) = importNode
-      val exprAns = resolveSelectors(expr, parentLookupScope, previousImports)
+      val exprAns = resolveSelectors(expr, parentLookupScope)
       exprAns match {
         case LookedupSymbol(exprSym) =>
           if (exprSym.isComplete) {
@@ -181,20 +193,6 @@ object Enter {
         case _ => exprAns
       }
     }
-    private def resolveSelectors(t: Tree, parentLookupScope: LookupScope, previousImports: ImportsLookupScope)(implicit context: Context): LookupAnswer =
-      t match {
-        case Ident(identName) => parentLookupScope.lookup(identName, previousImports)
-        case Select(qual, selName) =>
-          val ans = resolveSelectors(qual, parentLookupScope, previousImports)
-          ans match {
-            case LookedupSymbol(qualSym) =>
-              if (qualSym.isComplete)
-                LookedupSymbol(qualSym.lookup(selName))
-              else
-                IncompleteDependency(qualSym)
-            case _ => ans
-          }
-      }
     def termSymbol: Symbol = {
       if (!isComplete)
         sys.error("this import hasn't been completed " + importNode)
@@ -240,8 +238,9 @@ object Enter {
       while (i <= lastCompleterIndex) {
         val importsCompletedSoFar = new ImportsLookupScope(importCompleters, parentLookupScope)(lastCompleterIndex = i-1)
         importsCompletedSoFar.allComplete = true
+        val parentLookupWithImports = parentLookupScope.replaceImports(importsCompletedSoFar)
         val impCompleter = importCompleters.get(i)
-        impCompleter.complete(parentLookupScope, importsCompletedSoFar) match {
+        impCompleter.complete(parentLookupWithImports) match {
           case _: LookedupSymbol =>
           case IncompleteDependency(sym) => return sym
           case NotFound => sys.error("couldn't resolve import")
@@ -270,4 +269,19 @@ object Enter {
   }
 
   class TemplateCompleter(val sym: Symbol, val lookupScope: LookupScope)
+
+  private def resolveSelectors(t: Tree, parentLookupScope: LookupScope)(implicit context: Context): LookupAnswer =
+    t match {
+      case Ident(identName) => parentLookupScope.lookup(identName)
+      case Select(qual, selName) =>
+        val ans = resolveSelectors(qual, parentLookupScope)
+        ans match {
+          case LookedupSymbol(qualSym) =>
+            if (qualSym.isComplete)
+              LookedupSymbol(qualSym.lookup(selName))
+            else
+              IncompleteDependency(qualSym)
+          case _ => ans
+        }
+    }
 }

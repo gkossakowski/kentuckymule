@@ -51,8 +51,7 @@ object EnterTest extends TestSuite {
       val templateCompleters = enterToSymbolTable(src, ctx)
       val Some(ycompleter) = templateCompleters.find(_.sym.name == "Y".toTypeName)
       val ylookupScope = ycompleter.lookupScope
-      val emptyImports = new Enter.ImportsLookupScope(new java.util.ArrayList(), ylookupScope)()
-      val ans = ylookupScope.lookup("B".toTypeName, emptyImports)(ctx)
+      val ans = ylookupScope.lookup("B".toTypeName)(ctx)
       assert(ans.isInstanceOf[Enter.LookedupSymbol])
     }
   }
