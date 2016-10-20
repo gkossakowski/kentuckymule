@@ -208,6 +208,21 @@ object Scopes {
       enter(sym)
     }
 
+    /** Enter all entries from a passed in scope.
+      */
+    def enterAll(scope: Scope)(implicit ctx: Context): Unit = {
+      val entries = new mutable.ArrayBuffer[ScopeEntry]
+      var e = scope.lastEntry
+      while (e ne null) {
+        entries += e
+        e = e.prev
+      }
+      for (i <- entries.length - 1 to 0 by -1) {
+        val e = entries(i)
+        newScopeEntry(e.name, e.sym)
+      }
+    }
+
     private def ensureCapacity(tableSize: Int)(implicit ctx: Context): Unit =
       if (size >= tableSize * FillFactor) createHash(tableSize * 2)
 

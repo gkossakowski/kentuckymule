@@ -32,6 +32,21 @@ object ScopeTest extends TestSuite {
       assert(nestedScope.lookup("Outer1".toTypeName) != NoSymbol)
       assert(nestedScope.lookup("Outer2".toTypeName) != NoSymbol)
     }
+    'enterAll {
+      val sym1 :: sym2 :: sym3 :: Nil = List("C1", "C2", "C3").map(_.toTypeName).map(new ClassSymbol(_))
+      val scope1 = Scopes.newScope
+      scope1.enter(sym1)
+      scope1.enter(sym2)
+      assert(scope1.size == 2)
+      val scope2 = Scopes.newScope
+      scope2.enter(sym3)
+      assert(scope2.size == 1)
+      scope2.enterAll(scope1)
+      assert(scope2.size == 3)
+      assert(scope2.lookup("C1".toTypeName) != NoSymbol)
+      assert(scope2.lookup("C2".toTypeName) != NoSymbol)
+      assert(scope2.lookup("C3".toTypeName) != NoSymbol)
+    }
   }
 
 }
