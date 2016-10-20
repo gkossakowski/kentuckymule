@@ -1,10000 +1,10001 @@
-class Foo {
-  def x: Int = 12
+class Foo1 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo3 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo4 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo5 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo6 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo7 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo8 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo9 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo10 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo11 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo12 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo13 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo14 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo15 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo16 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo17 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo18 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo19 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo20 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo21 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo22 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo23 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo24 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo25 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo26 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo27 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo28 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo29 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo30 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo31 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo32 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo33 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo34 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo35 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo36 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo37 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo38 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo39 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo40 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo41 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo42 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo43 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo44 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo45 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo46 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo47 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo48 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo49 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo50 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo51 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo52 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo53 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo54 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo55 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo56 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo57 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo58 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo59 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo60 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo61 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo62 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo63 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo64 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo65 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo66 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo67 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo68 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo69 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo70 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo71 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo72 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo73 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo74 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo75 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo76 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo77 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo78 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo79 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo80 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo81 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo82 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo83 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo84 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo85 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo86 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo87 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo88 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo89 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo90 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo91 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo92 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo93 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo94 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo95 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo96 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo97 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo98 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo99 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo100 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo101 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo102 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo103 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo104 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo105 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo106 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo107 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo108 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo109 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo110 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo111 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo112 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo113 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo114 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo115 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo116 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo117 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo118 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo119 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo120 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo121 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo122 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo123 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo124 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo125 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo126 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo127 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo128 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo129 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo130 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo131 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo132 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo133 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo134 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo135 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo136 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo137 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo138 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo139 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo140 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo141 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo142 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo143 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo144 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo145 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo146 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo147 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo148 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo149 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo150 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo151 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo152 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo153 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo154 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo155 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo156 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo157 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo158 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo159 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo160 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo161 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo162 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo163 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo164 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo165 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo166 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo167 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo168 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo169 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo170 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo171 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo172 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo173 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo174 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo175 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo176 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo177 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo178 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo179 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo180 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo181 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo182 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo183 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo184 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo185 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo186 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo187 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo188 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo189 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo190 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo191 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo192 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo193 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo194 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo195 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo196 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo197 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo198 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo199 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo200 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo201 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo202 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo203 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo204 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo205 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo206 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo207 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo208 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo209 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo210 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo211 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo212 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo213 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo214 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo215 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo216 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo217 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo218 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo219 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo220 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo221 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo222 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo223 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo224 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo225 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo226 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo227 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo228 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo229 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo230 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo231 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo232 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo233 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo234 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo235 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo236 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo237 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo238 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo239 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo240 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo241 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo242 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo243 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo244 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo245 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo246 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo247 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo248 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo249 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo250 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo251 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo252 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo253 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo254 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo255 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo256 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo257 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo258 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo259 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo260 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo261 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo262 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo263 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo264 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo265 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo266 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo267 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo268 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo269 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo270 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo271 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo272 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo273 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo274 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo275 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo276 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo277 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo278 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo279 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo280 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo281 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo282 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo283 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo284 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo285 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo286 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo287 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo288 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo289 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo290 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo291 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo292 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo293 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo294 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo295 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo296 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo297 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo298 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo299 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo300 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo301 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo302 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo303 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo304 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo305 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo306 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo307 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo308 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo309 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo310 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo311 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo312 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo313 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo314 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo315 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo316 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo317 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo318 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo319 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo320 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo321 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo322 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo323 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo324 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo325 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo326 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo327 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo328 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo329 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo330 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo331 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo332 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo333 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo334 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo335 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo336 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo337 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo338 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo339 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo340 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo341 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo342 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo343 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo344 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo345 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo346 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo347 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo348 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo349 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo350 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo351 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo352 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo353 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo354 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo355 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo356 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo357 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo358 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo359 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo360 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo361 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo362 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo363 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo364 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo365 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo366 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo367 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo368 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo369 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo370 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo371 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo372 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo373 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo374 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo375 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo376 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo377 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo378 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo379 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo380 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo381 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo382 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo383 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo384 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo385 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo386 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo387 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo388 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo389 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo390 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo391 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo392 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo393 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo394 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo395 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo396 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo397 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo398 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo399 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo400 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo401 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo402 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo403 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo404 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo405 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo406 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo407 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo408 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo409 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo410 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo411 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo412 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo413 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo414 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo415 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo416 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo417 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo418 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo419 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo420 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo421 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo422 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo423 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo424 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo425 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo426 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo427 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo428 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo429 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo430 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo431 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo432 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo433 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo434 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo435 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo436 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo437 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo438 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo439 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo440 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo441 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo442 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo443 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo444 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo445 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo446 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo447 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo448 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo449 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo450 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo451 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo452 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo453 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo454 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo455 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo456 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo457 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo458 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo459 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo460 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo461 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo462 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo463 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo464 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo465 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo466 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo467 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo468 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo469 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo470 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo471 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo472 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo473 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo474 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo475 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo476 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo477 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo478 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo479 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo480 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo481 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo482 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo483 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo484 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo485 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo486 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo487 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo488 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo489 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo490 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo491 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo492 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo493 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo494 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo495 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo496 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo497 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo498 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo499 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo500 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo501 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo502 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo503 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo504 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo505 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo506 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo507 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo508 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo509 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo510 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo511 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo512 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo513 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo514 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo515 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo516 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo517 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo518 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo519 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo520 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo521 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo522 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo523 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo524 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo525 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo526 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo527 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo528 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo529 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo530 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo531 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo532 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo533 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo534 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo535 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo536 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo537 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo538 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo539 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo540 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo541 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo542 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo543 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo544 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo545 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo546 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo547 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo548 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo549 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo550 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo551 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo552 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo553 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo554 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo555 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo556 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo557 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo558 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo559 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo560 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo561 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo562 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo563 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo564 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo565 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo566 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo567 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo568 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo569 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo570 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo571 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo572 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo573 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo574 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo575 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo576 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo577 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo578 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo579 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo580 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo581 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo582 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo583 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo584 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo585 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo586 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo587 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo588 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo589 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo590 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo591 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo592 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo593 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo594 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo595 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo596 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo597 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo598 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo599 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo600 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo601 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo602 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo603 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo604 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo605 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo606 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo607 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo608 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo609 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo610 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo611 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo612 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo613 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo614 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo615 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo616 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo617 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo618 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo619 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo620 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo621 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo622 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo623 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo624 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo625 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo626 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo627 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo628 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo629 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo630 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo631 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo632 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo633 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo634 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo635 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo636 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo637 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo638 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo639 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo640 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo641 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo642 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo643 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo644 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo645 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo646 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo647 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo648 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo649 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo650 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo651 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo652 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo653 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo654 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo655 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo656 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo657 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo658 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo659 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo660 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo661 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo662 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo663 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo664 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo665 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo666 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo667 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo668 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo669 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo670 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo671 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo672 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo673 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo674 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo675 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo676 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo677 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo678 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo679 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo680 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo681 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo682 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo683 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo684 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo685 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo686 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo687 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo688 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo689 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo690 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo691 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo692 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo693 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo694 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo695 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo696 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo697 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo698 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo699 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo700 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo701 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo702 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo703 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo704 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo705 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo706 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo707 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo708 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo709 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo710 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo711 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo712 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo713 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo714 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo715 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo716 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo717 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo718 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo719 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo720 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo721 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo722 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo723 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo724 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo725 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo726 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo727 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo728 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo729 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo730 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo731 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo732 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo733 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo734 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo735 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo736 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo737 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo738 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo739 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo740 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo741 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo742 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo743 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo744 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo745 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo746 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo747 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo748 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo749 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo750 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo751 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo752 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo753 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo754 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo755 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo756 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo757 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo758 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo759 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo760 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo761 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo762 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo763 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo764 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo765 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo766 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo767 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo768 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo769 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo770 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo771 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo772 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo773 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo774 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo775 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo776 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo777 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo778 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo779 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo780 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo781 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo782 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo783 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo784 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo785 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo786 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo787 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo788 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo789 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo790 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo791 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo792 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo793 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo794 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo795 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo796 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo797 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo798 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo799 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo800 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo801 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo802 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo803 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo804 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo805 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo806 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo807 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo808 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo809 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo810 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo811 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo812 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo813 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo814 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo815 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo816 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo817 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo818 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo819 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo820 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo821 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo822 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo823 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo824 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo825 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo826 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo827 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo828 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo829 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo830 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo831 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo832 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo833 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo834 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo835 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo836 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo837 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo838 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo839 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo840 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo841 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo842 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo843 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo844 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo845 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo846 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo847 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo848 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo849 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo850 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo851 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo852 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo853 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo854 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo855 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo856 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo857 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo858 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo859 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo860 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo861 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo862 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo863 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo864 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo865 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo866 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo867 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo868 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo869 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo870 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo871 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo872 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo873 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo874 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo875 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo876 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo877 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo878 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo879 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo880 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo881 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo882 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo883 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo884 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo885 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo886 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo887 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo888 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo889 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo890 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo891 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo892 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo893 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo894 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo895 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo896 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo897 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo898 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo899 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo900 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo901 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo902 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo903 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo904 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo905 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo906 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo907 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo908 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo909 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo910 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo911 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo912 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo913 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo914 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo915 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo916 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo917 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo918 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo919 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo920 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo921 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo922 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo923 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo924 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo925 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo926 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo927 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo928 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo929 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo930 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo931 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo932 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo933 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo934 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo935 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo936 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo937 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo938 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo939 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo940 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo941 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo942 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo943 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo944 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo945 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo946 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo947 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo948 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo949 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo950 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo951 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo952 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo953 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo954 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo955 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo956 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo957 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo958 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo959 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo960 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo961 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo962 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo963 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo964 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo965 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo966 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo967 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo968 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo969 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo970 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo971 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo972 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo973 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo974 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo975 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo976 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo977 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo978 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo979 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo980 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo981 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo982 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo983 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo984 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo985 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo986 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo987 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo988 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo989 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo990 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo991 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo992 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo993 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo994 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo995 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo996 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo997 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo998 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo999 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1000 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1001 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1002 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1003 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1004 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1005 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1006 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1007 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1008 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1009 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1010 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1011 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1012 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1013 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1014 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1015 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1016 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1017 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1018 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1019 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1020 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1021 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1022 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1023 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1024 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1025 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1026 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1027 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1028 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1029 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1030 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1031 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1032 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1033 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1034 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1035 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1036 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1037 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1038 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1039 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1040 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1041 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1042 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1043 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1044 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1045 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1046 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1047 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1048 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1049 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1050 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1051 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1052 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1053 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1054 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1055 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1056 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1057 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1058 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1059 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1060 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1061 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1062 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1063 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1064 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1065 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1066 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1067 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1068 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1069 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1070 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1071 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1072 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1073 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1074 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1075 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1076 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1077 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1078 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1079 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1080 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1081 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1082 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1083 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1084 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1085 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1086 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1087 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1088 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1089 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1090 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1091 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1092 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1093 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1094 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1095 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1096 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1097 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1098 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1099 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1100 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1101 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1102 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1103 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1104 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1105 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1106 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1107 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1108 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1109 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1110 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1111 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1112 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1113 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1114 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1115 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1116 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1117 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1118 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1119 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1120 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1121 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1122 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1123 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1124 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1125 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1126 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1127 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1128 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1129 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1130 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1131 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1132 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1133 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1134 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1135 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1136 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1137 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1138 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1139 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1140 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1141 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1142 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1143 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1144 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1145 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1146 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1147 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1148 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1149 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1150 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1151 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1152 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1153 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1154 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1155 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1156 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1157 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1158 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1159 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1160 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1161 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1162 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1163 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1164 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1165 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1166 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1167 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1168 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1169 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1170 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1171 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1172 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1173 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1174 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1175 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1176 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1177 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1178 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1179 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1180 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1181 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1182 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1183 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1184 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1185 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1186 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1187 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1188 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1189 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1190 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1191 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1192 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1193 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1194 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1195 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1196 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1197 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1198 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1199 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1200 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1201 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1202 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1203 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1204 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1205 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1206 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1207 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1208 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1209 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1210 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1211 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1212 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1213 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1214 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1215 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1216 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1217 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1218 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1219 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1220 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1221 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1222 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1223 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1224 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1225 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1226 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1227 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1228 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1229 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1230 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1231 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1232 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1233 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1234 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1235 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1236 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1237 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1238 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1239 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1240 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1241 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1242 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1243 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1244 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1245 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1246 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1247 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1248 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1249 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1250 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1251 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1252 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1253 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1254 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1255 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1256 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1257 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1258 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1259 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1260 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1261 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1262 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1263 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1264 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1265 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1266 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1267 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1268 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1269 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1270 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1271 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1272 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1273 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1274 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1275 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1276 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1277 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1278 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1279 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1280 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1281 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1282 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1283 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1284 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1285 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1286 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1287 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1288 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1289 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1290 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1291 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1292 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1293 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1294 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1295 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1296 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1297 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1298 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1299 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1300 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1301 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1302 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1303 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1304 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1305 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1306 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1307 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1308 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1309 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1310 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1311 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1312 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1313 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1314 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1315 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1316 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1317 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1318 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1319 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1320 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1321 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1322 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1323 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1324 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1325 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1326 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1327 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1328 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1329 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1330 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1331 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1332 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1333 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1334 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1335 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1336 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1337 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1338 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1339 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1340 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1341 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1342 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1343 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1344 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1345 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1346 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1347 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1348 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1349 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1350 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1351 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1352 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1353 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1354 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1355 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1356 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1357 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1358 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1359 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1360 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1361 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1362 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1363 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1364 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1365 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1366 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1367 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1368 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1369 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1370 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1371 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1372 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1373 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1374 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1375 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1376 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1377 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1378 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1379 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1380 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1381 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1382 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1383 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1384 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1385 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1386 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1387 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1388 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1389 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1390 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1391 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1392 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1393 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1394 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1395 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1396 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1397 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1398 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1399 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1400 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1401 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1402 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1403 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1404 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1405 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1406 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1407 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1408 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1409 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1410 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1411 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1412 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1413 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1414 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1415 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1416 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1417 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1418 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1419 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1420 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1421 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1422 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1423 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1424 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1425 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1426 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1427 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1428 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1429 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1430 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1431 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1432 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1433 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1434 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1435 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1436 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1437 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1438 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1439 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1440 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1441 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1442 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1443 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1444 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1445 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1446 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1447 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1448 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1449 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1450 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1451 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1452 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1453 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1454 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1455 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1456 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1457 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1458 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1459 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1460 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1461 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1462 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1463 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1464 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1465 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1466 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1467 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1468 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1469 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1470 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1471 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1472 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1473 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1474 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1475 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1476 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1477 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1478 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1479 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1480 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1481 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1482 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1483 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1484 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1485 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1486 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1487 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1488 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1489 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1490 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1491 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1492 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1493 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1494 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1495 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1496 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1497 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1498 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1499 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1500 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1501 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1502 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1503 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1504 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1505 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1506 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1507 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1508 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1509 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1510 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1511 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1512 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1513 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1514 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1515 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1516 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1517 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1518 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1519 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1520 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1521 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1522 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1523 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1524 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1525 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1526 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1527 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1528 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1529 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1530 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1531 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1532 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1533 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1534 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1535 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1536 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1537 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1538 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1539 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1540 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1541 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1542 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1543 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1544 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1545 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1546 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1547 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1548 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1549 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1550 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1551 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1552 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1553 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1554 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1555 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1556 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1557 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1558 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1559 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1560 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1561 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1562 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1563 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1564 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1565 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1566 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1567 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1568 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1569 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1570 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1571 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1572 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1573 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1574 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1575 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1576 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1577 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1578 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1579 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1580 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1581 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1582 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1583 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1584 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1585 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1586 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1587 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1588 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1589 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1590 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1591 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1592 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1593 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1594 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1595 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1596 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1597 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1598 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1599 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1600 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1601 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1602 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1603 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1604 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1605 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1606 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1607 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1608 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1609 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1610 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1611 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1612 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1613 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1614 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1615 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1616 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1617 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1618 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1619 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1620 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1621 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1622 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1623 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1624 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1625 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1626 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1627 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1628 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1629 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1630 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1631 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1632 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1633 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1634 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1635 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1636 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1637 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1638 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1639 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1640 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1641 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1642 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1643 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1644 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1645 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1646 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1647 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1648 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1649 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1650 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1651 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1652 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1653 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1654 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1655 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1656 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1657 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1658 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1659 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1660 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1661 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1662 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1663 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1664 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1665 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1666 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1667 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1668 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1669 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1670 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1671 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1672 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1673 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1674 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1675 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1676 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1677 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1678 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1679 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1680 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1681 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1682 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1683 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1684 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1685 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1686 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1687 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1688 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1689 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1690 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1691 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1692 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1693 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1694 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1695 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1696 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1697 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1698 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1699 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1700 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1701 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1702 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1703 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1704 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1705 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1706 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1707 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1708 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1709 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1710 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1711 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1712 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1713 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1714 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1715 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1716 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1717 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1718 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1719 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1720 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1721 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1722 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1723 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1724 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1725 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1726 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1727 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1728 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1729 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1730 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1731 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1732 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1733 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1734 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1735 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1736 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1737 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1738 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1739 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1740 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1741 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1742 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1743 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1744 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1745 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1746 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1747 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1748 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1749 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1750 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1751 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1752 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1753 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1754 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1755 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1756 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1757 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1758 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1759 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1760 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1761 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1762 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1763 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1764 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1765 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1766 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1767 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1768 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1769 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1770 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1771 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1772 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1773 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1774 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1775 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1776 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1777 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1778 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1779 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1780 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1781 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1782 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1783 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1784 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1785 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1786 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1787 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1788 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1789 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1790 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1791 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1792 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1793 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1794 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1795 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1796 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1797 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1798 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1799 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1800 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1801 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1802 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1803 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1804 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1805 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1806 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1807 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1808 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1809 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1810 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1811 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1812 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1813 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1814 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1815 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1816 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1817 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1818 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1819 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1820 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1821 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1822 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1823 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1824 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1825 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1826 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1827 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1828 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1829 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1830 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1831 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1832 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1833 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1834 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1835 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1836 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1837 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1838 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1839 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1840 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1841 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1842 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1843 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1844 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1845 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1846 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1847 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1848 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1849 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1850 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1851 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1852 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1853 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1854 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1855 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1856 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1857 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1858 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1859 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1860 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1861 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1862 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1863 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1864 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1865 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1866 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1867 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1868 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1869 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1870 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1871 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1872 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1873 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1874 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1875 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1876 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1877 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1878 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1879 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1880 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1881 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1882 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1883 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1884 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1885 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1886 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1887 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1888 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1889 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1890 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1891 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1892 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1893 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1894 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1895 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1896 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1897 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1898 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1899 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1900 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1901 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1902 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1903 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1904 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1905 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1906 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1907 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1908 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1909 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1910 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1911 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1912 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1913 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1914 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1915 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1916 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1917 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1918 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1919 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1920 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1921 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1922 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1923 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1924 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1925 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1926 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1927 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1928 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1929 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1930 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1931 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1932 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1933 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1934 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1935 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1936 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1937 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1938 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1939 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1940 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1941 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1942 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1943 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1944 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1945 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1946 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1947 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1948 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1949 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1950 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1951 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1952 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1953 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1954 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1955 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1956 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1957 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1958 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1959 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1960 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1961 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1962 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1963 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1964 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1965 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1966 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1967 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1968 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1969 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1970 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1971 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1972 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1973 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1974 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1975 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1976 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1977 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1978 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1979 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1980 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1981 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1982 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1983 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1984 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1985 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1986 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1987 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1988 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1989 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1990 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1991 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1992 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1993 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1994 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1995 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1996 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1997 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1998 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo1999 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2000 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2001 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2002 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2003 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2004 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2005 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2006 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2007 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2008 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2009 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2010 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2011 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2012 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2013 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2014 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2015 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2016 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2017 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2018 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2019 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2020 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2021 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2022 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2023 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2024 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2025 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2026 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2027 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2028 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2029 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2030 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2031 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2032 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2033 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2034 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2035 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2036 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2037 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2038 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2039 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2040 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2041 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2042 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2043 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2044 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2045 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2046 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2047 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2048 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2049 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2050 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2051 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2052 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2053 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2054 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2055 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2056 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2057 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2058 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2059 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2060 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2061 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2062 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2063 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2064 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2065 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2066 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2067 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2068 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2069 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2070 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2071 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2072 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2073 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2074 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2075 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2076 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2077 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2078 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2079 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2080 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2081 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2082 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2083 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2084 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2085 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2086 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2087 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2088 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2089 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2090 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2091 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2092 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2093 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2094 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2095 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2096 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2097 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2098 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2099 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2100 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2101 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2102 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2103 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2104 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2105 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2106 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2107 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2108 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2109 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2110 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2111 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2112 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2113 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2114 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2115 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2116 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2117 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2118 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2119 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2120 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2121 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2122 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2123 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2124 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2125 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2126 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2127 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2128 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2129 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2130 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2131 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2132 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2133 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2134 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2135 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2136 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2137 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2138 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2139 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2140 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2141 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2142 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2143 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2144 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2145 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2146 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2147 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2148 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2149 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2150 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2151 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2152 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2153 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2154 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2155 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2156 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2157 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2158 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2159 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2160 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2161 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2162 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2163 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2164 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2165 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2166 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2167 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2168 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2169 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2170 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2171 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2172 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2173 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2174 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2175 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2176 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2177 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2178 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2179 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2180 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2181 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2182 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2183 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2184 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2185 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2186 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2187 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2188 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2189 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2190 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2191 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2192 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2193 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2194 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2195 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2196 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2197 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2198 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2199 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2200 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2201 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2202 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2203 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2204 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2205 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2206 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2207 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2208 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2209 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2210 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2211 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2212 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2213 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2214 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2215 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2216 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2217 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2218 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2219 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2220 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2221 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2222 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2223 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2224 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2225 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2226 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2227 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2228 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2229 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2230 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2231 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2232 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2233 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2234 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2235 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2236 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2237 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2238 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2239 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2240 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2241 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2242 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2243 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2244 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2245 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2246 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2247 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2248 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2249 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2250 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2251 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2252 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2253 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2254 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2255 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2256 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2257 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2258 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2259 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2260 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2261 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2262 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2263 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2264 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2265 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2266 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2267 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2268 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2269 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2270 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2271 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2272 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2273 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2274 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2275 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2276 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2277 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2278 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2279 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2280 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2281 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2282 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2283 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2284 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2285 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2286 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2287 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2288 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2289 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2290 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2291 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2292 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2293 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2294 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2295 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2296 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2297 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2298 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2299 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2300 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2301 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2302 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2303 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2304 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2305 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2306 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2307 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2308 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2309 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2310 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2311 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2312 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2313 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2314 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2315 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2316 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2317 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2318 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2319 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2320 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2321 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2322 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2323 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2324 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2325 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2326 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2327 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2328 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2329 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2330 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2331 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2332 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2333 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2334 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2335 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2336 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2337 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2338 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2339 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2340 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2341 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2342 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2343 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2344 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2345 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2346 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2347 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2348 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2349 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2350 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2351 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2352 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2353 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2354 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2355 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2356 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2357 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2358 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2359 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2360 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2361 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2362 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2363 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2364 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2365 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2366 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2367 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2368 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2369 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2370 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2371 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2372 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2373 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2374 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2375 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2376 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2377 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2378 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2379 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2380 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2381 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2382 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2383 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2384 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2385 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2386 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2387 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2388 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2389 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2390 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2391 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2392 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2393 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2394 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2395 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2396 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2397 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2398 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2399 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2400 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2401 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2402 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2403 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2404 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2405 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2406 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2407 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2408 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2409 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2410 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2411 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2412 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2413 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2414 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2415 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2416 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2417 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2418 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2419 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2420 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2421 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2422 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2423 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2424 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2425 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2426 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2427 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2428 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2429 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2430 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2431 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2432 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2433 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2434 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2435 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2436 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2437 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2438 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2439 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2440 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2441 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2442 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2443 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2444 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2445 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2446 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2447 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2448 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2449 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2450 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2451 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2452 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2453 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2454 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2455 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2456 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2457 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2458 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2459 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2460 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2461 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2462 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2463 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2464 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2465 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2466 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2467 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2468 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2469 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2470 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2471 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2472 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2473 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2474 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2475 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2476 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2477 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2478 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2479 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2480 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2481 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2482 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2483 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2484 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2485 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2486 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2487 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2488 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2489 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2490 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2491 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2492 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2493 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2494 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2495 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2496 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2497 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2498 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2499 {
+  def a: Base = null
 }
 
-class Foo {
-  def x: Int = 12
+class Foo2500 {
+  def a: Base = null
 }
 
+class Base
