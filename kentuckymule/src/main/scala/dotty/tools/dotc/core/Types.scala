@@ -4,6 +4,8 @@ package core
 
 import Names._
 import language.implicitConversions
+import Scopes._
+import Symbols._
 
 object Types {
 
@@ -36,5 +38,13 @@ object Types {
 
   /** A marker trait for types that can be types of values or that are higher-kinded  */
   trait ValueType extends ValueTypeOrProto
+
+  class ClassInfoType(val clsSym: ClassSymbol) extends TypeType {
+    val members: MutableScope = newScope
+  }
+
+  class ObjectInfoType(val modSym: ModuleSymbol) extends TermType {
+    val members: Scope = newScope
+  }
 
 }

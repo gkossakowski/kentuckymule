@@ -3,14 +3,14 @@ package dotty.tools.dotc.core
 import Names.Name
 
 import scala.collection.mutable.{ListBuffer, Map}
-
 import com.google.common.collect.{ArrayListMultimap, ListMultimap}
 
 import scala.collection.JavaConverters._
-
 import Decorators._
-import Scopes.{Scope, MutableScope}
+import Scopes.{MutableScope, Scope}
 import Contexts.Context
+import Types._
+import dotty.tools.dotc.core.Enter.{CompletionResult, TemplateMemberListCompleter}
 
 class Symbols { this: Contexts.Context =>
   import Symbols._
@@ -34,12 +34,19 @@ object Symbols {
       scope.lookupAll(name).toSeq
 
     def isComplete: Boolean = true
+    def decls: Scope = scope
   }
   abstract class TermSymbol(name: Name) extends Symbol(name)
   abstract class TypeSymbol(name: Name) extends Symbol(name)
 
   final class PackageSymbol(name: Name) extends TermSymbol(name)
-  final class ClassSymbol(name: Name) extends TypeSymbol(name)
+  final class ClassSymbol(name: Name) extends TypeSymbol(name) {
+    var info: ClassInfoType = _
+    var completer: TemplateMemberListCompleter = _
+    def completeInfo()(implicit context: Context): CompletionResult = {
+      completer.complete()
+    }
+  }
   final class ModuleSymbol(name: Name) extends TermSymbol(name)
   final class ValDefSymbol(name: Name) extends TermSymbol(name)
   final class TypeDefSymbol(name: Name) extends TypeSymbol(name)

@@ -5,6 +5,8 @@ import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
 import Symbols._
 import Decorators._
 import Names._
+import dotty.tools.dotc.core.Enter.{CompletedType, IncompleteDependency}
+import dotty.tools.dotc.core.Types.ClassInfoType
 import utest._
 
 object EnterTest extends TestSuite {
@@ -46,22 +48,51 @@ object EnterTest extends TestSuite {
         )
       )
     }
+    import scala.collection.JavaConverters._
     'resolveImport {
       val src = "object A { class B }; class X { import A.B; class Y }"
-      val templateCompleters = enterToSymbolTable(src, ctx)
+      val templateCompleters = enterToSymbolTable(src, ctx).templateCompleters.asScala
       val Some(ycompleter) = templateCompleters.find(_.sym.name == "Y".toTypeName)
       val ylookupScope = ycompleter.lookupScope
       val ans = ylookupScope.lookup("B".toTypeName)(ctx)
       assert(ans.isInstanceOf[Enter.LookedupSymbol])
     }
+    'resolveMembers {
+      val src = "class A extends B { def a: A }; class B { def b: B }"
+      val enter = enterToSymbolTable(src, ctx)
+      while (!enter.templateCompleters.isEmpty) {
+        val completer = enter.templateCompleters.remove()
+        if (!completer.isCompleted) {
+          val res = completer.complete()(ctx)
+          res match {
+            case CompletedType(tpe: ClassInfoType) => completer.sym.asInstanceOf[ClassSymbol].info = tpe
+            case IncompleteDependency(sym: ClassSymbol) =>
+              enter.templateCompleters.add(sym.completer)
+              enter.templateCompleters.add(completer)
+          }
+        }
+      }
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      locally {
+        val Asym = classes("A".toTypeName)
+        val Amembers = Asym.info.members
+        assert(Amembers.size == 2)
+      }
+      locally {
+        val Bsym = classes("B".toTypeName)
+        val Bmembers = Bsym.info.members
+        assert(Bmembers.size == 1)
+      }
+    }
   }
 
-  private def enterToSymbolTable(src: String, ctx: Context): collection.Iterable[Enter.TemplateCompleter] = {
-    import scala.collection.JavaConverters._
+  private def enterToSymbolTable(src: String, ctx: Context): Enter = {
     val unit = compilationUnitFromString(src, ctx)
     val enter = new Enter
     enter.enterCompilationUnit(unit)(ctx)
-    enter.templateCompleters.asScala
+    enter
   }
 
   private def descendantPaths(s: Symbol): List[List[Symbol]] = {

@@ -7,6 +7,7 @@ import dotty.tools.dotc.core.Contexts.Context
 import Symbols._
 import ast.Trees._
 import Names.Name
+import Types._
 
 /**
   * Creates symbols for declarations and enters them into a symbol table.
@@ -16,8 +17,7 @@ class Enter {
   import ast.untpd._
   import Enter._
 
-  val templateCompleters: util.Queue[TemplateCompleter] = new util.ArrayDeque[TemplateCompleter]()
-
+  val templateCompleters: util.Queue[TemplateMemberListCompleter] = new util.ArrayDeque[TemplateMemberListCompleter]()
 
 
   class LookupCompilationUnitScope(imports: List[Import], pkgLookupScope: PackageLookupScope) {
@@ -116,7 +116,12 @@ class Enter {
       val classImports = new ImportsCollector(parentScope)
       enterTree(tmpl, classSym, classImports, classLookupScope)
     case t: Template =>
-      templateCompleters.add(new TemplateCompleter(owner, parentScope))
+      val completer = new TemplateMemberListCompleter(owner, t, parentScope)
+      templateCompleters.add(completer)
+      owner match {
+        case clsSym: ClassSymbol => clsSym.completer = completer
+        case modSym: ModuleSymbol => // TODO
+      }
       for (stat <- t.body) enterTree(stat, owner, imports, parentScope)
     // type alias or type member
     case TypeDef(name, _) =>
@@ -159,10 +164,14 @@ class Enter {
 object Enter {
   import ast.untpd._
 
-  abstract sealed class LookupAnswer
+  sealed trait LookupAnswer
   case class LookedupSymbol(sym: Symbol) extends LookupAnswer
-  case class IncompleteDependency(sym: Symbol) extends LookupAnswer
   case object NotFound extends LookupAnswer
+
+  sealed trait CompletionResult
+  case class CompletedType(tpe: Type) extends CompletionResult
+
+  case class IncompleteDependency(sym: Symbol) extends LookupAnswer with CompletionResult
 
   abstract class LookupScope {
     def lookup(name: Name)(implicit context: Context): LookupAnswer
@@ -268,7 +277,36 @@ object Enter {
     }
   }
 
-  class TemplateCompleter(val sym: Symbol, val lookupScope: LookupScope)
+  class TemplateMemberListCompleter(val sym: Symbol, tmpl: Template, val lookupScope: LookupScope) {
+    private var cachedInfo: ClassInfoType = _
+    def complete()(implicit context: Context): CompletionResult = {
+      val resolvedParents = new util.ArrayList[ClassSymbol]()
+      var remainingParents = tmpl.parents
+      while (remainingParents.nonEmpty) {
+        val parent = remainingParents.head
+        val resolved = resolveSelectors(parent, lookupScope)
+        resolved match {
+          case LookedupSymbol(rsym: ClassSymbol) => resolvedParents.add(rsym)
+          case res: IncompleteDependency => return res
+          case NotFound => sys.error("OMG, we don't have error reporting yet")
+        }
+        remainingParents = remainingParents.tail
+      }
+      val info = new ClassInfoType(sym.asInstanceOf[ClassSymbol])
+      var i = 0
+      while (i < resolvedParents.size()) {
+        val parent = resolvedParents.get(i)
+        val parentInfo = if (parent.info != null) parent.info else
+          return IncompleteDependency(parent)
+        info.members.enterAll(parentInfo.members)
+        i += 1
+      }
+      info.members.enterAll(sym.asInstanceOf[ClassSymbol].decls)
+      cachedInfo = info
+      CompletedType(info)
+    }
+    def isCompleted: Boolean = cachedInfo != null
+  }
 
   private def resolveSelectors(t: Tree, parentLookupScope: LookupScope)(implicit context: Context): LookupAnswer =
     t match {
