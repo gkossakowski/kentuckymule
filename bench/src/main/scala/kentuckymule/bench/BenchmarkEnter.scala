@@ -18,7 +18,7 @@ object BenchmarkEnter {
   }
 
   @State(Scope.Thread)
-  class ThreadState {
+  class ParsedTreeState {
     @Param(Array("sample-files/Typer.scala.ignore", "sample-files/10k.scala.ignore"))
     var filePath: String = _
     var source: SourceFile = _
@@ -29,6 +29,18 @@ object BenchmarkEnter {
       compilationUnit = new CompilationUnit(source)
       val parser = new parsing.Parsers.Parser(source)(bs.context)
       compilationUnit.untpdTree = parser.parse()
+    }
+  }
+
+  @State(Scope.Thread)
+  class EnteredSymbolsState {
+    var enter: Enter = _
+    @Setup(Level.Trial)
+    def enterSymbols(bs: BenchmarkState, pts: ParsedTreeState): Unit = {
+      enter = new Enter
+      val context = bs.context
+      context.definitions.rootPackage.clear()
+      enter.enterCompilationUnit(pts.compilationUnit)(context)
     }
   }
 
@@ -49,10 +61,34 @@ class BenchmarkEnter {
   @Warmup(iterations = 20)
   @Measurement(iterations = 20)
   @Fork(3)
-  def enter(bs: BenchmarkState, ts: ThreadState): Unit = {
+  def enter(bs: BenchmarkState, pts: ParsedTreeState): Unit = {
     val context = bs.context
     context.definitions.rootPackage.clear()
     val enter = new Enter
-    enter.enterCompilationUnit(ts.compilationUnit)(context)
+    enter.enterCompilationUnit(pts.compilationUnit)(context)
+  }
+
+  @Benchmark
+  @Warmup(iterations = 20)
+  @Measurement(iterations = 20)
+  @Fork(3)
+  def completeMemberList(bs: BenchmarkState, pts: ParsedTreeState): Int = {
+    val context = bs.context
+    context.definitions.rootPackage.clear()
+    val enter = new Enter
+    enter.enterCompilationUnit(pts.compilationUnit)(context)
+    enter.processJobQueue(memberListOnly = true)(context)
+  }
+
+  @Benchmark
+  @Warmup(iterations = 20)
+  @Measurement(iterations = 20)
+  @Fork(3)
+  def completeMemberSigs(bs: BenchmarkState, pts: ParsedTreeState): Int = {
+    val context = bs.context
+    context.definitions.rootPackage.clear()
+    val enter = new Enter
+    enter.enterCompilationUnit(pts.compilationUnit)(context)
+    enter.processJobQueue(memberListOnly = false)(context)
   }
 }

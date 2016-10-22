@@ -47,4 +47,8 @@ object Types {
     val members: Scope = newScope
   }
 
+  case class MethodInfoType(defDefSymbol: DefDefSymbol, paramTypes: List[List[Type]], resultType: Type) extends Type
+
+  case class SymRef(sym: Symbol) extends Type
+
 }

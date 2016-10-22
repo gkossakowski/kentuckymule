@@ -19,6 +19,7 @@ class Enter {
 
   val templateCompleters: util.Queue[TemplateMemberListCompleter] = new util.ArrayDeque[TemplateMemberListCompleter]()
 
+  val defDefCompleters: util.Queue[DefDefCompleter] = new util.ArrayDeque[DefDefCompleter]()
 
   class LookupCompilationUnitScope(imports: List[Import], pkgLookupScope: PackageLookupScope) {
 
@@ -130,8 +131,11 @@ class Enter {
     case ValDef(name, _, _) =>
       val valSym = new ValDefSymbol(name)
       owner.addChild(valSym)
-    case DefDef(name, _, _, _, _) =>
-      val valSym = new DefDefSymbol(name)
+    case t: DefDef =>
+      val valSym = new DefDefSymbol(t.name)
+      // TODO: we should create a new lookup scope to take into account accumulated imports
+      val completer = new DefDefCompleter(valSym, t, parentScope)
+      valSym.completer = completer
       owner.addChild(valSym)
     case _ =>
   }
@@ -157,6 +161,55 @@ class Enter {
         qualPkg.addChild(pkgSym)
         pkgSym
       }
+  }
+
+  def processJobQueue(memberListOnly: Boolean)(implicit ctx: Context): Int = {
+    var steps = 0
+    while (!templateCompleters.isEmpty) {
+      steps += 1
+      val completer = templateCompleters.remove()
+      if (!completer.isCompleted) {
+        val res = completer.complete()
+        res match {
+          case CompletedType(tpe: ClassInfoType) =>
+            val classSym = completer.sym.asInstanceOf[ClassSymbol]
+            classSym.info = tpe
+            if (!memberListOnly)
+              scheduleMembersCompletion(classSym)
+          case IncompleteDependency(sym: ClassSymbol) =>
+            templateCompleters.add(sym.completer)
+            templateCompleters.add(completer)
+        }
+      }
+    }
+    if (!memberListOnly) {
+      while (!defDefCompleters.isEmpty) {
+        steps += 1
+        val completer = defDefCompleters.remove()
+        if (!completer.isCompleted) {
+          val res = completer.complete()
+          res match {
+            case CompletedType(tpe: MethodInfoType) =>
+              val defDefSym = completer.sym.asInstanceOf[DefDefSymbol]
+              defDefSym.info = tpe
+            case IncompleteDependency(sym: ClassSymbol) =>
+              sys.error("Should happen")
+          }
+        }
+      }
+    }
+    steps
+  }
+
+  private def scheduleMembersCompletion(sym: ClassSymbol): Unit = {
+    var remainingDecls = sym.decls.toList
+    while (remainingDecls.nonEmpty) {
+      val decl = remainingDecls.head
+      decl match {
+        case defSym: DefDefSymbol => defDefCompleters.add(defSym.completer)
+      }
+      remainingDecls = remainingDecls.tail
+    }
   }
 
 }
@@ -308,6 +361,39 @@ object Enter {
     def isCompleted: Boolean = cachedInfo != null
   }
 
+  class DefDefCompleter(val sym: DefDefSymbol, defDef: DefDef, val lookupScope: LookupScope) {
+    private var cachedInfo: MethodInfoType = _
+    def complete()(implicit context: Context): CompletionResult = {
+      // TODO support multiple parameter lists
+      assert(defDef.vparamss.size <= 1)
+      val paramTypes = if (defDef.vparamss.nonEmpty) {
+        var remainingVparams = defDef.vparamss.head
+        val resolvedParamTypes = new util.ArrayList[Type]()
+        while (remainingVparams.nonEmpty) {
+          val vparam = remainingVparams.head
+          val resolvedTypeSym = resolveSelectors(vparam.tpt, lookupScope)
+          resolvedTypeSym match {
+            case LookedupSymbol(rsym) => resolvedParamTypes.add(SymRef(rsym))
+            case res: IncompleteDependency => return res
+            case NotFound => sys.error("OMG, we don't have error reporting yet")
+          }
+          remainingVparams = remainingVparams.tail
+        }
+        List(asScalaList(resolvedParamTypes))
+      } else Nil
+      val resultTypeSym = resolveSelectors(defDef.tpt, lookupScope)
+      val resultType: Type = resultTypeSym match {
+        case LookedupSymbol(rsym) => SymRef(rsym)
+        case res: IncompleteDependency => return res
+        case NotFound => sys.error("OMG, we don't have error reporting yet")
+      }
+      val info = MethodInfoType(sym, paramTypes, resultType)
+      cachedInfo = info
+      CompletedType(info)
+    }
+    def isCompleted: Boolean = cachedInfo != null
+  }
+
   private def resolveSelectors(t: Tree, parentLookupScope: LookupScope)(implicit context: Context): LookupAnswer =
     t match {
       case Ident(identName) => parentLookupScope.lookup(identName)
@@ -322,4 +408,14 @@ object Enter {
           case _ => ans
         }
     }
+
+  private def asScalaList[T](javaList: util.ArrayList[T]): List[T] = {
+    var i = javaList.size() - 1
+    var res: List[T] = Nil
+    while (i >= 0) {
+      res = javaList.get(i) :: res
+      i += 1
+    }
+    res
+  }
 }

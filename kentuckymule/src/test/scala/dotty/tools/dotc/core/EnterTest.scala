@@ -6,7 +6,7 @@ import Symbols._
 import Decorators._
 import Names._
 import dotty.tools.dotc.core.Enter.{CompletedType, IncompleteDependency}
-import dotty.tools.dotc.core.Types.ClassInfoType
+import dotty.tools.dotc.core.Types.{ClassInfoType, SymRef}
 import utest._
 
 object EnterTest extends TestSuite {
@@ -60,18 +60,7 @@ object EnterTest extends TestSuite {
     'resolveMembers {
       val src = "class A extends B { def a: A }; class B { def b: B }"
       val enter = enterToSymbolTable(src, ctx)
-      while (!enter.templateCompleters.isEmpty) {
-        val completer = enter.templateCompleters.remove()
-        if (!completer.isCompleted) {
-          val res = completer.complete()(ctx)
-          res match {
-            case CompletedType(tpe: ClassInfoType) => completer.sym.asInstanceOf[ClassSymbol].info = tpe
-            case IncompleteDependency(sym: ClassSymbol) =>
-              enter.templateCompleters.add(sym.completer)
-              enter.templateCompleters.add(completer)
-          }
-        }
-      }
+      enter.processJobQueue(memberListOnly = true)(ctx)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -84,6 +73,32 @@ object EnterTest extends TestSuite {
         val Bsym = classes("B".toTypeName)
         val Bmembers = Bsym.info.members
         assert(Bmembers.size == 1)
+      }
+    }
+    'completeMemberInfo {
+      val src = "class A extends B { def a: A }; class B { def b: B }"
+      val enter = enterToSymbolTable(src, ctx)
+      enter.processJobQueue(memberListOnly = false)(ctx)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      locally {
+        val Asym = classes("A".toTypeName)
+        val aDefSym = Asym.decls.lookup("a".toTermName)(ctx).asInstanceOf[DefDefSymbol]
+        assert(aDefSym.info != null)
+        assert(aDefSym.info.paramTypes.isEmpty)
+        assert(aDefSym.info.resultType.isInstanceOf[SymRef])
+        val SymRef(resultTypeSym) = aDefSym.info.resultType
+        assert(resultTypeSym == Asym)
+      }
+      locally {
+        val Bsym = classes("B".toTypeName)
+        val bDefSym = Bsym.decls.lookup("b".toTermName)(ctx).asInstanceOf[DefDefSymbol]
+        assert(bDefSym.info != null)
+        assert(bDefSym.info.paramTypes.isEmpty)
+        assert(bDefSym.info.resultType.isInstanceOf[SymRef])
+        val SymRef(resultTypeSym) = bDefSym.info.resultType
+        assert(resultTypeSym == Bsym)
       }
     }
   }
