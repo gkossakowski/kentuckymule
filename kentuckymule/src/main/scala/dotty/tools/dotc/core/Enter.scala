@@ -104,7 +104,8 @@ class Enter {
     case imp: Import =>
       imports.append(imp)
     case ModuleDef(name, tmpl) =>
-      val modSym = new ModuleSymbol(name)
+      val modClsSym = new ClassSymbol(name)
+      val modSym = new ModuleSymbol(name, modClsSym)
       owner.addChild(modSym)
       val moduleLookupScope = new LookupModuleTemplateScope(modSym, imports.snapshot(), parentScope)
       val moduleImports = new ImportsCollector(parentScope)
@@ -117,13 +118,15 @@ class Enter {
       val classImports = new ImportsCollector(parentScope)
       enterTree(tmpl, classSym, classImports, classLookupScope)
     case t: Template =>
-      val completer = new TemplateMemberListCompleter(owner, t, parentScope)
-      templateCompleters.add(completer)
-      owner match {
-        case clsSym: ClassSymbol => clsSym.completer = completer
-        case modSym: ModuleSymbol => // TODO
+      // TODO: figure out whether it makes sense to pass modSym.clsSym as an owner in recursive call for ModuleDef case
+      val ownerClsSym = owner match {
+        case clsSym: ClassSymbol => clsSym
+        case modSym: ModuleSymbol => modSym.clsSym
       }
-      for (stat <- t.body) enterTree(stat, owner, imports, parentScope)
+      val completer = new TemplateMemberListCompleter(ownerClsSym, t, parentScope)
+      templateCompleters.add(completer)
+      ownerClsSym.completer = completer
+      for (stat <- t.body) enterTree(stat, ownerClsSym, imports, parentScope)
     // type alias or type member
     case TypeDef(name, _) =>
       val typeSymbol = new TypeDefSymbol(name)
@@ -172,7 +175,7 @@ class Enter {
         val res = completer.complete()
         res match {
           case CompletedType(tpe: ClassInfoType) =>
-            val classSym = completer.sym.asInstanceOf[ClassSymbol]
+            val classSym = completer.clsSym
             classSym.info = tpe
             if (!memberListOnly)
               scheduleMembersCompletion(classSym)
@@ -330,7 +333,7 @@ object Enter {
     }
   }
 
-  class TemplateMemberListCompleter(val sym: Symbol, tmpl: Template, val lookupScope: LookupScope) {
+  class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val lookupScope: LookupScope) {
     private var cachedInfo: ClassInfoType = _
     def complete()(implicit context: Context): CompletionResult = {
       val resolvedParents = new util.ArrayList[ClassSymbol]()
@@ -345,7 +348,7 @@ object Enter {
         }
         remainingParents = remainingParents.tail
       }
-      val info = new ClassInfoType(sym.asInstanceOf[ClassSymbol])
+      val info = new ClassInfoType(clsSym)
       var i = 0
       while (i < resolvedParents.size()) {
         val parent = resolvedParents.get(i)
@@ -354,7 +357,7 @@ object Enter {
         info.members.enterAll(parentInfo.members)
         i += 1
       }
-      info.members.enterAll(sym.asInstanceOf[ClassSymbol].decls)
+      info.members.enterAll(clsSym.decls)
       cachedInfo = info
       CompletedType(info)
     }

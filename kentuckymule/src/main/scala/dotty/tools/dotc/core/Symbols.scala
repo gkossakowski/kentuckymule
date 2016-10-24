@@ -10,7 +10,7 @@ import Decorators._
 import Scopes.{MutableScope, Scope}
 import Contexts.Context
 import Types._
-import dotty.tools.dotc.core.Enter.{CompletionResult, DefDefCompleter, TemplateMemberListCompleter}
+import dotty.tools.dotc.core.Enter.{CompletedType, CompletionResult, DefDefCompleter, TemplateMemberListCompleter}
 
 class Symbols { this: Contexts.Context =>
   import Symbols._
@@ -47,7 +47,19 @@ object Symbols {
       completer.complete()
     }
   }
-  final class ModuleSymbol(name: Name) extends TermSymbol(name)
+  final class ModuleSymbol(name: Name, val clsSym: ClassSymbol) extends TermSymbol(name) {
+    var info: ModuleInfoType = _
+    var completer: TemplateMemberListCompleter = _
+    def completeInfo()(implicit context: Context): CompletionResult = {
+      val res = completer.complete()
+      res match {
+        case CompletedType(modClsInfoType: ClassInfoType) =>
+          info = new ModuleInfoType(this, modClsInfoType)
+        case _ =>
+      }
+      res
+    }
+  }
   final class ValDefSymbol(name: Name) extends TermSymbol(name)
   final class TypeDefSymbol(name: Name) extends TypeSymbol(name)
   final class DefDefSymbol(name: Name) extends TermSymbol(name) {

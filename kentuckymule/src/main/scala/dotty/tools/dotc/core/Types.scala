@@ -43,8 +43,8 @@ object Types {
     val members: MutableScope = newScope
   }
 
-  class ObjectInfoType(val modSym: ModuleSymbol) extends TermType {
-    val members: Scope = newScope
+  class ModuleInfoType(val modSym: ModuleSymbol, modClassInfoType: ClassInfoType) extends TermType {
+    def members: Scope = modClassInfoType.members
   }
 
   case class MethodInfoType(defDefSymbol: DefDefSymbol, paramTypes: List[List[Type]], resultType: Type) extends Type

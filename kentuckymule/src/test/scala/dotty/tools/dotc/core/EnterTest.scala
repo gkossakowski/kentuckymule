@@ -52,7 +52,7 @@ object EnterTest extends TestSuite {
     'resolveImport {
       val src = "object A { class B }; class X { import A.B; class Y }"
       val templateCompleters = enterToSymbolTable(src, ctx).templateCompleters.asScala
-      val Some(ycompleter) = templateCompleters.find(_.sym.name == "Y".toTypeName)
+      val Some(ycompleter) = templateCompleters.find(_.clsSym.name == "Y".toTypeName)
       val ylookupScope = ycompleter.lookupScope
       val ans = ylookupScope.lookup("B".toTypeName)(ctx)
       assert(ans.isInstanceOf[Enter.LookedupSymbol])
