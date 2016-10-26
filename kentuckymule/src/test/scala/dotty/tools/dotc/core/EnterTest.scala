@@ -101,6 +101,32 @@ object EnterTest extends TestSuite {
         assert(resultTypeSym == Bsym)
       }
     }
+    'memberInfoRefersToImport {
+      val src = "class A { def a: A; import B.BB; def b: BB }; object B { class BB }"
+      val enter = enterToSymbolTable(src, ctx)
+      enter.processJobQueue(memberListOnly = false)(ctx)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      locally {
+        val aDefSym = Asym.decls.lookup("a".toTermName)(ctx).asInstanceOf[DefDefSymbol]
+        assert(aDefSym.info != null)
+        assert(aDefSym.info.paramTypes.isEmpty)
+        assert(aDefSym.info.resultType.isInstanceOf[SymRef])
+        val SymRef(resultTypeSym) = aDefSym.info.resultType
+        assert(resultTypeSym == Asym)
+      }
+      locally {
+        val BBsym = classes("BB".toTypeName)
+        val bDefSym = Asym.decls.lookup("b".toTermName)(ctx).asInstanceOf[DefDefSymbol]
+        assert(bDefSym.info != null)
+        assert(bDefSym.info.paramTypes.isEmpty)
+        assert(bDefSym.info.resultType.isInstanceOf[SymRef])
+        val SymRef(resultTypeSym) = bDefSym.info.resultType
+        assert(resultTypeSym == BBsym)
+      }
+    }
   }
 
   private def enterToSymbolTable(src: String, ctx: Context): Enter = {

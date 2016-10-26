@@ -19,7 +19,7 @@ class Symbols { this: Contexts.Context =>
 object Symbols {
   abstract class Symbol(val name: Name) {
 
-    private var scope: MutableScope = Scopes.newScope
+    protected var scope: MutableScope = Scopes.newScope
     def addChild(sym: Symbol)(implicit ctx: Context): Unit = {
       scope.enter(sym)
     }
@@ -59,6 +59,11 @@ object Symbols {
       }
       res
     }
+    // TODO: this is a messy situation, we probably need to get rid of default scope in Symbol
+    override def lookup(name: Name)(implicit ctx: Context): Symbol =
+      clsSym.lookup(name)
+    override def childrenIterator: Iterator[Symbol] =
+      clsSym.childrenIterator
   }
   final class ValDefSymbol(name: Name) extends TermSymbol(name)
   final class TypeDefSymbol(name: Name) extends TypeSymbol(name)

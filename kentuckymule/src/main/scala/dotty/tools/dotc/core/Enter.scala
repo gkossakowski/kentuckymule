@@ -74,7 +74,7 @@ class Enter {
 
   def enterCompilationUnit(unit: CompilationUnit)(implicit context: Context): Unit = {
     val importsInCompilationUnit = new ImportsCollector(RootPackageLookupScope)
-    enterTree(unit.untpdTree, context.definitions.rootPackage, importsInCompilationUnit, RootPackageLookupScope)
+    enterTree(unit.untpdTree, context.definitions.rootPackage, new LookupScopeContext(importsInCompilationUnit, RootPackageLookupScope))
   }
 
   class PackageLookupScope(val pkgSym: Symbol, val parent: LookupScope, val imports: ImportsLookupScope) extends LookupScope {
@@ -95,38 +95,67 @@ class Enter {
       new PackageLookupScope(pkgSym, parent, imports)
   }
 
-  private def enterTree(tree: Tree, owner: Symbol, imports: ImportsCollector, parentScope: LookupScope)(implicit context: Context): Unit = tree match {
+  private class LookupScopeContext(imports: ImportsCollector, val parentScope: LookupScope) {
+    private var cachedDefDefLookupScope: LookupScope = parentScope
+    def addImport(imp: Import): Unit = {
+      cachedDefDefLookupScope = null
+      imports.append(imp)
+    }
+    def pushPackageLookupScope(pkgSym: PackageSymbol): LookupScopeContext = {
+      val pkgLookupScope = new PackageLookupScope(pkgSym, parentScope, imports.snapshot())
+      val pkgImports = new ImportsCollector(parentScope)
+      new LookupScopeContext(pkgImports, pkgLookupScope)
+    }
+    def pushModuleLookupScope(modSym: ModuleSymbol): LookupScopeContext = {
+      val moduleLookupScope = new LookupModuleTemplateScope(modSym, imports.snapshot(), parentScope)
+      val moduleImports = new ImportsCollector(parentScope)
+      new LookupScopeContext(moduleImports, moduleLookupScope)
+    }
+    def pushClassLookupScope(classSym: ClassSymbol): LookupScopeContext = {
+      val classLookupScope = new LookupClassTemplateScope(classSym, imports.snapshot(), parentScope)
+      val classImports = new ImportsCollector(parentScope)
+      new LookupScopeContext(classImports, classLookupScope)
+    }
+
+    def newDefDefLookupScope(defDefSymbol: DefDefSymbol): LookupScope = {
+      if (cachedDefDefLookupScope != null)
+        cachedDefDefLookupScope
+      else {
+        cachedDefDefLookupScope = parentScope.replaceImports(imports.snapshot())
+        cachedDefDefLookupScope
+      }
+    }
+  }
+
+  private def enterTree(tree: Tree, owner: Symbol, parentLookupScopeContext: LookupScopeContext)(implicit context: Context): Unit = tree match {
     case PackageDef(ident, stats) =>
       val pkgSym = expandQualifiedPackageDeclaration(ident, owner)
-      val pkgImports = new ImportsCollector(parentScope)
-      val pkgLookupScope = new PackageLookupScope(pkgSym, parentScope, imports.snapshot())
-      for (stat <- stats) enterTree(stat, pkgSym, pkgImports, pkgLookupScope)
+      val lookupScopeContext = parentLookupScopeContext.pushPackageLookupScope(pkgSym)
+      for (stat <- stats) enterTree(stat, pkgSym, lookupScopeContext)
     case imp: Import =>
-      imports.append(imp)
+      parentLookupScopeContext.addImport(imp)
     case ModuleDef(name, tmpl) =>
       val modClsSym = new ClassSymbol(name)
       val modSym = new ModuleSymbol(name, modClsSym)
       owner.addChild(modSym)
-      val moduleLookupScope = new LookupModuleTemplateScope(modSym, imports.snapshot(), parentScope)
-      val moduleImports = new ImportsCollector(parentScope)
-      enterTree(tmpl, modSym, moduleImports, moduleLookupScope)
+      val lookupScopeContext = parentLookupScopeContext.pushModuleLookupScope(modSym)
+      enterTree(tmpl, modSym, lookupScopeContext)
     // class or trait
     case t@TypeDef(name, tmpl) if t.isClassDef =>
       val classSym = new ClassSymbol(name)
       owner.addChild(classSym)
-      val classLookupScope = new LookupClassTemplateScope(classSym, imports.snapshot(), parentScope)
-      val classImports = new ImportsCollector(parentScope)
-      enterTree(tmpl, classSym, classImports, classLookupScope)
+      val lookupScopeContext = parentLookupScopeContext.pushClassLookupScope(classSym)
+      enterTree(tmpl, classSym, lookupScopeContext)
     case t: Template =>
       // TODO: figure out whether it makes sense to pass modSym.clsSym as an owner in recursive call for ModuleDef case
       val ownerClsSym = owner match {
         case clsSym: ClassSymbol => clsSym
         case modSym: ModuleSymbol => modSym.clsSym
       }
-      val completer = new TemplateMemberListCompleter(ownerClsSym, t, parentScope)
+      val completer = new TemplateMemberListCompleter(ownerClsSym, t, parentLookupScopeContext.parentScope)
       templateCompleters.add(completer)
       ownerClsSym.completer = completer
-      for (stat <- t.body) enterTree(stat, ownerClsSym, imports, parentScope)
+      for (stat <- t.body) enterTree(stat, ownerClsSym, parentLookupScopeContext)
     // type alias or type member
     case TypeDef(name, _) =>
       val typeSymbol = new TypeDefSymbol(name)
@@ -135,34 +164,34 @@ class Enter {
       val valSym = new ValDefSymbol(name)
       owner.addChild(valSym)
     case t: DefDef =>
-      val valSym = new DefDefSymbol(t.name)
+      val defSym = new DefDefSymbol(t.name)
       // TODO: we should create a new lookup scope to take into account accumulated imports
-      val completer = new DefDefCompleter(valSym, t, parentScope)
-      valSym.completer = completer
-      owner.addChild(valSym)
+      val completer = new DefDefCompleter(defSym, t, parentLookupScopeContext.newDefDefLookupScope(defSym))
+      defSym.completer = completer
+      owner.addChild(defSym)
     case _ =>
   }
 
-  private def expandQualifiedPackageDeclaration(pkgDecl: RefTree, owner: Symbol)(implicit ctx: Context): Symbol =
+  private def expandQualifiedPackageDeclaration(pkgDecl: RefTree, owner: Symbol)(implicit ctx: Context): PackageSymbol =
     pkgDecl match {
     case Ident(name: Name) =>
       val lookedUp = owner.lookup(name)
-      if (lookedUp != NoSymbol)
-        lookedUp
-      else {
-        val pkgSym = new PackageSymbol(name)
-        owner.addChild(pkgSym)
-        pkgSym
+      lookedUp match {
+        case pkgSym: PackageSymbol => pkgSym
+        case _ =>
+          val pkgSym = new PackageSymbol(name)
+          owner.addChild(pkgSym)
+          pkgSym
       }
     case Select(qualifier: RefTree, name: Name) =>
       val qualPkg = expandQualifiedPackageDeclaration(qualifier, owner)
       val lookedUp = owner.lookup(name)
-      if (lookedUp != NoSymbol)
-        lookedUp
-      else {
-        val pkgSym = new PackageSymbol(name)
-        qualPkg.addChild(pkgSym)
-        pkgSym
+      lookedUp match {
+        case pkgSym: PackageSymbol => pkgSym
+        case _ =>
+          val pkgSym = new PackageSymbol(name)
+          qualPkg.addChild(pkgSym)
+          pkgSym
       }
   }
 
@@ -210,6 +239,7 @@ class Enter {
       val decl = remainingDecls.head
       decl match {
         case defSym: DefDefSymbol => defDefCompleters.add(defSym.completer)
+        case _: ClassSymbol | _: ModuleSymbol =>
       }
       remainingDecls = remainingDecls.tail
     }
