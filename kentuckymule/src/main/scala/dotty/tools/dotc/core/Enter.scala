@@ -326,7 +326,7 @@ object Enter {
         val completedImport = importCompleters.get(i)
         val sym = completedImport.matches(name)
         if (sym != NoSymbol)
-          return LookedupSymbol(completedImport.termSymbol)
+          return LookedupSymbol(sym)
         i -= 1
       }
       NotFound
