@@ -139,23 +139,19 @@ class Enter {
       val modSym = new ModuleSymbol(name, modClsSym)
       owner.addChild(modSym)
       val lookupScopeContext = parentLookupScopeContext.pushModuleLookupScope(modSym)
-      enterTree(tmpl, modSym, lookupScopeContext)
+      val completer = new TemplateMemberListCompleter(modClsSym, tmpl, lookupScopeContext.parentScope)
+      templateCompleters.add(completer)
+      modClsSym.completer = completer
+      for (stat <- tmpl.body) enterTree(stat, modClsSym, lookupScopeContext)
     // class or trait
-    case t@TypeDef(name, tmpl) if t.isClassDef =>
+    case t@TypeDef(name, tmpl: Template) if t.isClassDef =>
       val classSym = new ClassSymbol(name)
       owner.addChild(classSym)
       val lookupScopeContext = parentLookupScopeContext.pushClassLookupScope(classSym)
-      enterTree(tmpl, classSym, lookupScopeContext)
-    case t: Template =>
-      // TODO: figure out whether it makes sense to pass modSym.clsSym as an owner in recursive call for ModuleDef case
-      val ownerClsSym = owner match {
-        case clsSym: ClassSymbol => clsSym
-        case modSym: ModuleSymbol => modSym.clsSym
-      }
-      val completer = new TemplateMemberListCompleter(ownerClsSym, t, parentLookupScopeContext.parentScope)
+      val completer = new TemplateMemberListCompleter(classSym, tmpl, lookupScopeContext.parentScope)
       templateCompleters.add(completer)
-      ownerClsSym.completer = completer
-      for (stat <- t.body) enterTree(stat, ownerClsSym, parentLookupScopeContext)
+      classSym.completer = completer
+      for (stat <- tmpl.body) enterTree(stat, classSym, lookupScopeContext)
     // type alias or type member
     case TypeDef(name, _) =>
       val typeSymbol = new TypeDefSymbol(name)
