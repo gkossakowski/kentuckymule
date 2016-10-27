@@ -24,17 +24,20 @@ class Enter {
   class LookupCompilationUnitScope(imports: List[Import], pkgLookupScope: PackageLookupScope) {
 
   }
-  class LookupClassTemplateScope(classSym: Symbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
+  class LookupClassTemplateScope(classSym: ClassSymbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
-      val foundSym = classSym.lookup(name)
-      if (foundSym != NoSymbol)
-        LookedupSymbol(foundSym)
-      else {
-        val ans = imports.lookup(name)
-        ans match {
-          case _: LookedupSymbol | _: IncompleteDependency => ans
-          case _ => parentScope.lookup(name)
-        }
+      val classFoundSym = classSym.lookup(name)
+      if (classFoundSym != NoSymbol)
+        return LookedupSymbol(classFoundSym)
+      if (name.isTypeName) {
+        val tParamFoundSym = classSym.typeParams.lookup(name)
+        if (tParamFoundSym != NoSymbol)
+          return LookedupSymbol(tParamFoundSym)
+      }
+      val impFoundSym = imports.lookup(name)
+      impFoundSym match {
+        case _: LookedupSymbol | _: IncompleteDependency => impFoundSym
+        case _ => parentScope.lookup(name)
       }
     }
 
@@ -146,6 +149,10 @@ class Enter {
     // class or trait
     case t@TypeDef(name, tmpl: Template) if t.isClassDef =>
       val classSym = new ClassSymbol(name)
+      // t.tParams is empty for classes, the type parameters are accessible thorugh its primary constructor
+      for (tParam <- tmpl.constr.tparams)
+        // TODO: setup completers for TypeDef (resolving bounds, etc.)
+        classSym.typeParams.enter(new TypeDefSymbol(tParam.name))
       owner.addChild(classSym)
       val lookupScopeContext = parentLookupScopeContext.pushClassLookupScope(classSym)
       val completer = new TemplateMemberListCompleter(classSym, tmpl, lookupScopeContext.parentScope)

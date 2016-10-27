@@ -127,6 +127,42 @@ object EnterTest extends TestSuite {
         assert(resultTypeSym == BBsym)
       }
     }
+    'referToTypeParam {
+      implicit val context = ctx
+      val src = "class A[T, U] { def a: U; def b: T; class AA { def c: T } }"
+      val enter = enterToSymbolTable(src, ctx)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val Tsym = Asym.typeParams.lookup("T".toTypeName)
+      val Usym = Asym.typeParams.lookup("U".toTypeName)
+      assert(Tsym != NoSymbol)
+      assert(Usym != NoSymbol)
+      locally {
+        val aDefSym = Asym.decls.lookup("a".toTermName)(ctx).asInstanceOf[DefDefSymbol]
+        assert(aDefSym.info != null)
+        assert(aDefSym.info.resultType.isInstanceOf[SymRef])
+        val SymRef(resultTypeSym) = aDefSym.info.resultType
+        assert(resultTypeSym == Usym)
+      }
+      locally {
+        val bDefSym = Asym.decls.lookup("b".toTermName)(ctx).asInstanceOf[DefDefSymbol]
+        assert(bDefSym.info != null)
+        assert(bDefSym.info.resultType.isInstanceOf[SymRef])
+        val SymRef(resultTypeSym) = bDefSym.info.resultType
+        assert(resultTypeSym == Tsym)
+      }
+      val AAsym = classes("AA".toTypeName)
+      locally {
+        val cDefSym = AAsym.decls.lookup("c".toTermName)(ctx).asInstanceOf[DefDefSymbol]
+        assert(cDefSym.info != null)
+        assert(cDefSym.info.resultType.isInstanceOf[SymRef])
+        val SymRef(resultTypeSym) = cDefSym.info.resultType
+        assert(resultTypeSym == Tsym)
+      }
+    }
   }
 
   private def enterToSymbolTable(src: String, ctx: Context): Enter = {

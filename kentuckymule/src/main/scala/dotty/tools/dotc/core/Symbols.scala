@@ -1,6 +1,6 @@
 package dotty.tools.dotc.core
 
-import Names.Name
+import Names.{Name, TypeName, TermName}
 
 import scala.collection.mutable.{ListBuffer, Map}
 import com.google.common.collect.{ArrayListMultimap, ListMultimap}
@@ -46,6 +46,7 @@ object Symbols {
     def completeInfo()(implicit context: Context): CompletionResult = {
       completer.complete()
     }
+    val typeParams: MutableScope = Scopes.newScope
   }
   final class ModuleSymbol(name: Name, val clsSym: ClassSymbol) extends TermSymbol(name) {
     var info: ModuleInfoType = _
@@ -66,7 +67,7 @@ object Symbols {
       clsSym.childrenIterator
   }
   final class ValDefSymbol(name: Name) extends TermSymbol(name)
-  final class TypeDefSymbol(name: Name) extends TypeSymbol(name)
+  final class TypeDefSymbol(name: TypeName) extends TypeSymbol(name)
   final class DefDefSymbol(name: Name) extends TermSymbol(name) {
     var info: MethodInfoType = _
     var completer: DefDefCompleter = _
