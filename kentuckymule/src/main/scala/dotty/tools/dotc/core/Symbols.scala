@@ -2,15 +2,11 @@ package dotty.tools.dotc.core
 
 import Names.{Name, TypeName, TermName}
 
-import scala.collection.mutable.{ListBuffer, Map}
-import com.google.common.collect.{ArrayListMultimap, ListMultimap}
-
-import scala.collection.JavaConverters._
 import Decorators._
 import Scopes.{MutableScope, Scope}
 import Contexts.Context
 import Types._
-import dotty.tools.dotc.core.Enter.{CompletedType, CompletionResult, DefDefCompleter, TemplateMemberListCompleter}
+import dotty.tools.dotc.core.Enter._
 
 class Symbols { this: Contexts.Context =>
   import Symbols._
@@ -66,9 +62,15 @@ object Symbols {
     override def childrenIterator: Iterator[Symbol] =
       clsSym.childrenIterator
   }
-  final class ValDefSymbol(name: Name) extends TermSymbol(name)
-  final class TypeDefSymbol(name: TypeName) extends TypeSymbol(name)
-  final class DefDefSymbol(name: Name) extends TermSymbol(name) {
+  final class ValDefSymbol(name: Name) extends TermSymbol(name) {
+    var info: ValInfoType = _
+    var completer: ValDefCompleter = _
+    def completeInfo()(implicit context: Context): CompletionResult = {
+      completer.complete()
+    }
+  }
+  final case class TypeDefSymbol(override val name: TypeName) extends TypeSymbol(name)
+  final case class DefDefSymbol(override val name: Name) extends TermSymbol(name) {
     var info: MethodInfoType = _
     var completer: DefDefCompleter = _
     def completeInfo()(implicit context: Context): CompletionResult = {

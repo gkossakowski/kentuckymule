@@ -13,7 +13,9 @@ object Types {
 
   implicit def eqType: Eq[Type, Type] = Eq
 
-  abstract class Type
+  abstract class Type {
+    def typeSymbol: Symbol
+  }
 
   abstract class NamedType extends ValueType {
 
@@ -41,14 +43,30 @@ object Types {
 
   class ClassInfoType(val clsSym: ClassSymbol) extends TypeType {
     val members: MutableScope = newScope
+
+    override def typeSymbol: Symbol = clsSym
   }
 
   class ModuleInfoType(val modSym: ModuleSymbol, modClassInfoType: ClassInfoType) extends TermType {
     def members: Scope = modClassInfoType.members
+
+    override def typeSymbol: Symbol = modSym
   }
 
-  case class MethodInfoType(defDefSymbol: DefDefSymbol, paramTypes: List[List[Type]], resultType: Type) extends Type
+  case class MethodInfoType(defDefSymbol: DefDefSymbol, paramTypes: List[List[Type]], resultType: Type) extends Type {
+    override def typeSymbol: Symbol = NoSymbol
+  }
 
-  case class SymRef(sym: Symbol) extends Type
+  case class ValInfoType(vaDefSymbol: ValDefSymbol, resultType: Type) extends Type {
+    override def typeSymbol: Symbol = NoSymbol
+  }
+
+  case class SymRef(sym: Symbol) extends Type {
+    override def typeSymbol: Symbol = sym
+  }
+
+  case class AppliedType(tpe: Type, args: List[Type]) extends Type {
+    override def typeSymbol: Symbol = tpe.typeSymbol
+  }
 
 }

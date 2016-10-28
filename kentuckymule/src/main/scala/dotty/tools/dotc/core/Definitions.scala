@@ -4,7 +4,7 @@ package core
 
 import Types._
 import Contexts._
-import dotty.tools.dotc.core.Symbols.{NoSymbol, PackageSymbol}
+import dotty.tools.dotc.core.Symbols.{NoSymbol, PackageSymbol, Symbol}
 //import Flags._, Scopes._, Decorators._, NameOps._, util.Positions._, Periods._
 //import unpickleScala2.Scala2Unpickler.ensureConstructor
 //import scala.annotation.{ switch, meta }
@@ -43,14 +43,30 @@ class Definitions {
 
   private implicit var ctx: Context = _
 
-  object ByteType extends Type
-  object ShortType extends Type
-  object CharType extends Type
-  object IntType extends Type
-  object LongType extends Type
-  object DoubleType extends Type
-  object FloatType extends Type
-  object BooleanType extends Type
+  object ByteType extends Type {
+    override def typeSymbol: Symbol = ???
+  }
+  object ShortType extends Type  {
+    override def typeSymbol: Symbol = ???
+  }
+  object CharType extends Type  {
+    override def typeSymbol: Symbol = ???
+  }
+  object IntType extends Type  {
+    override def typeSymbol: Symbol = ???
+  }
+  object LongType extends Type  {
+    override def typeSymbol: Symbol = ???
+  }
+  object DoubleType extends Type  {
+    override def typeSymbol: Symbol = ???
+  }
+  object FloatType extends Type  {
+    override def typeSymbol: Symbol = ???
+  }
+  object BooleanType extends Type  {
+    override def typeSymbol: Symbol = ???
+  }
 
   val rootPackage = new PackageSymbol(StdNames.nme.ROOTPKG)
 

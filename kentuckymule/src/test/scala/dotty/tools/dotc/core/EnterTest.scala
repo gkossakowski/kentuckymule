@@ -163,6 +163,26 @@ object EnterTest extends TestSuite {
         assert(resultTypeSym == Tsym)
       }
     }
+    'inheritedReferringToTypeMember {
+      implicit val context = ctx
+      val src = "class B extends A[C]; class A[T] { val a: T }; class C"
+      val enter = enterToSymbolTable(src, ctx)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val Bsym = classes("B".toTypeName)
+      val Tsym = Asym.typeParams.lookup("T".toTypeName)
+      assert(Tsym != NoSymbol)
+      locally {
+        val aDefSym = Bsym.info.members.lookup("a".toTermName)(ctx).asInstanceOf[ValDefSymbol]
+        val SymRef(resultTypeSym) = aDefSym.info.resultType
+        val Csym = classes("C".toTypeName)
+        // TODO: result type should be `Csym` once substitution of type parameter values is implemented
+        assert(resultTypeSym == Tsym)
+      }
+    }
   }
 
   private def enterToSymbolTable(src: String, ctx: Context): Enter = {
