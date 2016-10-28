@@ -450,7 +450,7 @@ object Enter {
     var res: List[T] = Nil
     while (i >= 0) {
       res = javaList.get(i) :: res
-      i += 1
+      i -= 1
     }
     res
   }
