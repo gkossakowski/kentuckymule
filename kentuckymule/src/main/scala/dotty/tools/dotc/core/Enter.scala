@@ -17,9 +17,7 @@ class Enter {
   import ast.untpd._
   import Enter._
 
-  val templateCompleters: util.Queue[TemplateMemberListCompleter] = new util.ArrayDeque[TemplateMemberListCompleter]()
-
-  val simpleMemberCompleters: util.Queue[SimpleMemberCompleter] = new util.ArrayDeque[SimpleMemberCompleter]()
+  val completers: util.Queue[Completer] = new util.ArrayDeque[Completer]()
 
   class LookupCompilationUnitScope(imports: List[Import], pkgLookupScope: PackageLookupScope) {
 
@@ -143,20 +141,26 @@ class Enter {
       owner.addChild(modSym)
       val lookupScopeContext = parentLookupScopeContext.pushModuleLookupScope(modSym)
       val completer = new TemplateMemberListCompleter(modClsSym, tmpl, lookupScopeContext.parentScope)
-      templateCompleters.add(completer)
+      completers.add(completer)
       modClsSym.completer = completer
       for (stat <- tmpl.body) enterTree(stat, modClsSym, lookupScopeContext)
     // class or trait
     case t@TypeDef(name, tmpl: Template) if t.isClassDef =>
       val classSym = new ClassSymbol(name)
       // t.tParams is empty for classes, the type parameters are accessible thorugh its primary constructor
-      for (tParam <- tmpl.constr.tparams)
+      var remainingTparams = tmpl.constr.tparams
+      var tParamIndex = 0
+      while (remainingTparams.nonEmpty) {
+        val tParam = remainingTparams.head
         // TODO: setup completers for TypeDef (resolving bounds, etc.)
-        classSym.typeParams.enter(new TypeDefSymbol(tParam.name))
+        classSym.typeParams.enter(TypeParameterSymbol(tParam.name, tParamIndex))
+        remainingTparams = remainingTparams.tail
+        tParamIndex += 1
+      }
       owner.addChild(classSym)
       val lookupScopeContext = parentLookupScopeContext.pushClassLookupScope(classSym)
       val completer = new TemplateMemberListCompleter(classSym, tmpl, lookupScopeContext.parentScope)
-      templateCompleters.add(completer)
+      completers.add(completer)
       classSym.completer = completer
       for (stat <- tmpl.body) enterTree(stat, classSym, lookupScopeContext)
     // type alias or type member
@@ -202,39 +206,32 @@ class Enter {
 
   def processJobQueue(memberListOnly: Boolean)(implicit ctx: Context): Int = {
     var steps = 0
-    while (!templateCompleters.isEmpty) {
+    while (!completers.isEmpty) {
       steps += 1
-      val completer = templateCompleters.remove()
+      val completer = completers.remove()
       if (!completer.isCompleted) {
         val res = completer.complete()
         res match {
           case CompletedType(tpe: ClassInfoType) =>
-            val classSym = completer.clsSym
+            val classSym = tpe.clsSym
             classSym.info = tpe
             if (!memberListOnly)
               scheduleMembersCompletion(classSym)
           case IncompleteDependency(sym: ClassSymbol) =>
-            templateCompleters.add(sym.completer)
-            templateCompleters.add(completer)
-        }
-      }
-    }
-    if (!memberListOnly) {
-      while (!simpleMemberCompleters.isEmpty) {
-        steps += 1
-        val completer = simpleMemberCompleters.remove()
-        if (!completer.isCompleted) {
-          val res = completer.complete()
-          res match {
-            case CompletedType(tpe: MethodInfoType) =>
-              val defDefSym = completer.sym.asInstanceOf[DefDefSymbol]
-              defDefSym.info = tpe
-            case CompletedType(tpe: ValInfoType) =>
-              val valDefSym = completer.sym.asInstanceOf[ValDefSymbol]
-              valDefSym.info = tpe
-            case IncompleteDependency(sym: ClassSymbol) =>
-              sys.error("Should happen")
-          }
+            completers.add(sym.completer)
+            completers.add(completer)
+          case IncompleteDependency(sym: ValDefSymbol) =>
+            completers.add(sym.completer)
+            completers.add(completer)
+          case IncompleteDependency(sym: DefDefSymbol) =>
+            completers.add(sym.completer)
+            completers.add(completer)
+          case CompletedType(tpe: MethodInfoType) =>
+            val defDefSym = completer.sym.asInstanceOf[DefDefSymbol]
+            defDefSym.info = tpe
+          case CompletedType(tpe: ValInfoType) =>
+            val valDefSym = completer.sym.asInstanceOf[ValDefSymbol]
+            valDefSym.info = tpe
         }
       }
     }
@@ -246,8 +243,8 @@ class Enter {
     while (remainingDecls.nonEmpty) {
       val decl = remainingDecls.head
       decl match {
-        case defSym: DefDefSymbol => simpleMemberCompleters.add(defSym.completer)
-        case valSym: ValDefSymbol => simpleMemberCompleters.add(valSym.completer)
+        case defSym: DefDefSymbol => completers.add(defSym.completer)
+        case valSym: ValDefSymbol => completers.add(valSym.completer)
         case _: ClassSymbol | _: ModuleSymbol =>
       }
       remainingDecls = remainingDecls.tail
@@ -372,7 +369,12 @@ object Enter {
     }
   }
 
-  class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val lookupScope: LookupScope) {
+  abstract class Completer(val sym: Symbol) {
+    def complete()(implicit context: Context): CompletionResult
+    def isCompleted: Boolean
+  }
+
+  class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val lookupScope: LookupScope) extends Completer(clsSym) {
     private var cachedInfo: ClassInfoType = _
     def complete()(implicit context: Context): CompletionResult = {
       val resolvedParents = new util.ArrayList[Type]()
@@ -389,10 +391,23 @@ object Enter {
       val info = new ClassInfoType(clsSym)
       var i = 0
       while (i < resolvedParents.size()) {
-        val parentSym = resolvedParents.get(i).typeSymbol.asInstanceOf[ClassSymbol]
+        val parentType = resolvedParents.get(i)
+        val parentSym = parentType.typeSymbol.asInstanceOf[ClassSymbol]
         val parentInfo = if (parentSym.info != null) parentSym.info else
           return IncompleteDependency(parentSym)
-        info.members.enterAll(parentInfo.members)
+        parentType match {
+          case at: AppliedType =>
+            val typeParams = at.typeSymbol.asInstanceOf[ClassSymbol].typeParams
+            val typeParamMap = new TypeParamMap(typeParams)
+            for (m <- parentInfo.members.iterator) {
+              if (!m.isComplete)
+                return IncompleteDependency(m)
+              val derivedInheritedMember = deriveMemberOfAppliedType(m, at, typeParamMap)
+              info.members.enter(derivedInheritedMember)
+            }
+          case other =>
+            info.members.enterAll(parentInfo.members)
+        }
         i += 1
       }
       info.members.enterAll(clsSym.decls)
@@ -402,12 +417,76 @@ object Enter {
     def isCompleted: Boolean = cachedInfo != null
   }
 
-  abstract class SimpleMemberCompleter(val sym: Symbol) {
-    def complete()(implicit context: Context): CompletionResult
-    def isCompleted: Boolean
+  private def deriveMemberOfAppliedType(m: Symbol, appliedType: AppliedType, typeParamsMap: TypeParamMap): Symbol = {
+    val typeArgs = appliedType.args
+    m match {
+      case d@DefDefSymbol(name) =>
+        assert(d.isComplete, d)
+        InheritedDefDefSymbol(name, substituteTypeArgs(d.info, typeParamsMap, typeArgs))
+      case v@ValDefSymbol(name) =>
+        assert(v.isComplete, v)
+        InheritedValDefSymbol(name, substituteTypeArgs(v.info, typeParamsMap, typeArgs))
+      case other => other
+    }
   }
 
-  class DefDefCompleter(sym: DefDefSymbol, defDef: DefDef, val lookupScope: LookupScope) extends SimpleMemberCompleter(sym) {
+  private def substituteTypeArgs(t: ValInfoType, paramsMap: TypeParamMap, args: Array[Type]): ValInfoType = {
+    val resultType1 = substituteTypeArgs(t.resultType, paramsMap, args)
+    if (resultType1 ne t.resultType)
+      ValInfoType(t.vaDefSymbol, resultType1)
+    else
+      t
+  }
+
+  private def substituteTypeArgs(t: MethodInfoType, paramsMap: TypeParamMap, args: Array[Type]): MethodInfoType = {
+    val resultType = t.resultType
+    val paramTypes = t.paramTypes
+    val resultType1 = substituteTypeArgs(resultType, paramsMap, args)
+    assert(paramTypes.size <= 1, "Only one parameter list is supported for methods")
+    val paramTypes1 = if (paramTypes.size == 1) {
+      var remainingVParamTypes = paramTypes.head
+      var modifiedVParam = false
+      val paramTypesBuf = new util.ArrayList[Type]()
+      while (remainingVParamTypes.nonEmpty) {
+        val vParamType = remainingVParamTypes.head
+        val vParamType1 = substituteTypeArgs(vParamType, paramsMap, args)
+        modifiedVParam = modifiedVParam || (vParamType ne vParamType1)
+        paramTypesBuf.add(vParamType1)
+        remainingVParamTypes = remainingVParamTypes.tail
+      }
+      if (modifiedVParam) List(asScalaList(paramTypesBuf)) else paramTypes
+    } else Nil
+    if ((resultType1 ne resultType) || (paramTypes1 ne paramTypes))
+      t
+    else
+      MethodInfoType(t.defDefSymbol, paramTypes1, resultType1)
+  }
+
+  private def substituteTypeArgs(t: Type, paramsMap: TypeParamMap, args: Array[Type]): Type = t match {
+    case vt: ValInfoType =>
+      substituteTypeArgs(vt, paramsMap, args)
+    case mt: MethodInfoType =>
+      substituteTypeArgs(mt, paramsMap, args)
+    case SymRef(sym: TypeParameterSymbol) =>
+      val index = paramsMap.indexOf(sym)
+      if (index == -1) t else args(index)
+    case _ => t
+  }
+
+  private class TypeParamMap(typeParams: Scopes.Scope) {
+    private val typeParamsArray: Array[Symbol] = typeParams.toArray
+    def indexOf(typeParam: TypeParameterSymbol): Int = {
+      var index = 0
+      while (index < typeParamsArray.length) {
+        if (typeParamsArray(index) == typeParam)
+          return index
+        index += 1
+      }
+      -1
+    }
+  }
+
+  class DefDefCompleter(sym: DefDefSymbol, defDef: DefDef, val lookupScope: LookupScope) extends Completer(sym) {
     private var cachedInfo: MethodInfoType = _
     def complete()(implicit context: Context): CompletionResult = {
       // TODO support multiple parameter lists
@@ -440,7 +519,7 @@ object Enter {
     def isCompleted: Boolean = cachedInfo != null
   }
 
-  class ValDefCompleter(sym: ValDefSymbol, valDef: ValDef, val lookupScope: LookupScope) extends SimpleMemberCompleter(sym) {
+  class ValDefCompleter(sym: ValDefSymbol, valDef: ValDef, val lookupScope: LookupScope) extends Completer(sym) {
     private var cachedInfo: ValInfoType = _
     def complete()(implicit context: Context): CompletionResult = {
       val resultTypeSym = resolveSelectors(valDef.tpt, lookupScope)
@@ -487,7 +566,7 @@ object Enter {
         }
         remainingArgs = remainingArgs.tail
       }
-      CompletedType(AppliedType(resolvedTpt, asScalaList(resolvedArgs)))
+      CompletedType(AppliedType(resolvedTpt, resolvedArgs.toArray(new Array[Type](resolvedArgs.size))))
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)

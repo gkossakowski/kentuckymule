@@ -5,7 +5,7 @@ import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
 import Symbols._
 import Decorators._
 import Names._
-import dotty.tools.dotc.core.Enter.{CompletedType, IncompleteDependency}
+import dotty.tools.dotc.core.Enter.{CompletedType, IncompleteDependency, TemplateMemberListCompleter}
 import dotty.tools.dotc.core.Types.{ClassInfoType, SymRef}
 import utest._
 
@@ -51,8 +51,10 @@ object EnterTest extends TestSuite {
     import scala.collection.JavaConverters._
     'resolveImport {
       val src = "object A { class B }; class X { import A.B; class Y }"
-      val templateCompleters = enterToSymbolTable(src, ctx).templateCompleters.asScala
-      val Some(ycompleter) = templateCompleters.find(_.clsSym.name == "Y".toTypeName)
+      val templateCompleters = enterToSymbolTable(src, ctx).completers.asScala
+      val Some(ycompleter) = templateCompleters collectFirst {
+        case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
+      }
       val ylookupScope = ycompleter.lookupScope
       val ans = ylookupScope.lookup("B".toTypeName)(ctx)
       assert(ans.isInstanceOf[Enter.LookedupSymbol])
@@ -176,11 +178,10 @@ object EnterTest extends TestSuite {
       val Tsym = Asym.typeParams.lookup("T".toTypeName)
       assert(Tsym != NoSymbol)
       locally {
-        val aDefSym = Bsym.info.members.lookup("a".toTermName)(ctx).asInstanceOf[ValDefSymbol]
+        val aDefSym = Bsym.info.members.lookup("a".toTermName)(ctx).asInstanceOf[InheritedValDefSymbol]
         val SymRef(resultTypeSym) = aDefSym.info.resultType
         val Csym = classes("C".toTypeName)
-        // TODO: result type should be `Csym` once substitution of type parameter values is implemented
-        assert(resultTypeSym == Tsym)
+        assert(resultTypeSym == Csym)
       }
     }
   }

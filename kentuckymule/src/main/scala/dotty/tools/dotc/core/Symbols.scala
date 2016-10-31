@@ -62,21 +62,27 @@ object Symbols {
     override def childrenIterator: Iterator[Symbol] =
       clsSym.childrenIterator
   }
-  final class ValDefSymbol(name: Name) extends TermSymbol(name) {
+  final case class ValDefSymbol(override val name: TermName) extends TermSymbol(name) {
     var info: ValInfoType = _
     var completer: ValDefCompleter = _
     def completeInfo()(implicit context: Context): CompletionResult = {
       completer.complete()
     }
+
+    override def isComplete: Boolean = completer.isCompleted
   }
   final case class TypeDefSymbol(override val name: TypeName) extends TypeSymbol(name)
-  final case class DefDefSymbol(override val name: Name) extends TermSymbol(name) {
+  final case class TypeParameterSymbol(override val name: TypeName, index: Int) extends TypeSymbol(name)
+  final case class DefDefSymbol(override val name: TermName) extends TermSymbol(name) {
     var info: MethodInfoType = _
     var completer: DefDefCompleter = _
     def completeInfo()(implicit context: Context): CompletionResult = {
       completer.complete()
     }
+    override def isComplete: Boolean = completer.isCompleted
   }
+  final case class InheritedDefDefSymbol(override val name: TermName, info: MethodInfoType) extends TermSymbol(name)
+  final case class InheritedValDefSymbol(override val name: TermName, info: ValInfoType) extends TermSymbol(name)
 
   object NoSymbol extends Symbol("<none>".toTermName)
 }

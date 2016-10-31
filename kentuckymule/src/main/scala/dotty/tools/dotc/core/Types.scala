@@ -65,7 +65,7 @@ object Types {
     override def typeSymbol: Symbol = sym
   }
 
-  case class AppliedType(tpe: Type, args: List[Type]) extends Type {
+  case class AppliedType(tpe: Type, args: Array[Type]) extends Type {
     override def typeSymbol: Symbol = tpe.typeSymbol
   }
 

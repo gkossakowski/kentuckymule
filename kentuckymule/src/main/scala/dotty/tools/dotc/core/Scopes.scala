@@ -73,6 +73,8 @@ object Scopes {
      */
     def toList: List[Symbol]
 
+    def toArray: Array[Symbol]
+
     /** Return all symbols as an iterator in the order they were entered in this scope.
      */
     def iterator: Iterator[Symbol] = toList.iterator
@@ -339,6 +341,21 @@ object Scopes {
       elemsCache
     }
 
+    /** Returns all symbols as a list in the order they were entered in this scope.
+      *  Does _not_ include the elements of inherited scopes.
+      */
+    override final def toArray: Array[Symbol] = {
+      val elems = new Array[Symbol](size)
+      var index = size-1
+      var e = lastEntry
+      while (e ne null) {
+        elems(index) = e.sym
+        e = e.prev
+        index -= 1
+      }
+      elems
+    }
+
     /** Vanilla scope - symbols are stored in declaration order.
      */
     final def sorted: List[Symbol] = toList
@@ -394,6 +411,7 @@ object Scopes {
   /** The empty scope (immutable).
    */
   object EmptyScope extends Scope {
+    private val emptySymbolsArray: Array[Symbol] = Array.empty
     override private[dotc] def lastEntry = null
     override def size = 0
     override def nestingLevel = 0
@@ -401,6 +419,7 @@ object Scopes {
     override def cloneScope(implicit ctx: Context): MutableScope = unsupported("cloneScope")
     override def lookupEntry(name: Name)(implicit ctx: Context): ScopeEntry = null
     override def lookupNextEntry(entry: ScopeEntry)(implicit ctx: Context): ScopeEntry = null
+    override def toArray: Array[Symbol] = emptySymbolsArray
   }
 
   /** A class for error scopes (mutable)
