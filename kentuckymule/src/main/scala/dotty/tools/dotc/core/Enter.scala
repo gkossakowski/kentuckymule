@@ -422,10 +422,10 @@ object Enter {
     m match {
       case d@DefDefSymbol(name) =>
         assert(d.isComplete, d)
-        InheritedDefDefSymbol(name, substituteTypeArgs(d.info, typeParamsMap, typeArgs))
+        new InheritedDefDefSymbol(name, substituteTypeArgs(d.info, typeParamsMap, typeArgs))
       case v@ValDefSymbol(name) =>
         assert(v.isComplete, v)
-        InheritedValDefSymbol(name, substituteTypeArgs(v.info, typeParamsMap, typeArgs))
+        new InheritedValDefSymbol(name, substituteTypeArgs(v.info, typeParamsMap, typeArgs))
       case other => other
     }
   }

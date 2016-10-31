@@ -178,10 +178,39 @@ object EnterTest extends TestSuite {
       val Tsym = Asym.typeParams.lookup("T".toTypeName)
       assert(Tsym != NoSymbol)
       locally {
-        val aDefSym = Bsym.info.members.lookup("a".toTermName)(ctx).asInstanceOf[InheritedValDefSymbol]
+        val aDefSym = Bsym.info.members.lookup("a".toTermName)(ctx).asInstanceOf[ValDefSymbol]
         val SymRef(resultTypeSym) = aDefSym.info.resultType
         val Csym = classes("C".toTypeName)
         assert(resultTypeSym == Csym)
+      }
+    }
+    'inheritedReferringToTypeMemberTransitive {
+      implicit val context = ctx
+      val src =
+        """class B[T] extends A[T,X]
+          |class A[T,U] { val a: T; val b: U }
+          |class C extends B[Y]
+          |class X
+          |class Y""".stripMargin
+      val enter = enterToSymbolTable(src, ctx)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val Bsym = classes("B".toTypeName)
+      val Csym = classes("C".toTypeName)
+      val Xsym = classes("X".toTypeName)
+      val Ysym = classes("Y".toTypeName)
+      locally {
+        val aValSym = Csym.info.members.lookup("a".toTermName).asInstanceOf[ValDefSymbol]
+        val SymRef(resultTypeSym) = aValSym.info.resultType
+        assert(resultTypeSym == Ysym)
+      }
+      locally {
+        val bValSym = Csym.info.members.lookup("b".toTermName).asInstanceOf[ValDefSymbol]
+        val SymRef(resultTypeSym) = bValSym.info.resultType
+        assert(resultTypeSym == Xsym)
       }
     }
   }
