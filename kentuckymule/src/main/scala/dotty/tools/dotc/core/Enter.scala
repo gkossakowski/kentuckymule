@@ -116,7 +116,7 @@ class Enter {
     }
     def pushPackageLookupScope(pkgSym: PackageSymbol): LookupScopeContext = {
       val pkgLookupScope = new PackageLookupScope(pkgSym, parentScope, imports.snapshot())
-      val pkgImports = new ImportsCollector(parentScope)
+      val pkgImports = new ImportsCollector(pkgLookupScope)
       new LookupScopeContext(pkgImports, pkgLookupScope)
     }
     def pushModuleLookupScope(modSym: ModuleSymbol): LookupScopeContext = {
