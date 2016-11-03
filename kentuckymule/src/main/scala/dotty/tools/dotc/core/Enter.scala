@@ -175,7 +175,6 @@ class Enter {
       owner.addChild(valSym)
     case t: DefDef =>
       val defSym = new DefDefSymbol(t.name)
-      // TODO: we should create a new lookup scope to take into account accumulated imports
       val completer = new DefDefCompleter(defSym, t, parentLookupScopeContext.newSimpleMemberLookupScope)
       defSym.completer = completer
       owner.addChild(defSym)
