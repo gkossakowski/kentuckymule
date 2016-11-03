@@ -282,63 +282,62 @@ object Enter {
   }
 
   private class ImportCompleter(val importNode: Import) {
-    private var termSym0: Symbol = _
-    private var typeSym0: Symbol = _
+    private class ImportSelectorResolved(val termSym: Symbol, val typeSym: Symbol, val isWildcard: Boolean)
     private var exprSym0: Symbol = _
+    private var resolvedSelectors: util.ArrayList[ImportSelectorResolved] = _
     private var isComplete: Boolean = false
-    private var isWildcard: Boolean = false
     def complete(parentLookupScope: LookupScope)(implicit context: Context): LookupAnswer = {
       isComplete = true
-      val Import(expr, List(Ident(name))) = importNode
+      val Import(expr, selectors) = importNode
       val exprAns = resolveSelectors(expr, parentLookupScope)
       exprAns match {
         case LookedupSymbol(exprSym) =>
           this.exprSym0 = exprSym
           if (exprSym.isComplete) {
-            if (name != nme.WILDCARD) {
-              termSym0 = exprSym.lookup(name)
-              typeSym0 = exprSym.lookup(name.toTypeName)
-              if (termSym0 != NoSymbol)
-                LookedupSymbol(termSym0)
-              else if (typeSym0 != NoSymbol)
-                LookedupSymbol(typeSym0)
-              else
-                NotFound
-            } else {
-              isWildcard = true
-              LookedupSymbol(exprSym)
+            var remainingSelectors = selectors
+            val resolvedSelectors: util.ArrayList[ImportSelectorResolved] = new util.ArrayList[ImportSelectorResolved]
+            while (remainingSelectors.nonEmpty) {
+              val Ident(name) = remainingSelectors.head
+              remainingSelectors = remainingSelectors.tail
+              if (name != nme.WILDCARD) {
+                val termSym = exprSym.lookup(name)
+                val typeSym = exprSym.lookup(name.toTypeName)
+                if (termSym == NoSymbol && typeSym == NoSymbol)
+                  return NotFound
+                resolvedSelectors.add(new ImportSelectorResolved(termSym, typeSym, isWildcard = false))
+              } else {
+                resolvedSelectors.add(new ImportSelectorResolved(null, null, isWildcard = true))
+              }
             }
-          }
-          else IncompleteDependency(exprSym)
+            this.resolvedSelectors = resolvedSelectors
+            LookedupSymbol(exprSym)
+          } else IncompleteDependency(exprSym)
         case _ => exprAns
       }
     }
-    def termSymbol: Symbol = {
-      if (!isComplete)
-        sys.error("this import hasn't been completed " + importNode)
-      if (termSym0 != null)
-        termSym0
-      else
-        NoSymbol
-    }
-    def typeSymbol: Symbol = {
-      if (!isComplete)
-        sys.error("this import hasn't been completed " + importNode)
-      if (typeSym0 != null)
-        typeSym0
-      else
-        NoSymbol
-    }
     def matches(name: Name)(implicit context: Context): Symbol = {
-      if (isWildcard) {
-        exprSym0.lookup(name)
-      } else {
-        if (name.isTermName && termSym0 != null && termSym0.name == name)
-          termSymbol
-        else if (typeSym0 != null && typeSym0.name == name)
-          typeSymbol
-        else NoSymbol
+      assert(isComplete, s"the import node hasn't been completed: $importNode")
+      var i = 0
+      while (i < resolvedSelectors.size) {
+        val selector = resolvedSelectors.get(i)
+        val sym = if (selector.isWildcard) {
+          exprSym0.lookup(name)
+        } else {
+          val termSym = selector.termSym
+          val typeSym = selector.typeSym
+          if (name.isTermName && termSym != null && termSym.name == name)
+            termSym
+          else if (typeSym != null && typeSym.name == name)
+            typeSym
+          else NoSymbol
+        }
+        // TODO: to support hiding with wildcard renames as in `import foo.bar.{abc => _}`, we would
+        // need to continue scanning selectors and check for this shape of a rename
+        if (sym != NoSymbol)
+          return sym
+        i += 1
       }
+      NoSymbol
     }
   }
 
