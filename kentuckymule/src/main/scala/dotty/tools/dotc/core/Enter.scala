@@ -344,7 +344,7 @@ object Enter {
         impCompleter.complete(parentLookupWithImports) match {
           case _: LookedupSymbol =>
           case IncompleteDependency(sym) => return sym
-          case NotFound => sys.error("couldn't resolve import")
+          case NotFound => sys.error(s"couldn't resolve import ${impCompleter.importNode}")
         }
         i += 1
       }
@@ -432,7 +432,7 @@ object Enter {
           resolvedTypeSym match {
             case LookedupSymbol(rsym) => resolvedParamTypes.add(SymRef(rsym))
             case res: IncompleteDependency => return res
-            case NotFound => sys.error("OMG, we don't have error reporting yet")
+            case NotFound => sys.error(s"Couldn't resolve ${vparam.tpt}")
           }
           remainingVparams = remainingVparams.tail
         }
@@ -480,6 +480,7 @@ object Enter {
               IncompleteDependency(qualSym)
           case _ => ans
         }
+      case _ => sys.error(s"Unhandled tree $t at ${t.pos}")
     }
 
   private def resolveTypeTree(t: Tree, parentLookupScope: LookupScope)(implicit context: Context): CompletionResult = t match {
