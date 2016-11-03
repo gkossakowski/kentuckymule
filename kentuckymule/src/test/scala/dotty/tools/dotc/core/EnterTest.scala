@@ -59,6 +59,16 @@ object EnterTest extends TestSuite {
       val ans = ylookupScope.lookup("B".toTypeName)(ctx)
       assert(ans.isInstanceOf[Enter.LookedupSymbol])
     }
+    'wildcardImport {
+      val src = "object A { class B }; class X { import A._; class Y }"
+      val templateCompleters = enterToSymbolTable(src, ctx).completers.asScala
+      val Some(ycompleter) = templateCompleters collectFirst {
+        case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
+      }
+      val ylookupScope = ycompleter.lookupScope
+      val ans = ylookupScope.lookup("B".toTypeName)(ctx)
+      assert(ans.isInstanceOf[Enter.LookedupSymbol])
+    }
     'resolveMembers {
       val src = "class A extends B { def a: A }; class B { def b: B }"
       val enter = enterToSymbolTable(src, ctx)

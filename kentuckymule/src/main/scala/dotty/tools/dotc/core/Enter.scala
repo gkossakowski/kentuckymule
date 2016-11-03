@@ -284,22 +284,30 @@ object Enter {
   private class ImportCompleter(val importNode: Import) {
     private var termSym0: Symbol = _
     private var typeSym0: Symbol = _
+    private var exprSym0: Symbol = _
     private var isComplete: Boolean = false
+    private var isWildcard: Boolean = false
     def complete(parentLookupScope: LookupScope)(implicit context: Context): LookupAnswer = {
       isComplete = true
       val Import(expr, List(Ident(name))) = importNode
       val exprAns = resolveSelectors(expr, parentLookupScope)
       exprAns match {
         case LookedupSymbol(exprSym) =>
+          this.exprSym0 = exprSym
           if (exprSym.isComplete) {
-            termSym0 = exprSym.lookup(name)
-            typeSym0 = exprSym.lookup(name.toTypeName)
-            if (termSym0 != NoSymbol)
-              LookedupSymbol(termSym0)
-            else if (typeSym0 != NoSymbol)
-              LookedupSymbol(typeSym0)
-            else
-              NotFound
+            if (name != nme.WILDCARD) {
+              termSym0 = exprSym.lookup(name)
+              typeSym0 = exprSym.lookup(name.toTypeName)
+              if (termSym0 != NoSymbol)
+                LookedupSymbol(termSym0)
+              else if (typeSym0 != NoSymbol)
+                LookedupSymbol(typeSym0)
+              else
+                NotFound
+            } else {
+              isWildcard = true
+              LookedupSymbol(exprSym)
+            }
           }
           else IncompleteDependency(exprSym)
         case _ => exprAns
@@ -321,11 +329,16 @@ object Enter {
       else
         NoSymbol
     }
-    def matches(name: Name): Symbol = {
-      if (name.isTermName)
-        termSymbol
-      else
-        typeSymbol
+    def matches(name: Name)(implicit context: Context): Symbol = {
+      if (isWildcard) {
+        exprSym0.lookup(name)
+      } else {
+        if (name.isTermName && termSym0 != null && termSym0.name == name)
+          termSymbol
+        else if (typeSym0 != null && typeSym0.name == name)
+          typeSymbol
+        else NoSymbol
+      }
     }
   }
 
