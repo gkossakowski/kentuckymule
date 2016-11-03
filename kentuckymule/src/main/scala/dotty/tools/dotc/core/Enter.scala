@@ -8,6 +8,7 @@ import Symbols._
 import ast.Trees._
 import Names.Name
 import Types._
+import StdNames.nme
 
 /**
   * Creates symbols for declarations and enters them into a symbol table.
@@ -499,6 +500,11 @@ object Enter {
         remainingArgs = remainingArgs.tail
       }
       CompletedType(AppliedType(resolvedTpt, resolvedArgs.toArray(new Array[Type](resolvedArgs.size))))
+    // ParentClass(foo) is encoded as a constructor call with a tree of shape
+    // Apply(Select(New(Ident(ParentClass)),<init>),List(Ident(foo)))
+    // we want to extract the Ident(ParentClass)
+    case Apply(Select(New(tp), nme.CONSTRUCTOR), _) =>
+      resolveTypeTree(tp, parentLookupScope)
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)
