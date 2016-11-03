@@ -534,7 +534,7 @@ object Enter {
       val resolvedSel = resolveSelectors(other, parentLookupScope)
       resolvedSel match {
         case LookedupSymbol(sym) => CompletedType(SymRef(sym))
-        case NotFound => sys.error("no error reporting")
+        case NotFound => sys.error(s"Can't resolve selector $other")
         case incomplete: IncompleteDependency => incomplete
       }
   }
