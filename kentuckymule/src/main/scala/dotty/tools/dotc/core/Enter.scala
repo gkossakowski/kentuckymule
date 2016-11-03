@@ -20,9 +20,6 @@ class Enter {
 
   val completers: util.Queue[Completer] = new util.ArrayDeque[Completer]()
 
-  class LookupCompilationUnitScope(imports: List[Import], pkgLookupScope: PackageLookupScope) {
-
-  }
   class LookupClassTemplateScope(classSym: ClassSymbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
       val classFoundSym = classSym.lookup(name)
@@ -74,9 +71,23 @@ class Enter {
       sys.error("unsupported operation")
   }
 
+  class LookupCompilationUnitScope(imports: ImportsLookupScope, pkgLookupScope: LookupScope) extends LookupScope {
+    override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
+      val impFoundSym = imports.lookup(name)
+      impFoundSym match {
+        case _: LookedupSymbol | _: IncompleteDependency => impFoundSym
+        case _ => pkgLookupScope.lookup(name)
+      }
+    }
+
+    override def replaceImports(imports: ImportsLookupScope): LookupScope =
+      new LookupCompilationUnitScope(imports, pkgLookupScope)
+  }
+
   def enterCompilationUnit(unit: CompilationUnit)(implicit context: Context): Unit = {
     val importsInCompilationUnit = new ImportsCollector(RootPackageLookupScope)
-    enterTree(unit.untpdTree, context.definitions.rootPackage, new LookupScopeContext(importsInCompilationUnit, RootPackageLookupScope))
+    val compilationUnitScope = new LookupCompilationUnitScope(importsInCompilationUnit.snapshot(), RootPackageLookupScope)
+    enterTree(unit.untpdTree, context.definitions.rootPackage, new LookupScopeContext(importsInCompilationUnit, compilationUnitScope))
   }
 
   class PackageLookupScope(val pkgSym: Symbol, val parent: LookupScope, val imports: ImportsLookupScope) extends LookupScope {
