@@ -497,10 +497,13 @@ object Enter {
         val ans = resolveSelectors(qual, parentLookupScope)
         ans match {
           case LookedupSymbol(qualSym) =>
-            if (qualSym.isComplete)
-              LookedupSymbol(qualSym.lookup(selName))
-            else
-              IncompleteDependency(qualSym)
+            if (qualSym.isComplete) {
+              val selSym = qualSym.lookup(selName)
+              if (selSym != NoSymbol)
+                LookedupSymbol(selSym)
+              else
+                NotFound
+            } else IncompleteDependency(qualSym)
           case _ => ans
         }
       case _ => sys.error(s"Unhandled tree $t at ${t.pos}")
