@@ -205,7 +205,7 @@ class Enter {
       }
     case Select(qualifier: RefTree, name: Name) =>
       val qualPkg = expandQualifiedPackageDeclaration(qualifier, owner)
-      val lookedUp = owner.lookup(name)
+      val lookedUp = qualPkg.lookup(name)
       lookedUp match {
         case pkgSym: PackageSymbol => pkgSym
         case _ =>
