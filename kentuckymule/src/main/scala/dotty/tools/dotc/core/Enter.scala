@@ -534,6 +534,20 @@ object Enter {
     // we want to extract the Ident(ParentClass)
     case Apply(Select(New(tp), nme.CONSTRUCTOR), _) =>
       resolveTypeTree(tp, parentLookupScope)
+    case Parens(t2) => resolveTypeTree(t2, parentLookupScope)
+    case Function(args, body) =>
+      assert(args.size == 1, s"Only Function1 is supported")
+      val resolvedArg = resolveTypeTree(args.head, parentLookupScope) match {
+        case CompletedType(tpe) => tpe
+        case other => return other
+      }
+      val resolvedBody = resolveTypeTree(body, parentLookupScope) match {
+        case CompletedType(tpe) => tpe
+        case other => return other
+      }
+      import Decorators._
+      val LookedupSymbol(function1Type) = parentLookupScope.lookup("Function1".toTypeName)
+      CompletedType(AppliedType(SymRef(function1Type), Array(resolvedArg, resolvedBody)))
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)
