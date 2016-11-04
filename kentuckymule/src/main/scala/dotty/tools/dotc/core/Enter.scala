@@ -229,6 +229,7 @@ class Enter {
             if (!memberListOnly)
               scheduleMembersCompletion(classSym)
           case IncompleteDependency(sym: ClassSymbol) =>
+            assert(sym.completer != null, sym.name)
             completers.add(sym.completer)
             completers.add(completer)
           case IncompleteDependency(sym: ValDefSymbol) =>
