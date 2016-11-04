@@ -473,23 +473,27 @@ object Enter {
   class DefDefCompleter(sym: DefDefSymbol, defDef: DefDef, val lookupScope: LookupScope) extends Completer(sym) {
     private var cachedInfo: MethodInfoType = _
     def complete()(implicit context: Context): CompletionResult = {
-      // TODO support multiple parameter lists
-      assert(defDef.vparamss.size <= 1)
-      val paramTypes = if (defDef.vparamss.nonEmpty) {
-        var remainingVparams = defDef.vparamss.head
-        val resolvedParamTypes = new util.ArrayList[Type]()
-        while (remainingVparams.nonEmpty) {
-          val vparam = remainingVparams.head
-          val resolvedTypeSym = resolveSelectors(vparam.tpt, lookupScope)
-          resolvedTypeSym match {
-            case LookedupSymbol(rsym) => resolvedParamTypes.add(SymRef(rsym))
-            case res: IncompleteDependency => return res
-            case NotFound => sys.error(s"Couldn't resolve ${vparam.tpt}")
+      val paramTypes = {
+        var remainingVparamGroups = defDef.vparamss
+        val resolvedParamTypeGroups = new util.ArrayList[util.ArrayList[Type]]()
+        while(remainingVparamGroups.nonEmpty) {
+          var remainingVparams = remainingVparamGroups.head
+          remainingVparamGroups = remainingVparamGroups.tail
+          val resolvedParamTypes = new util.ArrayList[Type]()
+          while (remainingVparams.nonEmpty) {
+            val vparam = remainingVparams.head
+            val resolvedTypeSym = resolveSelectors(vparam.tpt, lookupScope)
+            resolvedTypeSym match {
+              case LookedupSymbol(rsym) => resolvedParamTypes.add(SymRef(rsym))
+              case res: IncompleteDependency => return res
+              case NotFound => sys.error(s"Couldn't resolve ${vparam.tpt}")
+            }
+            remainingVparams = remainingVparams.tail
           }
-          remainingVparams = remainingVparams.tail
+          resolvedParamTypeGroups.add(resolvedParamTypes)
         }
-        List(asScalaList(resolvedParamTypes))
-      } else Nil
+        asScalaList2(resolvedParamTypeGroups)
+      }
       val resultTypeSym = resolveSelectors(defDef.tpt, lookupScope)
       val resultType: Type = resultTypeSym match {
         case LookedupSymbol(rsym) => SymRef(rsym)
@@ -589,6 +593,17 @@ object Enter {
     var res: List[T] = Nil
     while (i >= 0) {
       res = javaList.get(i) :: res
+      i -= 1
+    }
+    res
+  }
+
+  private def asScalaList2[T](javaList: util.ArrayList[util.ArrayList[T]]): List[List[T]] = {
+    var i = javaList.size() - 1
+    var res: List[List[T]] = Nil
+    while (i >= 0) {
+      val innerList = asScalaList(javaList.get(i))
+      res = innerList :: res
       i -= 1
     }
     res
