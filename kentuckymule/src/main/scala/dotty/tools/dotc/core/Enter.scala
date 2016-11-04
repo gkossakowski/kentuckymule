@@ -258,6 +258,8 @@ class Enter {
         case defSym: DefDefSymbol => completers.add(defSym.completer)
         case valSym: ValDefSymbol => completers.add(valSym.completer)
         case _: ClassSymbol | _: ModuleSymbol =>
+        case _: TypeDefSymbol =>
+          println(s"Ignoring type def $decl in ${sym.name}")
       }
       remainingDecls = remainingDecls.tail
     }
