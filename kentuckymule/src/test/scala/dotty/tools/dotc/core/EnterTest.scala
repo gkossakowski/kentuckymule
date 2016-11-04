@@ -85,6 +85,24 @@ object EnterTest extends TestSuite {
         assert(ans.isInstanceOf[Enter.LookedupSymbol])
       }
     }
+    'importFromVal {
+      val src = "class A(b: B) { import b.C; def c: C }; class B { class C }"
+      val enter = enterToSymbolTable(src, ctx)
+      enter.processJobQueue(memberListOnly = false)(ctx)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      locally {
+        val Asym = classes("A".toTypeName)
+        val Csym = classes("C".toTypeName)
+        val cDefSym = Asym.decls.lookup("c".toTermName)(ctx).asInstanceOf[DefDefSymbol]
+        assert(cDefSym.info != null)
+        assert(cDefSym.info.paramTypes.isEmpty)
+        assert(cDefSym.info.resultType.isInstanceOf[SymRef])
+        val SymRef(resultTypeSym) = cDefSym.info.resultType
+        assert(resultTypeSym == Csym)
+      }
+    }
     'resolveMembers {
       val src = "class A extends B { def a: A }; class B { def b: B }"
       val enter = enterToSymbolTable(src, ctx)

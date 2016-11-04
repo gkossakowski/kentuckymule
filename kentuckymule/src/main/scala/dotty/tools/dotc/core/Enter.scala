@@ -121,12 +121,16 @@ class Enter {
     }
     def pushModuleLookupScope(modSym: ModuleSymbol): LookupScopeContext = {
       val moduleLookupScope = new LookupModuleTemplateScope(modSym, imports.snapshot(), parentScope)
-      val moduleImports = new ImportsCollector(parentScope)
+      val moduleImports = new ImportsCollector(moduleLookupScope)
       new LookupScopeContext(moduleImports, moduleLookupScope)
     }
     def pushClassLookupScope(classSym: ClassSymbol): LookupScopeContext = {
       val classLookupScope = new LookupClassTemplateScope(classSym, imports.snapshot(), parentScope)
-      val classImports = new ImportsCollector(parentScope)
+      // imports collector receives class lookup scope so the following construct is supported
+      // class Bar { val y: String = "abc" }
+      // class Foo { import x.y; val x: Bar = new Bar }
+      // YES! Imports can have forward references in Scala (which is a little bit strange)
+      val classImports = new ImportsCollector(classLookupScope)
       new LookupScopeContext(classImports, classLookupScope)
     }
 
@@ -170,6 +174,18 @@ class Enter {
         tParamIndex += 1
       }
       owner.addChild(classSym)
+      assert(tmpl.constr.vparamss.size <= 1, "Multiple value parameter lists are not supported for class constructor")
+      if (tmpl.constr.vparamss.size == 1) {
+        var remainingVparams = tmpl.constr.vparamss.head
+        while (remainingVparams.nonEmpty) {
+          val vparam = remainingVparams.head
+          remainingVparams = remainingVparams.tail
+          // we're entering constructor parameter as a val declaration in a class
+          // TODO: these parameters shouldn't be visible as members outside unless they are declared as vals
+          // compare: class Foo(x: Int) vs class Foo(val x: Int)
+          enterTree(vparam, classSym, parentLookupScopeContext)
+        }
+      }
       val lookupScopeContext = parentLookupScopeContext.pushClassLookupScope(classSym)
       val completer = new TemplateMemberListCompleter(classSym, tmpl, lookupScopeContext.parentScope)
       completers.add(completer)
@@ -303,8 +319,8 @@ object Enter {
               val Ident(name) = remainingSelectors.head
               remainingSelectors = remainingSelectors.tail
               if (name != nme.WILDCARD) {
-                val termSym = exprSym.lookup(name)
-                val typeSym = exprSym.lookup(name.toTypeName)
+                val termSym = lookupMember(exprSym, name)
+                val typeSym = lookupMember(exprSym, name.toTypeName)
                 if (termSym == NoSymbol && typeSym == NoSymbol)
                   return NotFound
                 resolvedSelectors.add(new ImportSelectorResolved(termSym, typeSym, isWildcard = false))
@@ -341,6 +357,16 @@ object Enter {
         i += 1
       }
       NoSymbol
+    }
+  }
+
+  private def lookupMember(sym: Symbol, name: Name)(implicit context: Context): Symbol = {
+    assert(sym.isComplete, s"Can't look up a member $name in a symbol that is not completed yet: $sym")
+    sym match {
+      case clsSym: ClassSymbol => clsSym.lookup(name)
+      case modSym: ModuleSymbol => modSym.lookup(name)
+      case pkgSym: PackageSymbol => pkgSym.lookup(name)
+      case valSym: ValDefSymbol => valSym.info.resultType.typeSymbol.lookup(name)
     }
   }
 
