@@ -14,7 +14,7 @@ package scala.tools.scalap
 package scalax
 package rules
 
-import language.postfixOps
+import scala.language.postfixOps
 
 /**
  * A workaround for the difficulties of dealing with

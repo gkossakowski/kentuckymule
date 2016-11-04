@@ -3,7 +3,7 @@ package scalax
 package rules
 package scalasig
 
-import language.postfixOps
+import scala.language.postfixOps
 
 import java.io.IOException
 

@@ -14,7 +14,7 @@ package scala.tools.scalap
 package scalax
 package rules
 
-import language.postfixOps
+import scala.language.postfixOps
 
 trait Name {
   def name: String
