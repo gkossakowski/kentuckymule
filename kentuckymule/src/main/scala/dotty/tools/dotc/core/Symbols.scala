@@ -38,7 +38,7 @@ object Symbols {
   final class PackageSymbol(name: Name) extends TermSymbol(name)
   final class ClassSymbol(name: Name) extends TypeSymbol(name) {
     var info: ClassInfoType = _
-    var completer: TemplateMemberListCompleter = _
+    var completer: Completer = _
     def completeInfo()(implicit context: Context): CompletionResult = {
       completer.complete()
     }
