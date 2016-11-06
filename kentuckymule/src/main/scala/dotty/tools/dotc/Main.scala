@@ -90,7 +90,7 @@ object Main {
     root.addChild(javaPkg)
     val ioPkg = new PackageSymbol("io".toTermName)
     javaPkg.addChild(ioPkg)
-    enterStubClasses(ioPkg, "ByteArrayOutputStream", "OutputStreamWriter", "PrintStream", "IOException")
+    enterStubClasses(ioPkg, "ByteArrayOutputStream", "OutputStreamWriter", "PrintStream", "IOException", "Writer")
 
     // enter scala
     val scalaPkg = new PackageSymbol("scala".toTermName)
@@ -99,7 +99,8 @@ object Main {
     // enter things visible by default from Predef, scala or java.lang packages into root package
     // normally, you would have separate package for scala and java.lang that are seen from every compilation unit
     // but we don't care about details when just trying to get some performance numbers
-    enterStubClasses(root, "Nothing", "RuntimeException", "Function1")
+    enterStubClasses(root, "Nothing", "RuntimeException", "Function1", "String", "Array", "Char", "Unit", "Boolean",
+      "Option", "List", "Byte", "Int", "Long", "Float", "Double", "Short")
 
     // enter scala.reflect
     val reflectPkg = new PackageSymbol("reflect".toTermName)
@@ -114,6 +115,11 @@ object Main {
     val internalPicklingPkg = new PackageSymbol("pickling".toTermName)
     reflectInternalPkg.addChild(internalPicklingPkg)
     enterStubClasses(internalPicklingPkg, "ByteCodecs")
+
+    // enter scala.reflect.internal.util
+    val internalUtilPkg = new PackageSymbol("util".toTermName)
+    reflectInternalPkg.addChild(internalUtilPkg)
+    enterStubClasses(internalUtilPkg, "ScalaClassLoader")
 
     // enter scala.tools.nsc
     val toolsPkg = new PackageSymbol("tools".toTermName)
@@ -147,6 +153,7 @@ object Main {
     scalaPkg.addChild(collectionPkg)
     val mutablePkg = new PackageSymbol("mutable".toTermName)
     collectionPkg.addChild(mutablePkg)
+    enterStubClasses(mutablePkg, "ListBuffer", "Set", "Map")
 
     // enter scala.language
     val languagePkg = new PackageSymbol("language".toTermName)
