@@ -51,30 +51,36 @@ object EnterTest extends TestSuite {
     import scala.collection.JavaConverters._
     'resolveImport {
       val src = "object A { class B }; class X { import A.B; class Y }"
-      val templateCompleters = enterToSymbolTable(src, ctx).completers.asScala
+      val enter = enterToSymbolTable(src, ctx)
+      val templateCompleters = enter.completers.asScala
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
       }
+      enter.processJobQueue(memberListOnly = false)(ctx)
       val ylookupScope = ycompleter.lookupScope
       val ans = ylookupScope.lookup("B".toTypeName)(ctx)
       assert(ans.isInstanceOf[Enter.LookedupSymbol])
     }
     'wildcardImport {
       val src = "object A { class B }; class X { import A._; class Y }"
-      val templateCompleters = enterToSymbolTable(src, ctx).completers.asScala
+      val enter = enterToSymbolTable(src, ctx)
+      val templateCompleters = enter.completers.asScala
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
       }
+      enter.processJobQueue(memberListOnly = false)(ctx)
       val ylookupScope = ycompleter.lookupScope
       val ans = ylookupScope.lookup("B".toTypeName)(ctx)
       assert(ans.isInstanceOf[Enter.LookedupSymbol])
     }
     'multipleImports {
       val src = "object A { class B1; class B2; }; class X { import A.{B1, B2}; class Y }"
-      val templateCompleters = enterToSymbolTable(src, ctx).completers.asScala
+      val enter = enterToSymbolTable(src, ctx)
+      val templateCompleters = enter.completers.asScala
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
       }
+      enter.processJobQueue(memberListOnly = false)(ctx)
       val ylookupScope = ycompleter.lookupScope
       locally {
         val ans = ylookupScope.lookup("B1".toTypeName)(ctx)

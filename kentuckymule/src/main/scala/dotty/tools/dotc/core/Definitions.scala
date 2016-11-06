@@ -4,6 +4,7 @@ package core
 
 import Types._
 import Contexts._
+import dotty.tools.dotc.core.Names.Name
 import dotty.tools.dotc.core.Symbols.{NoSymbol, PackageSymbol, Symbol}
 //import Flags._, Scopes._, Decorators._, NameOps._, util.Positions._, Periods._
 //import unpickleScala2.Scala2Unpickler.ensureConstructor
@@ -45,27 +46,35 @@ class Definitions {
 
   object ByteType extends Type {
     override def typeSymbol: Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
   }
   object ShortType extends Type  {
     override def typeSymbol: Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
   }
   object CharType extends Type  {
     override def typeSymbol: Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
   }
   object IntType extends Type  {
     override def typeSymbol: Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
   }
   object LongType extends Type  {
     override def typeSymbol: Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
   }
   object DoubleType extends Type  {
     override def typeSymbol: Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
   }
   object FloatType extends Type  {
     override def typeSymbol: Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
   }
   object BooleanType extends Type  {
     override def typeSymbol: Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
   }
 
   val rootPackage = new PackageSymbol(StdNames.nme.ROOTPKG)

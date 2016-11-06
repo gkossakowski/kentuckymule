@@ -15,6 +15,8 @@ class Symbols { this: Contexts.Context =>
 object Symbols {
   abstract class Symbol(val name: Name) {
 
+    def info: Type
+
     protected var scope: MutableScope = Scopes.newScope
     def addChild(sym: Symbol)(implicit ctx: Context): Unit = {
       scope.enter(sym)
@@ -29,38 +31,37 @@ object Symbols {
     def lookupAll(name: Name)(implicit ctx: Context): Seq[Symbol] =
       scope.lookupAll(name).toSeq
 
-    def isComplete: Boolean = true
+    def isComplete: Boolean
     def decls: Scope = scope
   }
   abstract class TermSymbol(name: Name) extends Symbol(name)
   abstract class TypeSymbol(name: Name) extends Symbol(name)
 
-  final class PackageSymbol(name: Name) extends TermSymbol(name)
-  final class ClassSymbol(name: Name) extends TypeSymbol(name) {
+  final class PackageSymbol(name: Name) extends TermSymbol(name) {
+    val info: Type = new PackageInfoType(this)
+    override def isComplete: Boolean = true
+  }
+  final case class ClassSymbol(override val name: Name) extends TypeSymbol(name) {
     var info: ClassInfoType = _
     var completer: Completer = _
     def completeInfo()(implicit context: Context): CompletionResult = {
       completer.complete()
     }
     val typeParams: MutableScope = Scopes.newScope
+    override def isComplete: Boolean = info != null
   }
-  final class ModuleSymbol(name: Name, val clsSym: ClassSymbol) extends TermSymbol(name) {
+  final case class ModuleSymbol(override val name: Name, clsSym: ClassSymbol) extends TermSymbol(name) {
     var info: ModuleInfoType = _
-    var completer: TemplateMemberListCompleter = _
+    var completer: ModuleCompleter = _
     def completeInfo()(implicit context: Context): CompletionResult = {
-      val res = completer.complete()
-      res match {
-        case CompletedType(modClsInfoType: ClassInfoType) =>
-          info = new ModuleInfoType(this, modClsInfoType)
-        case _ =>
-      }
-      res
+      completer.complete()
     }
     // TODO: this is a messy situation, we probably need to get rid of default scope in Symbol
     override def lookup(name: Name)(implicit ctx: Context): Symbol =
       clsSym.lookup(name)
     override def childrenIterator: Iterator[Symbol] =
       clsSym.childrenIterator
+    override def isComplete: Boolean = info != null
   }
   sealed case class ValDefSymbol(override val name: TermName) extends TermSymbol(name) {
     var info: ValInfoType = _
@@ -71,8 +72,14 @@ object Symbols {
 
     override def isComplete: Boolean = completer.isCompleted
   }
-  final case class TypeDefSymbol(override val name: TypeName) extends TypeSymbol(name)
-  final case class TypeParameterSymbol(override val name: TypeName, index: Int) extends TypeSymbol(name)
+  final case class TypeDefSymbol(override val name: TypeName) extends TypeSymbol(name) {
+    def info: Type = NoType
+    override def isComplete: Boolean = info != null
+  }
+  final case class TypeParameterSymbol(override val name: TypeName, index: Int) extends TypeSymbol(name) {
+    def info: Type = NoType
+    override def isComplete: Boolean = info != null
+  }
   sealed case class DefDefSymbol(override val name: TermName) extends TermSymbol(name) {
     var info: MethodInfoType = _
     var completer: DefDefCompleter = _
@@ -92,5 +99,8 @@ object Symbols {
     override def isComplete: Boolean = true
   }
 
-  object NoSymbol extends Symbol("<none>".toTermName)
+  object NoSymbol extends Symbol("<none>".toTermName) {
+    def info: Type = NoType
+    def isComplete: Boolean = true
+  }
 }

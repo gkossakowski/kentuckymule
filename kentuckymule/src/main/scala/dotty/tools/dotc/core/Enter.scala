@@ -152,13 +152,20 @@ class Enter {
     case imp: Import =>
       parentLookupScopeContext.addImport(imp)
     case ModuleDef(name, tmpl) =>
-      val modClsSym = new ClassSymbol(name)
-      val modSym = new ModuleSymbol(name, modClsSym)
+      val modClsSym = ClassSymbol(name)
+      val modSym = ModuleSymbol(name, modClsSym)
       owner.addChild(modSym)
       val lookupScopeContext = parentLookupScopeContext.pushModuleLookupScope(modSym)
-      val completer = new TemplateMemberListCompleter(modClsSym, tmpl, lookupScopeContext.parentScope)
-      completers.add(completer)
-      modClsSym.completer = completer
+      locally {
+        val completer = new TemplateMemberListCompleter(modClsSym, tmpl, lookupScopeContext.parentScope)
+        completers.add(completer)
+        modClsSym.completer = completer
+      }
+      locally {
+        val completer = new ModuleCompleter(modSym)
+        completers.add(completer)
+        modSym.completer = completer
+      }
       for (stat <- tmpl.body) enterTree(stat, modClsSym, lookupScopeContext)
     // class or trait
     case t@TypeDef(name, tmpl: Template) if t.isClassDef =>
@@ -235,6 +242,7 @@ class Enter {
     var steps = 0
     while (!completers.isEmpty) {
       steps += 1
+      println(s"Step $steps/${steps+completers.size}")
       val completer = completers.remove()
       if (!completer.isCompleted) {
         val res = completer.complete()
@@ -244,7 +252,14 @@ class Enter {
             classSym.info = tpe
             if (!memberListOnly)
               scheduleMembersCompletion(classSym)
+          case CompletedType(tpe: ModuleInfoType) =>
+            val modSym = tpe.modSym
+            modSym.info = tpe
           case IncompleteDependency(sym: ClassSymbol) =>
+            assert(sym.completer != null, sym.name)
+            completers.add(sym.completer)
+            completers.add(completer)
+          case IncompleteDependency(sym: ModuleSymbol) =>
             assert(sym.completer != null, sym.name)
             completers.add(sym.completer)
             completers.add(completer)
@@ -288,7 +303,7 @@ object Enter {
 
   sealed trait LookupAnswer
   case class LookedupSymbol(sym: Symbol) extends LookupAnswer
-  case object NotFound extends LookupAnswer
+  case object NotFound extends LookupAnswer with CompletionResult
 
   sealed trait CompletionResult
   case class CompletedType(tpe: Type) extends CompletionResult
@@ -340,7 +355,7 @@ object Enter {
       while (i < resolvedSelectors.size) {
         val selector = resolvedSelectors.get(i)
         val sym = if (selector.isWildcard) {
-          exprSym0.lookup(name)
+          exprSym0.info.lookup(name)
         } else {
           val termSym = selector.termSym
           val typeSym = selector.typeSym
@@ -363,10 +378,10 @@ object Enter {
   private def lookupMember(sym: Symbol, name: Name)(implicit context: Context): Symbol = {
     assert(sym.isComplete, s"Can't look up a member $name in a symbol that is not completed yet: $sym")
     sym match {
-      case clsSym: ClassSymbol => clsSym.lookup(name)
-      case modSym: ModuleSymbol => modSym.lookup(name)
-      case pkgSym: PackageSymbol => pkgSym.lookup(name)
-      case valSym: ValDefSymbol => valSym.info.resultType.typeSymbol.lookup(name)
+      case clsSym: ClassSymbol => clsSym.info.lookup(name)
+      case modSym: ModuleSymbol => modSym.info.lookup(name)
+      case pkgSym: PackageSymbol => pkgSym.info.lookup(name)
+      case valSym: ValDefSymbol => valSym.info.lookup(name)
     }
   }
 
@@ -426,6 +441,21 @@ object Enter {
     def isCompleted: Boolean
   }
 
+  class ModuleCompleter(modSym: ModuleSymbol) extends Completer(modSym) {
+    private var cachedInfo: ModuleInfoType = _
+    override def complete()(implicit context: Context): CompletionResult = {
+      if (cachedInfo != null)
+        CompletedType(cachedInfo)
+      else if (!modSym.clsSym.isComplete)
+        IncompleteDependency(modSym.clsSym)
+      else {
+        cachedInfo = new ModuleInfoType(modSym, modSym.clsSym.info)
+        CompletedType(cachedInfo)
+      }
+    }
+    override def isCompleted: Boolean = cachedInfo != null
+  }
+
   class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val lookupScope: LookupScope) extends Completer(clsSym) {
     private var cachedInfo: ClassInfoType = _
     def complete()(implicit context: Context): CompletionResult = {
@@ -444,7 +474,11 @@ object Enter {
       var i = 0
       while (i < resolvedParents.size()) {
         val parentType = resolvedParents.get(i)
+        if (parentType.typeSymbol == NoSymbol)
+          println("ooops")
         val parentSym = parentType.typeSymbol.asInstanceOf[ClassSymbol]
+        if (parentSym.name.toString == "Main")
+          println("We have Main as parent!")
         val parentInfo = if (parentSym.info != null) parentSym.info else
           return IncompleteDependency(parentSym)
         parentType match {
@@ -482,9 +516,9 @@ object Enter {
           val resolvedParamTypes = new util.ArrayList[Type]()
           while (remainingVparams.nonEmpty) {
             val vparam = remainingVparams.head
-            val resolvedTypeSym = resolveSelectors(vparam.tpt, lookupScope)
-            resolvedTypeSym match {
-              case LookedupSymbol(rsym) => resolvedParamTypes.add(SymRef(rsym))
+            val resolvedType = resolveTypeTree(vparam.tpt, lookupScope)
+            resolvedType match {
+              case CompletedType(tpe) => resolvedParamTypes.add(tpe)
               case res: IncompleteDependency => return res
               case NotFound => sys.error(s"Couldn't resolve ${vparam.tpt}")
             }
@@ -494,11 +528,13 @@ object Enter {
         }
         asScalaList2(resolvedParamTypeGroups)
       }
-      val resultTypeSym = resolveSelectors(defDef.tpt, lookupScope)
-      val resultType: Type = resultTypeSym match {
-        case LookedupSymbol(rsym) => SymRef(rsym)
-        case res: IncompleteDependency => return res
-        case NotFound => sys.error("OMG, we don't have error reporting yet")
+      val resultType: Type = if (defDef.tpt.isEmpty) InferredTypeMarker else {
+        val resolvedType = resolveTypeTree(defDef.tpt, lookupScope)
+        resolvedType match {
+          case CompletedType(tpe) => tpe
+          case res: IncompleteDependency => return res
+          case NotFound => sys.error(s"Couldn't resolve ${defDef.tpt}")
+        }
       }
       val info = MethodInfoType(sym, paramTypes, resultType)
       cachedInfo = info
@@ -509,16 +545,21 @@ object Enter {
 
   class ValDefCompleter(sym: ValDefSymbol, valDef: ValDef, val lookupScope: LookupScope) extends Completer(sym) {
     private var cachedInfo: ValInfoType = _
-    def complete()(implicit context: Context): CompletionResult = {
-      val resultTypeSym = resolveSelectors(valDef.tpt, lookupScope)
-      val resultType: Type = resultTypeSym match {
-        case LookedupSymbol(rsym) => SymRef(rsym)
-        case res: IncompleteDependency => return res
-        case NotFound => sys.error("OMG, we don't have error reporting yet")
+    def complete()(implicit context: Context): CompletionResult = try {
+      val resultType: Type = if (valDef.tpt.isEmpty) InferredTypeMarker else {
+        val resolvedType = resolveTypeTree(valDef.tpt, lookupScope)
+        resolvedType match {
+          case CompletedType(tpe) => tpe
+          case res: IncompleteDependency => return res
+          case NotFound => sys.error(s"Couldn't resolve ${valDef.tpt}")
+        }
       }
       val info = ValInfoType(sym, resultType)
       cachedInfo = info
       CompletedType(info)
+    } catch {
+      case ex: Exception =>
+        throw new RuntimeException(s"Error while completing $valDef", ex)
     }
     def isCompleted: Boolean = cachedInfo != null
   }
@@ -531,7 +572,7 @@ object Enter {
         ans match {
           case LookedupSymbol(qualSym) =>
             if (qualSym.isComplete) {
-              val selSym = qualSym.lookup(selName)
+              val selSym = qualSym.info.lookup(selName)
               if (selSym != NoSymbol)
                 LookedupSymbol(selSym)
               else
