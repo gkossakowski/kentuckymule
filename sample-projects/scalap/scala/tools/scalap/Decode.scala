@@ -11,7 +11,7 @@ package scala.tools.scalap
 
 import scala.tools.scalap.scalax.rules.scalasig._
 import scala.reflect.internal.util.ScalaClassLoader
-import scala.reflect.internal.util.ScalaClassLoader.appLoader
+// import scala.reflect.internal.util.ScalaClassLoader.appLoader
 import scala.reflect.internal.pickling.ByteCodecs
 
 import ClassFileParser.{ ConstValueIndex, Annotation }
