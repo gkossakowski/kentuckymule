@@ -578,6 +578,12 @@ object Enter {
       import Decorators._
       val LookedupSymbol(function1Type) = parentLookupScope.lookup("Function1".toTypeName)
       CompletedType(AppliedType(SymRef(function1Type), Array(resolvedArg, resolvedBody)))
+    // TODO: I ignore a star indicator of a repeated parameter as it's not essential and fairly trivial to deal with
+    case PostfixOp(ident, nme.raw.STAR) =>
+      resolveTypeTree(ident, parentLookupScope)
+    // TODO: we horribly ignore tuples for now
+    case Tuple(trees) =>
+      resolveTypeTree(trees.head, parentLookupScope)
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)
