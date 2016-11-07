@@ -52,7 +52,7 @@ trait Reporting { this: Context =>
 
   /** For sending messages that are printed only if -verbose is set */
   def inform(msg: => String, pos: SourcePosition = NoSourcePosition): Unit =
-    if (this.settings.verbose.value) this.echo(msg, pos)
+    if (this.verbose) this.echo(msg, pos)
 
   def echo(msg: => String, pos: SourcePosition = NoSourcePosition): Unit =
     reporter.report(new Info(msg, pos))

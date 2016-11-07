@@ -198,7 +198,7 @@ object Contexts {
     def debug: Boolean = base.settings.debug.value
 
     /** Is the verbose option set? */
-    def verbose: Boolean = base.settings.verbose.value
+    lazy val verbose: Boolean = base.settings.verbose.value
 
     /** Should use colors when printing? */
     def useColors: Boolean =

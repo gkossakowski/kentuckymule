@@ -299,7 +299,8 @@ class Enter {
     var steps = 0
     while (!completers.isEmpty) {
       steps += 1
-      println(s"Step $steps/${steps+completers.size}")
+      if (ctx.verbose)
+        println(s"Step $steps/${steps+completers.size-1}")
       val completer = completers.remove()
       if (!completer.isCompleted) {
         val res = completer.complete()
@@ -338,7 +339,7 @@ class Enter {
     steps
   }
 
-  private def scheduleMembersCompletion(sym: ClassSymbol): Unit = {
+  private def scheduleMembersCompletion(sym: ClassSymbol)(implicit ctx: Context): Unit = {
     var remainingDecls = sym.decls.toList
     while (remainingDecls.nonEmpty) {
       val decl = remainingDecls.head
@@ -347,7 +348,8 @@ class Enter {
         case valSym: ValDefSymbol => completers.add(valSym.completer)
         case _: ClassSymbol | _: ModuleSymbol =>
         case _: TypeDefSymbol =>
-          println(s"Ignoring type def $decl in ${sym.name}")
+          if (ctx.verbose)
+            println(s"Ignoring type def $decl in ${sym.name}")
       }
       remainingDecls = remainingDecls.tail
     }
@@ -693,7 +695,8 @@ object Enter {
       resolveTypeTree(res, parentLookupScope)
     // TODO: I ignore AndTypeTree and pick just the left side, for example the `T with U` is resolved to `T`
     case t@AndTypeTree(left, right) =>
-      println(s"Ignoring $t (printed because this hacky shortcut is non-trivial)")
+      if (context.verbose)
+        println(s"Ignoring $t (printed because this hacky shortcut is non-trivial)")
       resolveTypeTree(left, parentLookupScope)
     case TypeBoundsTree(EmptyTree, EmptyTree) =>
       CompletedType(WildcardType)

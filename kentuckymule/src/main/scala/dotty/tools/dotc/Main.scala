@@ -34,6 +34,7 @@ object Main {
     val start = System.currentTimeMillis()
 
     val ctx = initCtx.fresh
+    ctx.settings.verbose.update(true)(ctx)
     try {
       for (i <- 1 to 1) {
         ctx.definitions.rootPackage.clear()
