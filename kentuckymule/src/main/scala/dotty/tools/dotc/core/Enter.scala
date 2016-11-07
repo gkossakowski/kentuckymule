@@ -6,9 +6,10 @@ import java.util
 import dotty.tools.dotc.core.Contexts.Context
 import Symbols._
 import ast.Trees._
-import Names.Name
+import Names.{Name, TypeName}
 import Types._
 import StdNames.nme
+import Decorators._
 
 /**
   * Creates symbols for declarations and enters them into a symbol table.
@@ -661,19 +662,29 @@ object Enter {
     case Apply(Select(New(tp), nme.CONSTRUCTOR), _) =>
       resolveTypeTree(tp, parentLookupScope)
     case Parens(t2) => resolveTypeTree(t2, parentLookupScope)
-    case Function(args, body) =>
-      assert(args.size == 1, s"Only Function1 is supported")
-      val resolvedArg = resolveTypeTree(args.head, parentLookupScope) match {
+    case Function(args, res) =>
+      val resolvedFunTypeArgs = new util.ArrayList[Type]()
+      var remainingArgs = args
+      while (remainingArgs.nonEmpty) {
+        val resolvedArg = resolveTypeTree(remainingArgs.head, parentLookupScope)
+        resolvedArg match {
+          case CompletedType(argTpe) => resolvedFunTypeArgs.add(argTpe)
+          case _ => return resolvedArg
+        }
+        remainingArgs = remainingArgs.tail
+      }
+      val resolvedRes = resolveTypeTree(res, parentLookupScope) match {
         case CompletedType(tpe) => tpe
         case other => return other
       }
-      val resolvedBody = resolveTypeTree(body, parentLookupScope) match {
-        case CompletedType(tpe) => tpe
-        case other => return other
+      val funName = functionNamesByArity(resolvedFunTypeArgs.size)
+      resolvedFunTypeArgs.add(resolvedRes)
+      val functionSym = parentLookupScope.lookup(funName) match {
+        case LookedupSymbol(sym) => sym
+        case NotFound => sys.error(s"Can't resolve $funName")
+        case x: IncompleteDependency => return x
       }
-      import Decorators._
-      val LookedupSymbol(function1Type) = parentLookupScope.lookup("Function1".toTypeName)
-      CompletedType(AppliedType(SymRef(function1Type), Array(resolvedArg, resolvedBody)))
+      CompletedType(AppliedType(SymRef(functionSym), resolvedFunTypeArgs.toArray(new Array(resolvedFunTypeArgs.size))))
     // TODO: I ignore a star indicator of a repeated parameter as it's not essential and fairly trivial to deal with
     case PostfixOp(ident, nme.raw.STAR) =>
       resolveTypeTree(ident, parentLookupScope)
@@ -714,4 +725,7 @@ object Enter {
     }
     res
   }
+
+  private val maxFunctionArity = 22
+  val functionNamesByArity: Array[TypeName] = Array.tabulate(maxFunctionArity+1)(i => s"Function$i".toTypeName)
 }
