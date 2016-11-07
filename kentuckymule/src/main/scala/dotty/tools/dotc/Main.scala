@@ -92,6 +92,10 @@ object Main {
     javaPkg.addChild(ioPkg)
     enterStubClasses(ioPkg, "ByteArrayOutputStream", "OutputStreamWriter", "PrintStream", "IOException", "Writer")
 
+    // enter java.util
+    val javaUtilPkg = new PackageSymbol("util".toTermName)
+    javaPkg.addChild(javaUtilPkg)
+
     // enter scala
     val scalaPkg = new PackageSymbol("scala".toTermName)
     root.addChild(scalaPkg)
@@ -100,7 +104,7 @@ object Main {
     // normally, you would have separate package for scala and java.lang that are seen from every compilation unit
     // but we don't care about details when just trying to get some performance numbers
     enterStubClasses(root, "Nothing", "RuntimeException", "Function1", "String", "Array", "Char", "Unit", "Boolean",
-      "Option", "List", "Byte", "Int", "Long", "Float", "Double", "Short")
+      "Option", "List", "Byte", "Int", "Long", "Float", "Double", "Short", "AnyRef")
 
     // enter scala.reflect
     val reflectPkg = new PackageSymbol("reflect".toTermName)
