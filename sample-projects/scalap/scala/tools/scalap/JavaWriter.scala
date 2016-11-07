@@ -13,7 +13,7 @@ import scala.reflect.NameTransformer
 
 class JavaWriter(classfile: Classfile, writer: Writer) extends CodeWriter(writer) {
 
-  val cf = classfile
+  val cf: Classfile = classfile
 
   def flagsToStr(clazz: Boolean, flags: Int): String = {
     val buffer = new StringBuffer()
