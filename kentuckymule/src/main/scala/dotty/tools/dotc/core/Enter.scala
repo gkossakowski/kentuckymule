@@ -701,6 +701,22 @@ object Enter {
       resolveTypeTree(left, parentLookupScope)
     case TypeBoundsTree(EmptyTree, EmptyTree) =>
       CompletedType(WildcardType)
+    case InfixOp(left, op, right) =>
+      val resolvedLeftType = resolveTypeTree(left, parentLookupScope) match {
+        case CompletedType(tpe) => tpe
+        case other => return other
+      }
+      val resolvedRightType = resolveTypeTree(left, parentLookupScope) match {
+        case CompletedType(tpe) => tpe
+        case other => return other
+      }
+      val resolvedOp = parentLookupScope.lookup(op) match {
+        case LookedupSymbol(sym) => SymRef(sym)
+        case NotFound =>
+          sys.error(s"Can't resolve $op")
+        case incomplete: IncompleteDependency => return incomplete
+      }
+      CompletedType(AppliedType(resolvedOp, Array[Type](resolvedLeftType, resolvedRightType)))
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)
