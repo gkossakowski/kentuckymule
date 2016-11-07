@@ -277,7 +277,6 @@ class Enter {
     var steps = 0
     while (!completers.isEmpty) {
       steps += 1
-      println(s"Step $steps/${steps+completers.size}")
       val completer = completers.remove()
       if (!completer.isCompleted) {
         val res = completer.complete()
