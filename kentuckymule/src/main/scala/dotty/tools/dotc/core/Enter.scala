@@ -694,6 +694,10 @@ object Enter {
     // TODO: we ignore by name argument `=> T` and resolve it as `T`
     case ByNameTypeTree(res) =>
       resolveTypeTree(res, parentLookupScope)
+    // TODO: I ignore AndTypeTree and pick just the left side, for example the `T with U` is resolved to `T`
+    case t@AndTypeTree(left, right) =>
+      println(s"Ignoring $t (printed because this hacky shortcut is non-trivial)")
+      resolveTypeTree(left, parentLookupScope)
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)
