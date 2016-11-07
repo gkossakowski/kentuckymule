@@ -93,4 +93,12 @@ object Types {
     override def lookup(name: Name)(implicit contexts: Context): Symbol = pkgSymbol.lookup(name)
   }
 
+  object WildcardType extends Type {
+    override def typeSymbol: Symbol =
+      throw new UnsupportedOperationException("wildcard type doesn't have a type symbol associated")
+
+    override def lookup(name: Name)(implicit contexts: Context): Symbol =
+      throw new UnsupportedOperationException("wildcard type doesn't have any members")
+  }
+
 }

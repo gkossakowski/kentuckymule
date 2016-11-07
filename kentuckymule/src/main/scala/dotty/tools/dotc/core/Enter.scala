@@ -299,6 +299,7 @@ class Enter {
     var steps = 0
     while (!completers.isEmpty) {
       steps += 1
+      println(s"Step $steps/${steps+completers.size}")
       val completer = completers.remove()
       if (!completer.isCompleted) {
         val res = completer.complete()
@@ -698,6 +699,8 @@ object Enter {
     case t@AndTypeTree(left, right) =>
       println(s"Ignoring $t (printed because this hacky shortcut is non-trivial)")
       resolveTypeTree(left, parentLookupScope)
+    case TypeBoundsTree(EmptyTree, EmptyTree) =>
+      CompletedType(WildcardType)
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)
