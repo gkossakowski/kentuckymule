@@ -717,6 +717,19 @@ object Enter {
         case incomplete: IncompleteDependency => return incomplete
       }
       CompletedType(AppliedType(resolvedOp, Array[Type](resolvedLeftType, resolvedRightType)))
+    case SelectFromTypeTree(qualifier, name) =>
+      val resolvedQualifier = resolveTypeTree(qualifier, parentLookupScope) match {
+        case CompletedType(tpe) => tpe
+        case other => return other
+      }
+      val resolvedSelect = if (resolvedQualifier.typeSymbol.isComplete)
+        resolvedQualifier.typeSymbol.info.lookup(name)
+      else
+        return IncompleteDependency(resolvedQualifier.typeSymbol)
+      if (resolvedSelect != NoSymbol)
+        CompletedType(SymRef(resolvedSelect))
+      else
+        NotFound
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)
