@@ -42,7 +42,7 @@ object Main {
         println("Number of jobs processed: " + jobsNumber)
       }
     } finally {
-      println(s"It took ${System.currentTimeMillis() - start}")
+      println(s"It took ${System.currentTimeMillis() - start} ms")
     }
     val totalSize = countSymbols(ctx)
   }
