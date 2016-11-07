@@ -531,11 +531,7 @@ object Enter {
       var i = 0
       while (i < resolvedParents.size()) {
         val parentType = resolvedParents.get(i)
-        if (parentType.typeSymbol == NoSymbol)
-          println("ooops")
         val parentSym = parentType.typeSymbol.asInstanceOf[ClassSymbol]
-        if (parentSym.name.toString == "Main")
-          println("We have Main as parent!")
         val parentInfo = if (parentSym.info != null) parentSym.info else
           return IncompleteDependency(parentSym)
         parentType match {
