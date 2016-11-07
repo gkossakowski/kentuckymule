@@ -7,10 +7,10 @@ val kentuckymule = project.
   settings(common:_*).
   settings(
     // https://mvnrepository.com/artifact/org.scala-lang/scala-reflect
-    libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.11.8",
+    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     // https://mvnrepository.com/artifact/com.google.guava/guava
     libraryDependencies += "com.google.guava" % "guava" % "19.0",
-    libraryDependencies += "com.lihaoyi" %% "utest" % "0.4.3" % "test",
+    libraryDependencies += "com.lihaoyi" %% "utest" % "0.4.4" % "test",
     testFrameworks += new TestFramework("utest.runner.Framework")
   )
 
