@@ -151,16 +151,16 @@ object ClassFileParser extends ByteCodeReader {
   case class Annotation(typeIndex: Int, elementValuePairs: Seq[AnnotationElement]) extends ElementValue
   case class ArrayValue(values: Seq[ElementValue]) extends ElementValue
 
-  def element_value: Parser[ElementValue] = u1 >> {
-    case 'B'|'C'|'D'|'F'|'I'|'J'|'S'|'Z'|'s' => u2 ^^ ConstValueIndex
-    case 'e' => u2 ~ u2 ^~^ EnumConstValue
-    case 'c' => u2 ^^ ClassInfoIndex
-    case '@' => annotation //nested annotation
-    case '[' => u2 >> element_value.times ^^ ArrayValue
-  }
+  // def element_value: Parser[ElementValue] = u1 >> {
+  //   case 'B'|'C'|'D'|'F'|'I'|'J'|'S'|'Z'|'s' => u2 ^^ ConstValueIndex
+  //   case 'e' => u2 ~ u2 ^~^ EnumConstValue
+  //   case 'c' => u2 ^^ ClassInfoIndex
+  //   case '@' => annotation //nested annotation
+  //   case '[' => u2 >> element_value.times ^^ ArrayValue
+  // }
 
   val element_value_pair = u2 ~ element_value ^~^ AnnotationElement
-  val annotation: Parser[Annotation] = u2 ~ (u2 >> element_value_pair.times) ^~^ Annotation
+  // val annotation: Parser[Annotation] = u2 ~ (u2 >> element_value_pair.times) ^~^ Annotation
   val annotations = u2 >> annotation.times
 
   val field = u2 ~ u2 ~ u2 ~ attributes ^~~~^ Field
