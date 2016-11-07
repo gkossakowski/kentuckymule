@@ -99,6 +99,21 @@ object Main {
     val javaUtilPkg = new PackageSymbol("util".toTermName)
     javaPkg.addChild(javaUtilPkg)
 
+    // enter java.util.regex
+    val javaUtilRegexPkg = new PackageSymbol("regex".toTermName)
+    javaUtilPkg.addChild(javaUtilRegexPkg)
+    enterStubClasses(javaUtilRegexPkg, "Pattern")
+
+    // enter java.lang
+    val javaLangPkg = new PackageSymbol("lang".toTermName)
+    javaPkg.addChild(javaLangPkg)
+    enterStubClasses(javaLangPkg, "String")
+
+    // enter java.beans
+    val javaBeansPkg = new PackageSymbol("beans".toTermName)
+    javaPkg.addChild(javaBeansPkg)
+    enterStubClasses(javaBeansPkg, "Introspector")
+
     // enter scala
     val scalaPkg = new PackageSymbol("scala".toTermName)
     root.addChild(scalaPkg)
@@ -106,8 +121,10 @@ object Main {
     // enter things visible by default from Predef, scala or java.lang packages into root package
     // normally, you would have separate package for scala and java.lang that are seen from every compilation unit
     // but we don't care about details when just trying to get some performance numbers
-    enterStubClasses(root, "Nothing", "RuntimeException", "Function1", "String", "Array", "Char", "Unit", "Boolean",
-      "Option", "List", "Byte", "Int", "Long", "Float", "Double", "Short", "AnyRef", "Any", "Function2", "Seq", "Class")
+    enterStubClasses(root, "Nothing", "RuntimeException", "String", "Array", "Char", "Unit", "Boolean",
+      "Option", "List", "Byte", "Int", "Long", "Float", "Double", "Short", "AnyRef", "Any", "Seq", "Class",
+      "PartialFunction")
+    enterStubClasses(root, Seq.tabulate(23)(i => s"Function$i"): _*)
 
     // enter scala.reflect
     val reflectPkg = new PackageSymbol("reflect".toTermName)
