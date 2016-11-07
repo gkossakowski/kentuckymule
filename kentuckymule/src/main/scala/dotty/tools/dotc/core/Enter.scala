@@ -625,6 +625,9 @@ object Enter {
     // TODO: we horribly ignore tuples for now
     case Tuple(trees) =>
       resolveTypeTree(trees.head, parentLookupScope)
+    // TODO: we ignore by name argument `=> T` and resolve it as `T`
+    case ByNameTypeTree(res) =>
+      resolveTypeTree(res, parentLookupScope)
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)
