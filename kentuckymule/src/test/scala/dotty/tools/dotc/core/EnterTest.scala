@@ -215,6 +215,25 @@ object EnterTest extends TestSuite {
         assert(resultTypeSym == Tsym)
       }
     }
+    'referToClassTypeParamInConstructor {
+      implicit val context = ctx
+      val src = "class A[T](x: T)"
+      val enter = enterToSymbolTable(src, ctx)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val Tsym = Asym.typeParams.lookup("T".toTypeName)
+      assert(Tsym != NoSymbol)
+      locally {
+        val xDefSym = Asym.decls.lookup("x".toTermName)(ctx).asInstanceOf[ValDefSymbol]
+        assert(xDefSym.info != null)
+        assert(xDefSym.info.resultType.isInstanceOf[SymRef])
+        val SymRef(resultTypeSym) = xDefSym.info.resultType
+        assert(resultTypeSym == Tsym)
+      }
+    }
     'inheritedReferringToTypeMember {
       implicit val context = ctx
       val src = "class B extends A[C]; class A[T] { val a: T }; class C"

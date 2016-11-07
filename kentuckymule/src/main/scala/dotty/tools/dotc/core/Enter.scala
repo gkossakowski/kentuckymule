@@ -20,16 +20,25 @@ class Enter {
 
   val completers: util.Queue[Completer] = new util.ArrayDeque[Completer]()
 
-  class LookupClassTemplateScope(classSym: ClassSymbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
+  class ClassSignatureLookupScope(classSym: ClassSymbol, parentScope: LookupScope) extends LookupScope {
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
-      val classFoundSym = classSym.lookup(name)
-      if (classFoundSym != NoSymbol)
-        return LookedupSymbol(classFoundSym)
       if (name.isTypeName) {
         val tParamFoundSym = classSym.typeParams.lookup(name)
         if (tParamFoundSym != NoSymbol)
           return LookedupSymbol(tParamFoundSym)
       }
+      parentScope.lookup(name)
+    }
+
+    override def replaceImports(imports: ImportsLookupScope): LookupScope =
+      throw new UnsupportedOperationException("There can't be any imports declared withing class signature")
+  }
+
+  class LookupClassTemplateScope(classSym: ClassSymbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
+    override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
+      val classFoundSym = classSym.lookup(name)
+      if (classFoundSym != NoSymbol)
+        return LookedupSymbol(classFoundSym)
       val impFoundSym = imports.lookup(name)
       impFoundSym match {
         case _: LookedupSymbol | _: IncompleteDependency => impFoundSym
@@ -142,6 +151,10 @@ class Enter {
       val moduleImports = new ImportsCollector(moduleLookupScope)
       new LookupScopeContext(moduleImports, moduleLookupScope)
     }
+    def pushClassSignatureLookupScope(classSymbol: ClassSymbol): LookupScopeContext = {
+      val classSignatureLookupScope = new ClassSignatureLookupScope(classSymbol, parentScope)
+      new LookupScopeContext(imports, classSignatureLookupScope)
+    }
     def pushClassLookupScope(classSym: ClassSymbol): LookupScopeContext = {
       val classLookupScope = new LookupClassTemplateScope(classSym, imports.snapshot(), parentScope)
       // imports collector receives class lookup scope so the following construct is supported
@@ -207,6 +220,14 @@ class Enter {
         tParamIndex += 1
       }
       owner.addChild(classSym)
+      // surprisingly enough, this conditional lets us save over 100 ops/s for the completeMemberSigs benchmark
+      // we get 1415 ops/s if we unconditionally push class signature lookup scope vs 1524 ops/s with the condition
+      // below
+      val classSignatureLookupScopeContext =
+        if (tParamIndex > 0)
+          parentLookupScopeContext.pushClassSignatureLookupScope(classSym)
+        else
+          parentLookupScopeContext
       assert(tmpl.constr.vparamss.size <= 1, "Multiple value parameter lists are not supported for class constructor")
       if (tmpl.constr.vparamss.size == 1) {
         var remainingVparams = tmpl.constr.vparamss.head
@@ -216,10 +237,10 @@ class Enter {
           // we're entering constructor parameter as a val declaration in a class
           // TODO: these parameters shouldn't be visible as members outside unless they are declared as vals
           // compare: class Foo(x: Int) vs class Foo(val x: Int)
-          enterTree(vparam, classSym, parentLookupScopeContext)
+          enterTree(vparam, classSym, classSignatureLookupScopeContext)
         }
       }
-      val lookupScopeContext = parentLookupScopeContext.pushClassLookupScope(classSym)
+      val lookupScopeContext = classSignatureLookupScopeContext.pushClassLookupScope(classSym)
       val completer = new TemplateMemberListCompleter(classSym, tmpl, lookupScopeContext.parentScope)
       completers.add(completer)
       classSym.completer = completer
