@@ -58,6 +58,24 @@ class Enter {
       new LookupModuleTemplateScope(moduleSym, imports, parentScope)
   }
 
+  class LookupDefDefScope(defSym: DefDefSymbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
+    override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
+      if (name.isTypeName) {
+        val tParamFoundSym = defSym.typeParams.lookup(name)
+        if (tParamFoundSym != NoSymbol)
+          return LookedupSymbol(tParamFoundSym)
+      }
+      val impFoundSym = imports.lookup(name)
+      impFoundSym match {
+        case _: LookedupSymbol | _: IncompleteDependency => impFoundSym
+        case _ => parentScope.lookup(name)
+      }
+    }
+
+    override def replaceImports(imports: ImportsLookupScope): LookupScope =
+      new LookupDefDefScope(defSym, imports, parentScope)
+  }
+
   object RootPackageLookupScope extends LookupScope {
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
       val sym = context.definitions.rootPackage.lookup(name)
@@ -134,7 +152,7 @@ class Enter {
       new LookupScopeContext(classImports, classLookupScope)
     }
 
-    def newSimpleMemberLookupScope: LookupScope = {
+    private def simpleMemberLookupScope(): LookupScope = {
       if (cachedSimpleMemberLookupScope != null)
         cachedSimpleMemberLookupScope
       else {
@@ -142,6 +160,14 @@ class Enter {
         cachedSimpleMemberLookupScope
       }
     }
+
+    def newValDefLookupScope(valDefSymbol: ValDefSymbol): LookupScope = simpleMemberLookupScope()
+    def newDefDefLookupScope(defDefSymbol: DefDefSymbol): LookupScope =
+      if (defDefSymbol.typeParams.size > 0) {
+        new LookupDefDefScope(defDefSymbol, imports.snapshot(), parentScope)
+      } else {
+        simpleMemberLookupScope()
+      }
   }
 
   private def enterTree(tree: Tree, owner: Symbol, parentLookupScopeContext: LookupScopeContext)(implicit context: Context): Unit = tree match {
@@ -204,12 +230,21 @@ class Enter {
       owner.addChild(typeSymbol)
     case t@ValDef(name, _, _) =>
       val valSym = new ValDefSymbol(name)
-      val completer = new ValDefCompleter(valSym, t, parentLookupScopeContext.newSimpleMemberLookupScope)
+      val completer = new ValDefCompleter(valSym, t, parentLookupScopeContext.newValDefLookupScope(valSym))
       valSym.completer = completer
       owner.addChild(valSym)
     case t: DefDef =>
-      val defSym = new DefDefSymbol(t.name)
-      val completer = new DefDefCompleter(defSym, t, parentLookupScopeContext.newSimpleMemberLookupScope)
+      val defSym = DefDefSymbol(t.name)
+      var remainingTparams = t.tparams
+      var tParamIndex = 0
+      while (remainingTparams.nonEmpty) {
+        val tParam = remainingTparams.head
+        // TODO: setup completers for TypeDef (resolving bounds, etc.)
+        defSym.typeParams.enter(TypeParameterSymbol(tParam.name, tParamIndex))
+        remainingTparams = remainingTparams.tail
+        tParamIndex += 1
+      }
+      val completer = new DefDefCompleter(defSym, t, parentLookupScopeContext.newDefDefLookupScope(defSym))
       defSym.completer = completer
       owner.addChild(defSym)
     case _ =>

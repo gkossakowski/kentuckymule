@@ -83,6 +83,7 @@ object Symbols {
   sealed case class DefDefSymbol(override val name: TermName) extends TermSymbol(name) {
     var info: MethodInfoType = _
     var completer: DefDefCompleter = _
+    val typeParams: MutableScope = Scopes.newScope
     def completeInfo()(implicit context: Context): CompletionResult = {
       completer.complete()
     }
