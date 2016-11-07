@@ -29,15 +29,18 @@ object Main {
   }
 
   def main(args: Array[String]): Unit = {
-    val ctx = initCtx.fresh
-
     val start = System.currentTimeMillis()
-    for (i <- 1 to 1) {
-      ctx.definitions.rootPackage.clear()
-      val jobsNumber = processScalap(ctx)
-      println("Number of jobs processed: " + jobsNumber)
+
+    val ctx = initCtx.fresh
+    try {
+      for (i <- 1 to 1) {
+        ctx.definitions.rootPackage.clear()
+        val jobsNumber = processScalap(ctx)
+        println("Number of jobs processed: " + jobsNumber)
+      }
+    } finally {
+      println(s"It took ${System.currentTimeMillis() - start}")
     }
-    println(s"It took ${System.currentTimeMillis() - start}")
     val totalSize = countSymbols(ctx)
   }
 
