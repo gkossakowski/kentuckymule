@@ -1,14 +1,11 @@
 package dotty.tools
 package dotc
 
-import java.nio.file.Paths
-
 import dotty.tools.dotc.core.Contexts.ContextBase
 import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.core.Enter
 import dotty.tools.dotc.util.{NoSource, SourceFile}
 import dotc.core.Symbols._
-import dotty.tools.dotc.core.Enter.{CompletionResult, TemplateMemberListCompleter}
 
 import scala.reflect.io.PlainFile
 
