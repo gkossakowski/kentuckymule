@@ -10,6 +10,9 @@ val kentuckymule = project.
     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     // https://mvnrepository.com/artifact/com.google.guava/guava
     libraryDependencies += "com.google.guava" % "guava" % "19.0",
+    // https://mvnrepository.com/artifact/jline/jline
+    // included for progress bar support
+    libraryDependencies += "jline" % "jline" % "2.14.2",
     libraryDependencies += "com.lihaoyi" %% "utest" % "0.4.4" % "test",
     testFrameworks += new TestFramework("utest.runner.Framework")
   )

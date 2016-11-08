@@ -295,7 +295,8 @@ class Enter {
       }
   }
 
-  def processJobQueue(memberListOnly: Boolean)(implicit ctx: Context): Int = {
+  def processJobQueue(memberListOnly: Boolean,
+                      listener: JobQueueProgressListener = NopJobQueueProgressListener)(implicit ctx: Context): Int = {
     var steps = 0
     while (!completers.isEmpty) {
       steps += 1
@@ -335,7 +336,9 @@ class Enter {
             valDefSym.info = tpe
         }
       }
+      listener.thick(completers.size, steps)
     }
+    listener.allComplete()
     steps
   }
 
@@ -738,6 +741,15 @@ object Enter {
           sys.error(s"Can't resolve selector $other")
         case incomplete: IncompleteDependency => incomplete
       }
+  }
+
+  trait JobQueueProgressListener {
+    def thick(queueSize: Int, completed: Int): Unit
+    def allComplete(): Unit
+  }
+  object NopJobQueueProgressListener extends JobQueueProgressListener {
+    override def thick(queueSize: Int, completed: Int): Unit = ()
+    override def allComplete(): Unit = ()
   }
 
   private def asScalaList[T](javaList: util.ArrayList[T]): List[T] = {

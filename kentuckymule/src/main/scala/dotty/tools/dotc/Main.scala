@@ -49,6 +49,7 @@ object Main {
 
   def processScalap(implicit context: Context): Int = {
     import java.nio.file.Paths
+    println("Calculating outline types for scalap sources...")
     val projectDir = Paths.get(".").toAbsolutePath.toString
     val compilationUnits = for (filePath <- ScalapHelper.scalapFiles(projectDir)) yield {
       val source = getSource(filePath)(context)
@@ -62,8 +63,20 @@ object Main {
     for (compilationUnit <- compilationUnits)
       enter.enterCompilationUnit(compilationUnit)(context)
 
-    val jobsNumber = enter.processJobQueue(memberListOnly = false)(context)
+    val progressListener = if (context.verbose) Enter.NopJobQueueProgressListener else new ProgressBarListener
+    val jobsNumber = enter.processJobQueue(memberListOnly = false, progressListener)(context)
     jobsNumber
+  }
+
+  class ProgressBarListener extends Enter.JobQueueProgressListener {
+    val progressBar = new ProgressBar(1)
+    override def thick(queueSize: Int, completed: Int): Unit = {
+      progressBar.total = queueSize + completed
+      progressBar.curr = completed
+      progressBar.render()
+    }
+
+    override def allComplete(): Unit = println()
   }
 
 }
