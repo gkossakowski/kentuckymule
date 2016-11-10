@@ -336,6 +336,16 @@ class Enter {
           case CompletedType(tpe: ValInfoType) =>
             val valDefSym = completer.sym.asInstanceOf[ValDefSymbol]
             valDefSym.info = tpe
+          // error cases
+          case completed: CompletedType =>
+            sys.error(s"Unexpected completed type $completed returned by completer for ${completer.sym}")
+          case incomplete@IncompleteDependency(_: TypeDefSymbol) =>
+            throw new UnsupportedOperationException("TypeDef support is not implemented yet")
+          case incomplete@(IncompleteDependency(_: TypeParameterSymbol) | IncompleteDependency(NoSymbol) |
+                           IncompleteDependency(_: PackageSymbol)) =>
+            sys.error(s"Unexpected incomplete dependency $incomplete")
+          case NotFound =>
+            sys.error(s"The completer for ${completer.sym} finished with a missing dependency")
         }
       }
       listener.thick(completers.size, steps)
@@ -355,6 +365,8 @@ class Enter {
         case _: TypeDefSymbol =>
           if (ctx.verbose)
             println(s"Ignoring type def $decl in ${sym.name}")
+        case _: TypeParameterSymbol | _: PackageSymbol | NoSymbol =>
+          sys.error(s"Unexpected class declaration: $decl")
       }
       remainingDecls = remainingDecls.tail
     }
@@ -446,6 +458,17 @@ object Enter {
       case modSym: ModuleSymbol => modSym.info.lookup(name)
       case pkgSym: PackageSymbol => pkgSym.info.lookup(name)
       case valSym: ValDefSymbol => valSym.info.lookup(name)
+      case _: TypeDefSymbol =>
+        throw new UnsupportedOperationException("Support for type defs is not implemented yet")
+      case _: DefDefSymbol =>
+        sys.error("Selecting from unapplied defs is not legal in Scala")
+      case _: TypeParameterSymbol =>
+        // TODO: actually, not true, it makes sense to select members of a type parameter by looking at its upper bound
+        // but this is not implemented yet
+        // for example this is legal: class Foo[T <: Bar] { val x: T; val y: T.boo }; class Bar { val boo: ... }
+        sys.error("Unexpected selection from type parameter symbol, it should have been substituted by type argument")
+      case NoSymbol =>
+        sys.error("Ooops. Trying to select a member of NoSymbol (this is a bug)")
     }
   }
 
@@ -530,7 +553,7 @@ object Enter {
         val resolved = resolveTypeTree(parent, lookupScope)
         resolved match {
           case CompletedType(tpe) => resolvedParents.add(tpe)
-          case res: IncompleteDependency => return res
+          case _: IncompleteDependency | NotFound => return resolved
         }
         remainingParents = remainingParents.tail
       }

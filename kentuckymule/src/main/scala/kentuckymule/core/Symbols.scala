@@ -12,7 +12,7 @@ class Symbols { this: Contexts.Context =>
 }
 
 object Symbols {
-  abstract class Symbol(val name: Name) {
+  abstract sealed class Symbol(val name: Name) {
 
     def info: Type
 
@@ -33,8 +33,8 @@ object Symbols {
     def isComplete: Boolean
     def decls: Scope = scope
   }
-  abstract class TermSymbol(name: Name) extends Symbol(name)
-  abstract class TypeSymbol(name: Name) extends Symbol(name)
+  abstract sealed class TermSymbol(name: Name) extends Symbol(name)
+  abstract sealed class TypeSymbol(name: Name) extends Symbol(name)
 
   final class PackageSymbol(name: Name) extends TermSymbol(name) {
     val info: Type = new PackageInfoType(this)
