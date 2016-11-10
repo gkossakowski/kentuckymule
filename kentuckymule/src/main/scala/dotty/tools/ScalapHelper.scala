@@ -125,10 +125,10 @@ object ScalapHelper {
     }
   }
 
-  def scalapFiles(kentuckyMuleProjectDir: String) = {
+  def scalapFiles(kentuckyMuleProjectDir: String): Array[String] = {
     import java.nio.file.Paths
     val projectDir = Paths.get(kentuckyMuleProjectDir)
-    Seq(
+    val sourcesFiles = Seq(
       "sample-projects/scalap/scala/tools/scalap/Arguments.scala",
       "sample-projects/scalap/scala/tools/scalap/ByteArrayReader.scala",
       "sample-projects/scalap/scala/tools/scalap/Classfile.scala",
@@ -154,5 +154,6 @@ object ScalapHelper {
       "sample-projects/scalap/scala/tools/scalap/scalax/Util/StringUtil.scala") map {
       relativePath => projectDir.resolve(relativePath).toAbsolutePath.toString
     }
+    sourcesFiles.toArray
   }
 }
