@@ -2,7 +2,7 @@ package dotty.tools.dotc
 package printing
 
 import core._
-import Texts._, Types._, Flags._, Names._, NameOps._, Constants._
+import Texts._, kentuckymule.core.Types._, Flags._, Names._, NameOps._, Constants._
 import Contexts.Context
 import StdNames.{nme, tpnme}
 import ast.Trees._, ast._

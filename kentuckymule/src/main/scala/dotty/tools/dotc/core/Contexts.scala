@@ -4,7 +4,7 @@ package core
 
 import Decorators._
 import Names._
-import Types._
+import kentuckymule.core.Types._
 import NameOps._
 import Flags.ParamAccessor
 import util.Positions._

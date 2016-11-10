@@ -1,4 +1,4 @@
-package dotty.tools.dotc
+package kentuckymule
 
 import jline.{Terminal, TerminalFactory}
 

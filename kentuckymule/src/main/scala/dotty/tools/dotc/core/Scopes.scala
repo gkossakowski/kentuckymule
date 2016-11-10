@@ -6,7 +6,7 @@
 package dotty.tools.dotc
 package core
 
-import Symbols._
+import kentuckymule.core.Symbols._
 import Flags.Implicit
 import Names._
 import Decorators._

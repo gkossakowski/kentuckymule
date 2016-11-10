@@ -1,10 +1,9 @@
-package dotty.tools
+package kentuckymule
 
-import dotty.tools.dotc.core
 import dotty.tools.dotc.core.Contexts.Context
-import dotty.tools.dotc.core.Enter
-import dotty.tools.dotc.core.Enter.CompletionResult
-import dotty.tools.dotc.core.Symbols.{ClassSymbol, PackageSymbol}
+import kentuckymule.core.Enter
+import kentuckymule.core.Symbols.{ClassSymbol, PackageSymbol}
+import Enter.CompletionResult
 
 object ScalapHelper {
   import dotty.tools.dotc.core.Decorators._
@@ -111,7 +110,7 @@ object ScalapHelper {
 
   private class StubClassCompleter(sym: ClassSymbol) extends Enter.Completer(sym) {
     override def complete()(implicit context: Context): CompletionResult = {
-      import core.Types._
+      import kentuckymule.core.Types._
       Enter.CompletedType(new ClassInfoType(sym))
     }
     override def isCompleted: Boolean = false

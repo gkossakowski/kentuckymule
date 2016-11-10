@@ -1,10 +1,8 @@
 package dotty.tools.dotc.core
 
-import dotty.tools.dotc.{CompilationUnit, parsing}
-import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
-import Symbols._
+import dotty.tools.dotc.core.Contexts.ContextBase
+import kentuckymule.core.Symbols._
 import Decorators._
-import Names._
 import utest._
 
 object ScopeTest extends TestSuite {

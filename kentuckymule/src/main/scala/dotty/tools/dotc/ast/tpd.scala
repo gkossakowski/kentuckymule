@@ -3,7 +3,7 @@ package dotc
 package ast
 
 import core._
-import Types._, Contexts._
+import kentuckymule.core.Types._, Contexts._
 
 
 /** Some creators for typed trees */

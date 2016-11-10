@@ -1,12 +1,16 @@
-package dotty.tools.dotc.core
+package kentuckymule
 
-import dotty.tools.dotc.{CompilationUnit, parsing}
-import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
-import Symbols._
-import Decorators._
-import Names._
-import dotty.tools.dotc.core.Enter.{CompletedType, IncompleteDependency, TemplateMemberListCompleter}
-import dotty.tools.dotc.core.Types.{ClassInfoType, SymRef}
+import dotty.tools.dotc
+import dotc.core.Contexts.{Context, ContextBase}
+import dotc.core.StdNames
+import dotc.{CompilationUnit, parsing}
+import kentuckymule.core.Enter
+import kentuckymule.core.Enter.TemplateMemberListCompleter
+import kentuckymule.core.Symbols._
+import kentuckymule.core.Types.SymRef
+import dotc.core.IOUtils
+import dotc.core.Decorators._
+import dotc.core.Names.Name
 import utest._
 
 object EnterTest extends TestSuite {

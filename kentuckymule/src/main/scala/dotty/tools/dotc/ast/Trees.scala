@@ -3,7 +3,7 @@ package dotc
 package ast
 
 import core._
-import Types._
+import kentuckymule.core.Types._
 import Names._, Flags._, util.Positions._, Contexts._, Constants._
 //import SymDenotations._, Symbols._
 //import Denotations._

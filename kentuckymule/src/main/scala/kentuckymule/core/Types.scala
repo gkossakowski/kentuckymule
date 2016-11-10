@@ -1,12 +1,12 @@
-package dotty.tools
-package dotc
-package core
+package kentuckymule.core
 
-import Names._
-import language.implicitConversions
-import Scopes._
-import Symbols._
-import Contexts.Context
+import dotty.tools.dotc.core.Contexts.Context
+import dotty.tools.dotc.core.Names.Name
+import dotty.tools.dotc.core.Scopes._
+import dotty.tools.sharable
+import kentuckymule.core.Symbols._
+
+import scala.language.implicitConversions
 
 object Types {
 

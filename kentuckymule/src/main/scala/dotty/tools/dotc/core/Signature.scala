@@ -1,7 +1,7 @@
 package dotty.tools.dotc
 package core
 
-import Names._, Types._, Contexts._, StdNames._
+import Names._, kentuckymule.core.Types._, Contexts._, StdNames._
 
 /** The signature of a denotation.
  *  Overloaded denotations with the same name are distinguished by

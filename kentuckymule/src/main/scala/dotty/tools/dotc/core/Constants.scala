@@ -1,7 +1,7 @@
 package dotty.tools.dotc
 package core
 
-import Types._, Contexts._
+import kentuckymule.core.Types._, Contexts._
 import printing.Printer
 
 object Constants {

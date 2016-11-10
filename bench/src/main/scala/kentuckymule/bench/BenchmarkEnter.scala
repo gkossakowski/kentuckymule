@@ -1,9 +1,9 @@
 package kentuckymule.bench
 
 import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
-import dotty.tools.dotc.core.Enter
 import dotty.tools.dotc.{CompilationUnit, parsing}
 import dotty.tools.dotc.util.{NoSource, SourceFile}
+import kentuckymule.core.Enter
 import org.openjdk.jmh.annotations._
 
 import scala.reflect.io.PlainFile

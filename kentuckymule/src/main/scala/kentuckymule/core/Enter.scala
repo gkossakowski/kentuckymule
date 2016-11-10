@@ -1,23 +1,25 @@
-package dotty.tools.dotc
-package core
+package kentuckymule.core
 
 import java.util
 
-import dotty.tools.dotc.core.Contexts.Context
+import dotty.tools.dotc
+import dotc.ast.Trees._
+import dotc.core.Contexts.Context
+import dotc.core.Names.{Name, TypeName}
+import dotc.{CompilationUnit, ast}
+import dotc.core.Decorators._
+import dotc.core.StdNames._
 import Symbols._
-import ast.Trees._
-import Names.{Name, TypeName}
 import Types._
-import StdNames.nme
-import Decorators._
+import dotc.core.TypeOps
 
 /**
   * Creates symbols for declarations and enters them into a symbol table.
   */
 class Enter {
 
-  import ast.untpd._
   import Enter._
+  import ast.untpd._
 
   val completers: util.Queue[Completer] = new util.ArrayDeque[Completer]()
 

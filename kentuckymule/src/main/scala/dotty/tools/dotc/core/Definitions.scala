@@ -2,10 +2,10 @@ package dotty.tools
 package dotc
 package core
 
-import Types._
+import kentuckymule.core.Types._
 import Contexts._
 import dotty.tools.dotc.core.Names.Name
-import dotty.tools.dotc.core.Symbols.{NoSymbol, PackageSymbol, Symbol}
+import kentuckymule.core.Symbols._
 //import Flags._, Scopes._, Decorators._, NameOps._, util.Positions._, Periods._
 //import unpickleScala2.Scala2Unpickler.ensureConstructor
 //import scala.annotation.{ switch, meta }

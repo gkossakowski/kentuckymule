@@ -1,7 +1,7 @@
 package dotty.tools
 package dotc
 
-import dotty.tools.dotc.core.Types.Type
+import kentuckymule.core.Types.Type
 import util.SourceFile
 import ast.{untpd}
 

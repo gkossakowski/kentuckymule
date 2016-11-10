@@ -1,11 +1,10 @@
-package dotty.tools
-package dotc
+package kentuckymule
 
-import dotty.tools.dotc.core.Contexts.ContextBase
-import dotty.tools.dotc.core.Contexts.Context
-import dotty.tools.dotc.core.Enter
+import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
+import kentuckymule.core.Symbols.Symbol
 import dotty.tools.dotc.util.{NoSource, SourceFile}
-import dotc.core.Symbols._
+import dotty.tools.dotc.{CompilationUnit, parsing}
+import kentuckymule.core.Enter
 
 import scala.reflect.io.PlainFile
 

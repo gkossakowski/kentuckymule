@@ -2,8 +2,8 @@ package dotty.tools.dotc.core
 
 import java.util
 
-import Symbols._
-import Types._
+import kentuckymule.core.Symbols._
+import kentuckymule.core.Types._
 
 object TypeOps {
 

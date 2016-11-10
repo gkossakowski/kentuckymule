@@ -3,7 +3,7 @@ package printing
 
 import core._
 import Texts._, ast.Trees._
-import Types.Type, Contexts.Context, Constants.Constant,
+import kentuckymule.core.Types.Type, Contexts.Context, Constants.Constant,
        Names.Name
 
 /** The base class of all printers

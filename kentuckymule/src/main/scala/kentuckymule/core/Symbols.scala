@@ -1,15 +1,14 @@
-package dotty.tools.dotc.core
+package kentuckymule.core
 
-import Names.{Name, TypeName, TermName}
-
-import Decorators._
-import Scopes.{MutableScope, Scope}
-import Contexts.Context
-import Types._
-import dotty.tools.dotc.core.Enter._
+import dotty.tools.dotc.core.Contexts.Context
+import dotty.tools.dotc.core.Names.{Name, TermName, TypeName}
+import dotty.tools.dotc.core.Scopes.{MutableScope, Scope}
+import Types.{ClassInfoType, MethodInfoType, ModuleInfoType, NoType, PackageInfoType, Type, ValInfoType}
+import dotty.tools.dotc.core.{Contexts, Scopes}
+import dotty.tools.dotc.core.Decorators._
+import kentuckymule.core.Enter._
 
 class Symbols { this: Contexts.Context =>
-  import Symbols._
 }
 
 object Symbols {
