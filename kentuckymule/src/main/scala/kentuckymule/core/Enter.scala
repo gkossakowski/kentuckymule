@@ -211,7 +211,7 @@ class Enter {
       for (stat <- tmpl.body) enterTree(stat, modClsSym, lookupScopeContext)
     // class or trait
     case t@TypeDef(name, tmpl: Template) if t.isClassDef =>
-      val classSym = new ClassSymbol(name)
+      val classSym = ClassSymbol(name)
       // t.tParams is empty for classes, the type parameters are accessible thorugh its primary constructor
       var remainingTparams = tmpl.constr.tparams
       var tParamIndex = 0
@@ -250,10 +250,10 @@ class Enter {
       for (stat <- tmpl.body) enterTree(stat, classSym, lookupScopeContext)
     // type alias or type member
     case TypeDef(name, _) =>
-      val typeSymbol = new TypeDefSymbol(name)
+      val typeSymbol = TypeDefSymbol(name)
       owner.addChild(typeSymbol)
     case t@ValDef(name, _, _) =>
-      val valSym = new ValDefSymbol(name)
+      val valSym = ValDefSymbol(name)
       val completer = new ValDefCompleter(valSym, t, parentLookupScopeContext.newValDefLookupScope(valSym))
       valSym.completer = completer
       owner.addChild(valSym)
