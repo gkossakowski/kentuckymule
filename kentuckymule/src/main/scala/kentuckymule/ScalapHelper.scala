@@ -118,7 +118,7 @@ object ScalapHelper {
 
   private def enterStubClasses(pkg: PackageSymbol, classNames: String*)(implicit context: Context): Unit = {
     for (className <- classNames) {
-      val cls = ClassSymbol(className.toTypeName)
+      val cls = ClassSymbol(className.toTypeName, pkg)
       cls.completer = new StubClassCompleter(cls)
       pkg.addChild(cls)
     }

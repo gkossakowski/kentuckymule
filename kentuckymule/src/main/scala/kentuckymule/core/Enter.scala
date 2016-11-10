@@ -194,8 +194,8 @@ class Enter {
     case imp: Import =>
       parentLookupScopeContext.addImport(imp)
     case ModuleDef(name, tmpl) =>
-      val modClsSym = ClassSymbol(name)
-      val modSym = ModuleSymbol(name, modClsSym)
+      val modClsSym = ClassSymbol(name, owner)
+      val modSym = ModuleSymbol(name, modClsSym, owner)
       owner.addChild(modSym)
       val lookupScopeContext = parentLookupScopeContext.pushModuleLookupScope(modSym)
       locally {
@@ -211,7 +211,7 @@ class Enter {
       for (stat <- tmpl.body) enterTree(stat, modClsSym, lookupScopeContext)
     // class or trait
     case t@TypeDef(name, tmpl: Template) if t.isClassDef =>
-      val classSym = ClassSymbol(name)
+      val classSym = ClassSymbol(name, owner)
       // t.tParams is empty for classes, the type parameters are accessible thorugh its primary constructor
       var remainingTparams = tmpl.constr.tparams
       var tParamIndex = 0
