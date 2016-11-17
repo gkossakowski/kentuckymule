@@ -293,4 +293,92 @@ resolves identifiers using class `Foo` scope. This helps both CPU and memory per
 
 While having imports at arbitrary locations in Scala programs is handy, there's an implementation cost to this feature. Fortunately enough, with care, one can support this feature without a big effect on performance.
 
+## Lookup performance
+
+Resolving identifiers boils down to looking up declarations according to scoping
+rules and following visible import clauses. The lookup is implemented by
+subclasses of `LookupScope`. The creation of `LookupScope` instances is
+performed by `LookupScopeContext` which is kept in sync with walked tree during
+entering symbols. Each type completer receives a `LookupScope` instance that it
+will use to resolve identifiers while performing type completion.
+
+Resolving identifiers is a very common operation so it must be fast. The
+implementation strategy I picked in Kentucky Mule is to have a very thin layer
+of logic behind the code that needs to perform a name lookup and calls to the
+`Scope` instances that actually perform the lookup. The `Scope` is a hash table
+implementation specialized for `Name -> Symbol` lookup. I borrowed the `Scope`
+implementation from dotty, originally due to its fast insertion performance (see
+the section on performance of entering symbols).
+
+To illustrate why having a thin layer of lookup logic is important for
+performance, I'd like to show one example from Kentucky Mule implementation:
+
+```scala
+// surprisingly enough, this conditional lets us save over 100 ops/s for the completeMemberSigs benchmark
+// we get 1415 ops/s if we unconditionally push class signature lookup scope vs 1524 ops/s with the condition
+// below
+val classSignatureLookupScopeContext =
+if (tParamIndex > 0)
+  parentLookupScopeContext.pushClassSignatureLookupScope(classSym)
+else
+  parentLookupScopeContext
+```
+
+This logic is responsible for checking if a class we're processing at the moment
+is generic (has type parameters) and sets up lookup scope instance accordingly.
+The idea is that if there are type parameters, we need a special lookup scope
+instance that will make those parameters available to declarations inside a
+class. For example:
+
+```
+class Foo[T, U] {
+  val x: T // when typechecking val x, we'll need to resolve T
+}
+```
+
+However, if a class doesn't introduce any new type parameters, we don't need a
+lookup scope dedicated to class's signature because there no new identifiers
+that are introduced. This distinction between generic and non-generic classes
+contributes to over 6% better performance of typechecking `scalap` sources. I
+found such a big difference surprising. I didn't expect an uncoditional creation
+of an empty lookup scope dedicated to class signature to introduce such a slow
+down.
+
+### Imports lookup implementation
+
+Imports have a pretty big impact on overall implementation of identifier
+lookups. Import clauses are handled by `ImportsLookupScope` that is effectively
+a view over an array of import clauses. Let's consider this example:
+
+```scala
+class Foo {
+  import Bar.a
+  import a.b
+  def x: b.type = ...
+  import Bar.c
+  import c.D
+  def y: D = ...
+}
+```
+
+In Kentucky Mule, I collect all four import clauses into one array. The lookup
+scope instance for method `x` receives an instance of `ImportsLookupScope` that
+points at the the index of the last visible import to the method `x`. In our
+example, it's the `import a.b` clause (which has index 1). Similarly, the method
+`y` will get `ImportsLookupScope` instance that points at `import c.D` clause
+(with index 3) in the array of all import clauses. The array itself is shared
+between all lookup scope instances. I picked that strategy for two reasons:
+
+  1. Performance - I wanted to have a very fast way of searching all import
+  clauses and iterating over an array is the fastest for short sequences
+  2. Correctness - previous imports need to be visible while completing subsequent
+  imports
+
+To illustrate the second point, the `import a.b` refers to just imported `Bar.a`
+so when I complete `a.b`, I need to take into account `Bar.a`. I found it's the
+easiest to do by having all imports in one array and then complete them in the
+top-down order (so previous imports can be taken into account) but perform
+lookups in bottom-up order (which is respecting shadowing Scala rules). Having a
+datastructure that lets me traverse efficently in both directions was a reason I
+picked an Array.
 
