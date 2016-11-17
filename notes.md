@@ -174,5 +174,123 @@ class Foo2500 {
 class Base
 ```
 
+# Completing outline types
+
+Outline types are very simplified Scala types that support just two operations:
+member listing and lookup by name. Outline type doesn't support subtype checks
+so nothing that relies on that check is supported either: e.g. computing least
+upper bound (LUBs). LUBs are really important Scala typechecking. They are used
+in typechecking expressions, e.g. `if` expression with unifying types of
+branches, or for unifying signatures of methods inherited from multiple traits
+(as seen in Scala collections library).
+
+The outline types support one important use case: calculation of dependencies
+between symbols (e.g. classes). This enables an easy and an efficient
+parallelization or even distribution of the proper Scala typechecking because
+scheduling and synchronization problem is solved. Check out my blog post
+
+Computation of outline types can be thought of as a pre-typechecking phase. For
+outline types to be useful for scheduling the real typechecking, they have to be
+at least an order of magnitude faster than the real typechecking. Only this way
+the distribution or the parallelization would have a chance to actually bring
+speed ups.
+
+## Resolving identifiers
+
+One of the most important tasks in typechecking is resolving identifiers. Both
+outline and real typechecking need it. Let's see with an example what resolving
+identifiers is about:
+
+```
+class Foo {
+  class A
+  def f1: A = ...
+  import Bar.A
+  def f2: A = ...
+}
+
+object Bar {
+  class A
+}
+```
+
+When the result type of methods `f1` and `f2` is calculated, the typechecker
+needs to understand what identifier `A` refers to. That's called resolving
+identifiers. In the example, the result type of method `f1` is the type `Foo#A`
+but the result type of method `f2` is the type `Bar#Foo`. For the typechecker to
+figure it out, it had to see the following things:
+
+   1. The method `f1` is declared in the class `Foo` so it sees all class
+   members, e.g. the class `A`
+   2. The method `f2` is preceeded with an import
+   statement that has to be taken into account.
+   3. The import statement refers to an identifier `Bar` and the typechecker needs to realize that the `Bar`
+   refers to an object is declared in the same file as `Foo` and it's visisble
+   to the import statement. Note that the reference `Bar` in the import
+   statement points at is an object declared further down the source file.
+
+Resolving identifiers is a fairly complicated task in Scala due to Scala's
+scoping rules. For example, the object `Bar` could have inherited class `A` as a
+member from some other parent class.
+
+The exact rules are explained in [Chapter 2](http://www.scala-
+lang.org/files/archive/spec/2.11/02-identifiers-names-and-scopes.html) of the
+Scala Language Specification.
+
+## Scope of import clauses
+
+I'd like to highlight an irregurality of `import` clauses compared to other ways
+of introducing bindings (names that identifiers resolve to): declarations,
+inheritance, package clauses. Let's look at a modified version of the example
+from previous section:
+
+```
+class Foo {
+  def f1: A = ...
+  class A
+}
+```
+
+The method `f1` refers to the class `A` that is defined after the method.
+Declarations, members introduced by inheritance and members of packages are all
+accessible in random order in Scala. Contrast this with:
+
+```
+class Foo {
+  import Bar.A
+  def f2: A = ...
+}
+
+object Bar {
+  class A
+}
+```
+
+The method `f2` refers to the class `A` imported by the preceeding import
+clause. However, the imported class cannot be accessed in a random order from
+any declaration in class `Foo`. The imported name `A` is visible only to
+declarations appearing after the import clause.
+
+The order-dependence of visibility of names introduced by an import clause has
+an impact on how identifier resolution is implemented in Kentucky Mule. If I
+could ignore import clauses, the identifier resolution would become a simple
+lookup in a chain of nested scopes. However, import clauses require special
+care. The fair amount of complexity of implementation of looking up identifiers
+comes from supporting import clauses potentially appearing at an arbitrary
+point. Making it performant required a careful sharing of `LookupScope`
+instances between declarations that are not separated by import clases. In this
+example:
+
+```
+class Foo {
+  def f1: A = ...
+  def f2: A = ...
+}
+```
+
+Both method `f1` and `f2` share exactly the same `LookupScope` instance that
+resolves identifiers using class `Foo` scope. This helps both CPU and memory performance. The sharing is of `LookupScope` instances is implemented by `LookupScopeContext`.
+
+While having imports at arbitrary locations in Scala programs is handy, there's an implementation cost to this feature. Fortunately enough, with care, one can support this feature without a big effect on performance.
 
 
