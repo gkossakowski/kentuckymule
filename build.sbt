@@ -17,7 +17,6 @@ val kentuckymule = project.
     testFrameworks += new TestFramework("utest.runner.Framework")
   )
 
-lazy val bench = project.dependsOn(kentuckymule).enablePlugins(JmhPlugin).settings(common:_*).
-  settings(extrasVersion in Jmh := "0.2.17-SNAPSHOT")
+lazy val bench = project.dependsOn(kentuckymule).enablePlugins(JmhPlugin).settings(common:_*)
 
 lazy val root = (project in file(".")).aggregate(kentuckymule, bench)
