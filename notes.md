@@ -462,3 +462,33 @@ few more benefits in addition to adhering to principles I started off with:
   3. Tracking progress of typechecking is easy: I just check the size of the
   work queue.
 
+# Benchmmarks for enter
+
+Below are some sample performance numbers I collected and saved for
+just having a ballpark figures to see if I'm not losing performance
+as I continue working on the code.
+
+## 0c0661b38f0c9f00869c509c3be43735a6ac845d
+
+```
+[info] Benchmark                                  (filePath)   Mode  Cnt       Score      Error  Units
+[info] BenchmarkEnter.enter  sample-files/Typer.scala.ignore  thrpt   60  272211.967 ± 2541.271  ops/s
+[info] BenchmarkEnter.enter    sample-files/10k.scala.ignore  thrpt   60    3110.109 ±   21.727  ops/s
+```
+
+## 85602c95ff3a68b9c6187acd9aeb2ca4381d7daa: Update 10k.scala.ignore benchmark file
+
+```
+[info] Benchmark                                  (filePath)   Mode  Cnt       Score      Error  Units
+[info] BenchmarkEnter.enter  sample-files/Typer.scala.ignore  thrpt   60  275007.736 ± 1212.551  ops/s
+[info] BenchmarkEnter.enter    sample-files/10k.scala.ignore  thrpt   60    3036.487 ±   18.061  ops/s
+```
+
+## 102388171f0e615e8987e83554698f7f297d2732: Implement DefDefCompleter
+
+```
+info] Benchmark                                  (filePath)   Mode  Cnt       Score      Error  Units
+[info] BenchmarkEnter.enter  sample-files/Typer.scala.ignore  thrpt   60  242336.865 ± 1837.541  ops/s
+[info] BenchmarkEnter.enter    sample-files/10k.scala.ignore  thrpt   60    2916.501 ±   32.409  ops/s
+```
+
