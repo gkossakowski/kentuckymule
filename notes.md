@@ -382,3 +382,83 @@ lookups in bottom-up order (which is respecting shadowing Scala rules). Having a
 datastructure that lets me traverse efficently in both directions was a reason I
 picked an Array.
 
+# Completers design
+
+Completer is a piece of logic that computes ("completes") the type of a symbol
+by resolving identifiers and by looking up members of other symbols. Let me show
+you with a simple example what completers do:
+
+```scala
+class Foo(x: Bar.X)
+
+object Bar extends Abc
+class Abc { class X }
+```
+
+When typechecking the constructor of `Foo` the following steps are taken:
+
+  1. Compute the type of the constructor parameter `x`, which requires
+  resolving the `Bar` identifier and then selecting member `X` from `Bar`'s
+  type
+  2. To select member `X` from the type of `Bar`, we need to compute it: force
+  completer for the object `Bar`
+  3. The completer for the object `Bar` sees `Abc` as a parent. The completer
+  resoves `Abc` to the class declared below. In order to compute the full type
+  of the object `Bar` (e.g. list of all members), the type of `Abc` is reuired
+  4. The completer for the class `Abc` is forced. During the computation of
+  the type of the class `Abc`, the class `X` is entered as `Abc`'s member.
+  5. The completer for the object `Bar` can recognize the class `X` as an
+  inherited member of the object `Bar` and save that information in `Bar`'s
+  type
+  6. Finally, the completer for the class `Foo` can finish its work by
+  selecting the member `X` from the type of the object `Bar`
+
+Both scalac and dottyc (and many other compilers) treat completers as simple
+lazy computations that are forced on the first access.
+
+I explore a different design of completers in Kentucky Mule compared to the ones
+found in both scalac and dottyc. There are a few principles I wanted to explore
+in Kentucky Mule:
+
+  1. Unknown (uncompleted *yet*) type information of other symbols is
+  a fundamental problem of typechecking and should be handled explicitly
+  2. Completers should be as eager in evoluation as possible. Unneccesary
+  laziness is both expensive to orchestrate and makes reasoning about the code
+  hard.
+  3. Completers should be designed for observability: I want to understand what
+  are they doing, how much work if left to do and how much time is spent on
+  each task
+  4. Completers design should encourage tight loops and shallow strack traces
+  that are both JVM performance-friendly and make profiling easier
+
+These principles led me to designing an asynchronous-like interface to
+completers. In my design, I treat missing (not computed yet) types of
+dependencies the same way as you would treat data that haven't arrived yet in an
+I/O setting. I want my completers to not block on missing information.
+
+To achieve non-blocking, my completers are written in a style resembling
+cooperative multitasking. When a completer misses the type of one of its
+dependencies, it yields the control back to the completers' scheduler with an
+information what's missing (what caused an interraption). The scheduler is free
+to schedule a completion of the missing dependency first and retry the
+interrupted completer afterwards.
+
+In this design, the completer becomes a function that takes symbol table as an
+argument and returns either a completed type if all dependencies can be looked
+up in the symbol table and their types are already complete. Otherwise,
+completer returns an information about its missing dependencies.
+
+The non-blocking, cooperative multitasking style design of completers brings a
+few more benefits in addition to adhering to principles I started off with:
+
+  1. The scheduler has a global view of pending completers and is free to
+  reshuffle the work queue. This is enables batching completers that depend on
+  I/O: reading class files from disk. This should minimize the cost of context
+  switching
+  2. It's easy to attribute the cost of typechecking to different kind
+  of completers. For example, I can distinguish between completers that
+  calculate types for source files and completers that read types from class
+  files (for dependencies on libraries).
+  3. Tracking progress of typechecking is easy: I just check the size of the
+  work queue.
+
