@@ -1,6 +1,6 @@
 val common: Seq[Setting[_]] = Seq(
   organization := "gkk",
-  scalaVersion := "2.11.8"
+  scalaVersion := "2.12.1"
 )
 
 val kentuckymule = project.
