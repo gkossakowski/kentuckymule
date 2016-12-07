@@ -15,3 +15,6 @@ The prototype in this repo computes outline types I described in the blog post. 
 
 ![Kentucky Mule processing scalap sources](kentuckymule_scalap.gif)
 
+Kentucky Mule is processes over two thousand lines of code in 700ms on a cold JVM.
+
+Once JVM is warmed up the parser becomes bottleneck. If I skip parsing in benchmarking, Kentucky Mule calculates outline types at speed of processing over 4.4 million lines of Scala code.
