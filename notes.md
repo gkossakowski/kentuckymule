@@ -137,7 +137,7 @@ scalac and dottyc traverse trees lazily, starting with top-level definitions and
 enter symbols for inner classes and definitions only when a completer for out
 symbol is forced. For exmaple
 
-```
+```scala
 class Foo {
   class Bar {
     def a: Foo
@@ -156,7 +156,7 @@ Entering symbols in Kentucky Mule is very fast. For the `10k` benchmark we enter
 symbols at speed of 2916 ops/s yields performance of 29 million lines of code
 per second (29 * 10k). The `10k` is a very simple Scala file, though:
 
-```
+```scala
 class Foo1 {
   def a: Base = null
 }
@@ -176,6 +176,13 @@ class Base
 
 # Completing outline types
 
+Kentucky Mule computes outline types at the speed of processing 4.4 million
+lines of code per second on a warmed up JVM. The 4.4 million LoC/s performance
+number doesn't account for parsing time. This exact number was based on
+benchmarking processing speed of `scalap` sources. The `scalap` projet has
+over 2100 lines of Scala code and is reasonably representive of the Scala
+projects people in the wild.
+
 Outline types are very simplified Scala types that support just two operations:
 member listing and lookup by name. Outline type doesn't support subtype checks
 so nothing that relies on that check is supported either: e.g. computing least
@@ -187,7 +194,9 @@ branches, or for unifying signatures of methods inherited from multiple traits
 The outline types support one important use case: calculation of dependencies
 between symbols (e.g. classes). This enables an easy and an efficient
 parallelization or even distribution of the proper Scala typechecking because
-scheduling and synchronization problem is solved. Check out my blog post
+scheduling and synchronization problem is solved. Check out my blog post for
+details
+https://medium.com/@gkossakowski/can-scala-have-a-highly-parallel-typechecker-95cd7c146d20#.awe3nr9be
 
 Computation of outline types can be thought of as a pre-typechecking phase. For
 outline types to be useful for scheduling the real typechecking, they have to be
@@ -201,7 +210,7 @@ One of the most important tasks in typechecking is resolving identifiers. Both
 outline and real typechecking need it. Let's see with an example what resolving
 identifiers is about:
 
-```
+```scala
 class Foo {
   class A
   def f1: A = ...
@@ -244,7 +253,7 @@ of introducing bindings (names that identifiers resolve to): declarations,
 inheritance, package clauses. Let's look at a modified version of the example
 from previous section:
 
-```
+```scala
 class Foo {
   def f1: A = ...
   class A
@@ -255,7 +264,7 @@ The method `f1` refers to the class `A` that is defined after the method.
 Declarations, members introduced by inheritance and members of packages are all
 accessible in random order in Scala. Contrast this with:
 
-```
+```scala
 class Foo {
   import Bar.A
   def f2: A = ...
@@ -281,7 +290,7 @@ point. Making it performant required a careful sharing of `LookupScope`
 instances between declarations that are not separated by import clases. In this
 example:
 
-```
+```scala
 class Foo {
   def f1: A = ...
   def f2: A = ...
@@ -330,7 +339,7 @@ The idea is that if there are type parameters, we need a special lookup scope
 instance that will make those parameters available to declarations inside a
 class. For example:
 
-```
+```scala
 class Foo[T, U] {
   val x: T // when typechecking val x, we'll need to resolve T
 }
