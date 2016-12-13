@@ -111,7 +111,7 @@ object ScalapHelper {
   private class StubClassCompleter(sym: ClassSymbol) extends Enter.Completer(sym) {
     override def complete()(implicit context: Context): CompletionResult = {
       import kentuckymule.core.Types._
-      Enter.CompletedType(new ClassInfoType(sym))
+      Enter.CompletedType(new ClassInfoType(sym, Nil))
     }
     override def isCompleted: Boolean = false
   }

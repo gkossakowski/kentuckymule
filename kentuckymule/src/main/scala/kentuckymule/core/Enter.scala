@@ -557,7 +557,7 @@ object Enter {
         }
         remainingParents = remainingParents.tail
       }
-      val info = new ClassInfoType(clsSym)
+      val info = new ClassInfoType(clsSym, asScalaList(resolvedParents))
       var i = 0
       while (i < resolvedParents.size()) {
         val parentType = resolvedParents.get(i)

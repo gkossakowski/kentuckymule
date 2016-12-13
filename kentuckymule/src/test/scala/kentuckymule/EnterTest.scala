@@ -304,6 +304,22 @@ object EnterTest extends TestSuite {
         assert(resultTypeSym == Tsym)
       }
     }
+    'classParent {
+      implicit val context = ctx
+      val src = "class A extends B; class B"
+      val enter = enterToSymbolTable(src, ctx)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val Bsym = classes("B".toTypeName)
+      locally {
+        val Aparents = Asym.info.parents
+        assert(Aparents.size == 1)
+        assert(Aparents.head == SymRef(Bsym))
+      }
+    }
   }
 
   private def enterToSymbolTable(src: String, ctx: Context): Enter = {
