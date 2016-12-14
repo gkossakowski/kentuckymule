@@ -7,13 +7,13 @@ import scala.collection.mutable
   * Tarjan's algorithm for finding Strongly Connected Components
   */
 object TarjanSCC {
-  def components[T >: Null](allNodes: Seq[T], edges: T => Set[T]): Seq[Set[T]] = {
+  def components[T >: Null](allNodes: Iterable[T], edges: T => Iterable[T]): Seq[Set[T]] = {
     val alg = new TarjanSCC[T](allNodes, edges)
     alg.components()
   }
 }
 
-private class TarjanSCC[T >: Null](nodes: Seq[T], edges: T => Set[T]) {
+private class TarjanSCC[T >: Null](nodes: Iterable[T], edges: T => Iterable[T]) {
   private var curIndex: Int = 0
   private case class VertexData(vertex: T, index: Int, var lowLink: Int)
   private object stack {
