@@ -40,7 +40,7 @@ object Symbols {
     val info: Type = new PackageInfoType(this)
     override def isComplete: Boolean = true
   }
-  final case class ClassSymbol(override val name: Name, owner: Symbol) extends TypeSymbol(name) {
+  sealed case class ClassSymbol(override val name: Name, owner: Symbol) extends TypeSymbol(name) {
     var info: ClassInfoType = _
     var completer: Completer = _
     def completeInfo()(implicit context: Context): CompletionResult = {
@@ -49,6 +49,7 @@ object Symbols {
     val typeParams: MutableScope = Scopes.newScope
     override def isComplete: Boolean = info != null
   }
+  final class StubClassSymbol(name: Name, owner: Symbol) extends ClassSymbol(name, owner)
   final case class ModuleSymbol(override val name: Name, clsSym: ClassSymbol, owner: Symbol) extends TermSymbol(name) {
     var info: ModuleInfoType = _
     var completer: ModuleCompleter = _

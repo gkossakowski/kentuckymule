@@ -2,7 +2,7 @@ package kentuckymule
 
 import dotty.tools.dotc.core.Contexts.Context
 import kentuckymule.core.Enter
-import kentuckymule.core.Symbols.{ClassSymbol, PackageSymbol}
+import kentuckymule.core.Symbols.{ClassSymbol, PackageSymbol, StubClassSymbol}
 import Enter.CompletionResult
 
 object ScalapHelper {
@@ -118,7 +118,7 @@ object ScalapHelper {
 
   private def enterStubClasses(pkg: PackageSymbol, classNames: String*)(implicit context: Context): Unit = {
     for (className <- classNames) {
-      val cls = ClassSymbol(className.toTypeName, pkg)
+      val cls = new StubClassSymbol(className.toTypeName, pkg)
       cls.completer = new StubClassCompleter(cls)
       pkg.addChild(cls)
     }
