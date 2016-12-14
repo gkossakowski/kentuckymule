@@ -36,7 +36,7 @@ object Symbols {
   abstract sealed class TermSymbol(name: Name) extends Symbol(name)
   abstract sealed class TypeSymbol(name: Name) extends Symbol(name)
 
-  final class PackageSymbol(name: Name) extends TermSymbol(name) {
+  final case class PackageSymbol(override val name: Name) extends TermSymbol(name) {
     val info: Type = new PackageInfoType(this)
     override def isComplete: Boolean = true
   }
