@@ -72,11 +72,13 @@ object Symbols {
 
     override def isComplete: Boolean = completer.isCompleted
   }
-  final case class TypeDefSymbol(override val name: TypeName) extends TypeSymbol(name) {
+  final case class TypeDefSymbol(override val name: TypeName, enclosingClass: Symbol) extends TypeSymbol(name) {
+    assert(enclosingClass.isInstanceOf[ClassSymbol], enclosingClass)
     def info: Type = NoType
     override def isComplete: Boolean = info != null
   }
-  final case class TypeParameterSymbol(override val name: TypeName, index: Int) extends TypeSymbol(name) {
+  final case class TypeParameterSymbol(override val name: TypeName, index: Int, enclosingClass: Symbol) extends TypeSymbol(name) {
+    assert(enclosingClass.isInstanceOf[ClassSymbol], enclosingClass)
     def info: Type = NoType
     override def isComplete: Boolean = info != null
   }

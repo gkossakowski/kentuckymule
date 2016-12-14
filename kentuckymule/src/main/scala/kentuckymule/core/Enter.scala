@@ -218,7 +218,7 @@ class Enter {
       while (remainingTparams.nonEmpty) {
         val tParam = remainingTparams.head
         // TODO: setup completers for TypeDef (resolving bounds, etc.)
-        classSym.typeParams.enter(TypeParameterSymbol(tParam.name, tParamIndex))
+        classSym.typeParams.enter(TypeParameterSymbol(tParam.name, tParamIndex, classSym))
         remainingTparams = remainingTparams.tail
         tParamIndex += 1
       }
@@ -250,7 +250,7 @@ class Enter {
       for (stat <- tmpl.body) enterTree(stat, classSym, lookupScopeContext)
     // type alias or type member
     case TypeDef(name, _) =>
-      val typeSymbol = TypeDefSymbol(name)
+      val typeSymbol = TypeDefSymbol(name, owner)
       owner.addChild(typeSymbol)
     case t@ValDef(name, _, _) =>
       val valSym = ValDefSymbol(name)
@@ -264,7 +264,7 @@ class Enter {
       while (remainingTparams.nonEmpty) {
         val tParam = remainingTparams.head
         // TODO: setup completers for TypeDef (resolving bounds, etc.)
-        defSym.typeParams.enter(TypeParameterSymbol(tParam.name, tParamIndex))
+        defSym.typeParams.enter(TypeParameterSymbol(tParam.name, tParamIndex, owner))
         remainingTparams = remainingTparams.tail
         tParamIndex += 1
       }
