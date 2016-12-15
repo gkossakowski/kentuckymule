@@ -38,5 +38,26 @@ object TarjanSCCTest extends TestSuite {
       assert(sccTargets(2).toSeq == Seq(1, 0))
       assert(sccTargets(3).toSeq == Seq(1, 2))
     }
+    'longestPathSingleNode {
+      val scc = alg.collapsedGraph[Symbol](Seq('a), _ => Set.empty)
+      val longestPath = alg.longestPath(scc)
+      assert(longestPath.size == 1)
+    }
+    'longestPathWikipediaExample {
+      val nodes = Seq('v1, 'v2, 'v3, 'v4, 'v5, 'v6, 'v7, 'v8)
+      val edges: Map[Symbol, Set[Symbol]] = Map(
+        'v1 -> Set('v2),
+        'v2 -> Set('v3),
+        'v3 -> Set('v1),
+        'v4 -> Set('v3, 'v5),
+        'v5 -> Set('v4, 'v6),
+        'v6 -> Set('v3, 'v7),
+        'v7 -> Set('v6),
+        'v8 -> Set('v5, 'v7, 'v8)
+      )
+      val r@TarjanSCC.SCCResult(sccNodes, sccEdges) = alg.collapsedGraph[Symbol](nodes, edges)
+      val longestPath = TarjanSCC.longestPath(r)
+      assert(longestPath.length == 4)
+    }
   }
 }

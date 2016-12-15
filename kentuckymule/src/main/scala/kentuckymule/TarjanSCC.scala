@@ -1,6 +1,7 @@
 package kentuckymule
 
 import java.util
+import java.util.Collections
 
 import com.google.common.collect.{ImmutableMultimap, Multimap}
 
@@ -21,6 +22,85 @@ object TarjanSCC {
   def collapsedGraph[T >: Null](allNodes: Iterable[T], edges: T => Iterable[T]): SCCResult[T] = {
     val alg = new TarjanSCC[T](allNodes, edges)
     alg.run()
+  }
+
+  /**
+    * Returns the longest path in a DAG returned by `collapsedGraph` method.
+    *
+    * The implementation is optimized for speed so it doesn't use any higher-order
+    * method on collections.
+    * @param sccResult
+    * @tparam T
+    * @return
+    */
+  def longestPath[T](sccResult: SCCResult[T]): Seq[Component[T]] = {
+    // Tarjan returns components in the reverse topological order
+    val topoOrder = sccResult.components.reverse
+    val size = topoOrder.length
+    if (size == 0)
+      return Seq.empty
+    val reverseEdges = sccResult.edges.inverse()
+    val longestPath: Array[Int] = Array.ofDim(size)
+    val longestPathOrigin: Array[Component[T]] = Array.ofDim(size)
+    var i = 0
+    while (i < size) {
+      val node = topoOrder(i)
+      val incomingNeighbors = reverseEdges.get(node)
+      if (incomingNeighbors.isEmpty) {
+        longestPath(node.id) = 0
+        // make it explicit that the node with no incoming edges has null as origin
+        longestPathOrigin(node.id) = null
+      } else {
+        val iterator = incomingNeighbors.iterator()
+        var maxPath = -1
+        var maxPathOrigin: Component[T] = null
+        while (iterator.hasNext) {
+          val neighbor = iterator.next()
+          val neighborLongestPath = longestPath(neighbor.id)
+          if (maxPath < neighborLongestPath) {
+            maxPath = neighborLongestPath
+            maxPathOrigin = neighbor
+          }
+        }
+        longestPath(node.id) = maxPath+1
+        longestPathOrigin(node.id) = maxPathOrigin
+      }
+      i += 1
+    }
+    val lastElementId = findIndexOfMax(longestPath)
+    var element = findComponent(topoOrder, lastElementId)
+    // trace back the longest path
+    val buf = new util.ArrayList[Component[T]]()
+    while (element != null) {
+      buf.add(element)
+      element = longestPathOrigin(element.id)
+    }
+    Collections.reverse(buf)
+    import scala.collection.JavaConverters._
+    buf.asScala
+  }
+
+  private def findIndexOfMax(a: Array[Int]): Int = {
+    var i = 0
+    var max = Int.MinValue
+    var maxIndex = -1
+    while (i < a.length) {
+      if (a(i) > max) {
+        max = a(i)
+        maxIndex = i
+      }
+      i += 1
+    }
+    maxIndex
+  }
+  private def findComponent[T](a: Seq[Component[T]], id: Int): Component[T] = {
+    var i = 0
+    while (i < a.size) {
+      if (a(i).id == id)
+        return a(i)
+      i += 1
+    }
+    null
   }
 }
 
