@@ -13,7 +13,7 @@ import scala.collection.mutable
   */
 object TarjanSCC {
   case class Component[T](id: Int)(val vertices: Set[T])
-  case class SCCResult[T](components: Seq[Component[T]], edges: Component[T] => Iterable[Component[T]])
+  case class SCCResult[T](components: Seq[Component[T]], edges: ImmutableMultimap[Component[T], Component[T]])
   def components[T >: Null](allNodes: Iterable[T], edges: T => Iterable[T]): Seq[Component[T]] = {
     val alg = new TarjanSCC[T](allNodes, edges)
     alg.run().components
@@ -77,7 +77,7 @@ private class TarjanSCC[T >: Null](nodes: Iterable[T], edges: T => Iterable[T]) 
     assert(componentStack.empty(), componentStack)
     val edges = componentEdges.build()
     import scala.collection.JavaConverters._
-    SCCResult[T](collectedComponents, component => edges.get(component).asScala)
+    SCCResult[T](collectedComponents, edges)
   }
 
   private def visited(v: T): Boolean = vertexData contains v

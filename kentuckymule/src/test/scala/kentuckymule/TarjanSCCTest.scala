@@ -30,7 +30,8 @@ object TarjanSCCTest extends TestSuite {
       assert(sccNodes(1).vertices == Set('v6, 'v7))
       assert(sccNodes(2).vertices == Set('v4, 'v5))
       assert(sccNodes(3).vertices == Set('v8))
-      val sccTargets = sccNodes.map(node => sccEdges(node).map(_.id))
+      import scala.collection.JavaConverters._
+      val sccTargets = sccNodes.map(sccEdges.get(_).asScala.map(_.id))
       //noinspection ZeroIndexToHead
       assert(sccTargets(0).toSeq == Seq.empty)
       assert(sccTargets(1).toSeq == Seq(0))
