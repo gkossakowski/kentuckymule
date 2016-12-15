@@ -1,10 +1,11 @@
 package kentuckymule
 
+import com.google.common.collect.ImmutableCollection
 import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
-import kentuckymule.core.Symbols.Symbol
+import kentuckymule.core.Symbols.{ClassSymbol, PackageSymbol, Symbol}
 import dotty.tools.dotc.util.{NoSource, SourceFile}
 import dotty.tools.dotc.{CompilationUnit, parsing}
-import kentuckymule.core.Enter
+import kentuckymule.core.{DependenciesExtraction, Enter}
 
 import scala.reflect.io.PlainFile
 
@@ -61,6 +62,25 @@ object Main {
 
     val progressListener = if (context.verbose) Enter.NopJobQueueProgressListener else new ProgressBarListener
     val jobsNumber = enter.processJobQueue(memberListOnly = false, progressListener)(context)
+    val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
+    val (classes, deps) = depsExtraction.extractAllDependencies()
+    import scala.collection.JavaConverters._
+    val sccResult@TarjanSCC.SCCResult(components, edges) =
+      TarjanSCC.collapsedGraph[ClassSymbol](classes.asScala, from => deps.get(from).asScala)
+    println(s"Found ${components.size} dependency groups")
+    def printSymbol(cls: ClassSymbol): String = s"${cls.owner.name}.${cls.name}"
+    val longestPath = TarjanSCC.longestPath(sccResult)
+    println(s"Printing the longest (${longestPath.size}) dependency path ")
+    for (component <- longestPath) {
+      val symbols = component.vertices
+      print(s"Component.size = ${symbols.size}: ")
+      print((symbols take 4).map(printSymbol).mkString(", "))
+      if (symbols.size > 4)
+        println(", ...")
+      else
+        println()
+    }
+
     jobsNumber
   }
 
