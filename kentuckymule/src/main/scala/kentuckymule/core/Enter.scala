@@ -194,7 +194,8 @@ class Enter {
     case imp: Import =>
       parentLookupScopeContext.addImport(imp)
     case ModuleDef(name, tmpl) =>
-      val modClsSym = ClassSymbol(name, owner)
+      import dotty.tools.dotc.core.NameOps._
+      val modClsSym = ClassSymbol(name.moduleClassName, owner)
       val modSym = ModuleSymbol(name, modClsSym, owner)
       owner.addChild(modSym)
       val lookupScopeContext = parentLookupScopeContext.pushModuleLookupScope(modSym)
