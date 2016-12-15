@@ -7,7 +7,8 @@ object TarjanSCCTest extends TestSuite {
   val tests = this {
     'singleNode {
       val scc = alg.components[Symbol](Seq('a), _ => Set.empty)
-      assert(scc == Seq(Set('a)))
+      assert(scc.size == 1)
+      assert(scc(0).vertices == Set('a))
     }
     // taken from https://en.wikipedia.org/wiki/Tarjan's_strongly_connected_components_algorithm
     'wikipediaExample {
@@ -20,15 +21,21 @@ object TarjanSCCTest extends TestSuite {
         'v5 -> Set('v4, 'v6),
         'v6 -> Set('v3, 'v7),
         'v7 -> Set('v6),
-        'v8 -> Set('v7, 'v8)
+        'v8 -> Set('v5, 'v7, 'v8)
       )
-      val scc = alg.components[Symbol](nodes, edges)
-      assert(scc.size == 4)
+      val TarjanSCC.SCCResult(sccNodes, sccEdges) = alg.collapsedGraph[Symbol](nodes, edges)
+      assert(sccNodes.size == 4)
       //noinspection ZeroIndexToHead
-      assert(scc(0) == Set('v1, 'v2, 'v3))
-      assert(scc(1) == Set('v6, 'v7))
-      assert(scc(2) == Set('v4, 'v5))
-      assert(scc(3) == Set('v8))
+      assert(sccNodes(0).vertices == Set('v1, 'v2, 'v3))
+      assert(sccNodes(1).vertices == Set('v6, 'v7))
+      assert(sccNodes(2).vertices == Set('v4, 'v5))
+      assert(sccNodes(3).vertices == Set('v8))
+      val sccTargets = sccNodes.map(node => sccEdges(node).map(_.id))
+      //noinspection ZeroIndexToHead
+      assert(sccTargets(0).toSeq == Seq.empty)
+      assert(sccTargets(1).toSeq == Seq(0))
+      assert(sccTargets(2).toSeq == Seq(1, 0))
+      assert(sccTargets(3).toSeq == Seq(1, 2))
     }
   }
 }
