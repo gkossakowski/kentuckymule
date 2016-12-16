@@ -5,8 +5,9 @@ import java.util
 import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
 import dotty.tools.dotc.{CompilationUnit, parsing}
 import dotty.tools.dotc.util.{NoSource, SourceFile}
-import kentuckymule.ScalapHelper
-import kentuckymule.core.Enter
+import kentuckymule.core.Symbols.ClassSymbol
+import kentuckymule.{ScalapHelper, TarjanSCC}
+import kentuckymule.core.{DependenciesExtraction, Enter}
 import org.openjdk.jmh.annotations._
 
 import scala.reflect.io.PlainFile
@@ -143,5 +144,27 @@ class BenchmarkScalap {
       i += 1
     }
     enter.processJobQueue(memberListOnly = false)(context)
+  }
+  @Benchmark
+  @Warmup(iterations = 20)
+  @Measurement(iterations = 20)
+  @Fork(3)
+  def completeMemberSigsAndExtractDependencies(bs: BenchmarkState, pts: ParsedTreeState): (Int, Int, Int) = {
+    import bs.context
+    context.definitions.rootPackage.clear()
+    val enter = new Enter
+    ScalapHelper.enterStabSymbolsForScalap(context)
+    var i = 0
+    while (i < pts.compilationUnits.length) {
+      enter.enterCompilationUnit(pts.compilationUnits(i))(context)
+      i += 1
+    }
+    val jobsCount = enter.processJobQueue(memberListOnly = false)(context)
+    val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
+    val (classes, deps) = depsExtraction.extractAllDependencies()(context)
+    import scala.collection.JavaConverters._
+    val sccResult@TarjanSCC.SCCResult(components, edges) =
+      TarjanSCC.collapsedGraph[ClassSymbol](classes.asScala, from => deps.get(from).asScala)
+    (jobsCount, deps.size, components.size)
   }
 }
