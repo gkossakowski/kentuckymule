@@ -18,11 +18,11 @@ object BenchmarkScalap {
   @State(Scope.Benchmark)
   class BenchmarkState {
     private val initCtx = (new ContextBase).initialCtx
-    val context = initCtx.fresh
+    val context: Context = initCtx.fresh
   }
 
   import java.nio.file.Paths
-  val projectDir = Paths.get("../").toAbsolutePath.toString
+  val projectDir: String = Paths.get("../").toAbsolutePath.toString
 
   @State(Scope.Thread)
   class ParsedTreeState {
@@ -30,7 +30,7 @@ object BenchmarkScalap {
     @Setup(Level.Trial)
     def createCompilationUnits(bs: BenchmarkState): Unit = {
       val context = bs.context
-      compilationUnits = for (filePath <- ScalapHelper.scalapFiles(projectDir).toArray) yield {
+      compilationUnits = for (filePath <- ScalapHelper.scalapFiles(projectDir)) yield {
         val source = getSource(filePath)(context)
         val unit = new CompilationUnit(source)
         val parser = new parsing.Parsers.Parser(source)(context)
@@ -163,7 +163,7 @@ class BenchmarkScalap {
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()(context)
     import scala.collection.JavaConverters._
-    val sccResult@TarjanSCC.SCCResult(components, edges) =
+    val TarjanSCC.SCCResult(components, _) =
       TarjanSCC.collapsedGraph[ClassSymbol](classes.asScala, from => deps.get(from).asScala)
     (jobsCount, deps.size, components.size)
   }

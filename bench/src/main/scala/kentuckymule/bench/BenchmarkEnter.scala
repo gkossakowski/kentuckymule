@@ -14,7 +14,7 @@ object BenchmarkEnter {
   @State(Scope.Benchmark)
   class BenchmarkState {
     private val initCtx = (new ContextBase).initialCtx
-    val context = initCtx.fresh
+    val context: Context = initCtx.fresh
   }
 
   @State(Scope.Thread)

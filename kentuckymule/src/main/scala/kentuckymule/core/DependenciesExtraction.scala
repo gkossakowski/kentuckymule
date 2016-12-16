@@ -3,7 +3,7 @@ package kentuckymule.core
 import dotty.tools.dotc.core.Contexts.Context
 import Symbols._
 import Types._
-import com.google.common.collect.{HashMultimap, ImmutableMultimap, ImmutableSet, Multimap}
+import com.google.common.collect.{ImmutableMultimap, ImmutableSet}
 
 /**
   * Extracts class dependencies from Symbols entered into Symbol Table.

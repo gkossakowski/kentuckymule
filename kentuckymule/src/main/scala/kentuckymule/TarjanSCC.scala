@@ -3,7 +3,7 @@ package kentuckymule
 import java.util
 import java.util.Collections
 
-import com.google.common.collect.{ImmutableMultimap, Multimap}
+import com.google.common.collect.ImmutableMultimap
 
 import scala.collection.mutable
 
@@ -156,7 +156,6 @@ private class TarjanSCC[T >: Null](nodes: Iterable[T], edges: T => Iterable[T]) 
         strongConnect(v)
     assert(componentStack.empty(), componentStack)
     val edges = componentEdges.build()
-    import scala.collection.JavaConverters._
     SCCResult[T](collectedComponents, edges)
   }
 

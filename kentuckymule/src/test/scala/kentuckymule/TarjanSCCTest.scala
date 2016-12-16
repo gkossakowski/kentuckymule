@@ -8,7 +8,7 @@ object TarjanSCCTest extends TestSuite {
     'singleNode {
       val scc = alg.components[Symbol](Seq('a), _ => Set.empty)
       assert(scc.size == 1)
-      assert(scc(0).vertices == Set('a))
+      assert(scc.head.vertices == Set('a))
     }
     // taken from https://en.wikipedia.org/wiki/Tarjan's_strongly_connected_components_algorithm
     'wikipediaExample {

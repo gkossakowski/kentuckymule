@@ -282,7 +282,7 @@ class Enter {
       lookedUp match {
         case pkgSym: PackageSymbol => pkgSym
         case _ =>
-          val pkgSym = new PackageSymbol(name)
+          val pkgSym = PackageSymbol(name)
           owner.addChild(pkgSym)
           pkgSym
       }
@@ -292,7 +292,7 @@ class Enter {
       lookedUp match {
         case pkgSym: PackageSymbol => pkgSym
         case _ =>
-          val pkgSym = new PackageSymbol(name)
+          val pkgSym = PackageSymbol(name)
           qualPkg.addChild(pkgSym)
           pkgSym
       }

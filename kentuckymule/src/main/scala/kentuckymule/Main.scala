@@ -1,8 +1,7 @@
 package kentuckymule
 
-import com.google.common.collect.ImmutableCollection
 import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
-import kentuckymule.core.Symbols.{ClassSymbol, PackageSymbol, Symbol}
+import kentuckymule.core.Symbols.{ClassSymbol, Symbol}
 import dotty.tools.dotc.util.{NoSource, SourceFile}
 import dotty.tools.dotc.{CompilationUnit, parsing}
 import kentuckymule.core.{DependenciesExtraction, Enter}
@@ -11,7 +10,7 @@ import scala.reflect.io.PlainFile
 
 object Main {
 
-  protected def initCtx = (new ContextBase).initialCtx
+  protected def initCtx: Context = (new ContextBase).initialCtx
 
   def getSource(fileName: String)(ctx: Context): SourceFile = {
     val f = new PlainFile(fileName)
