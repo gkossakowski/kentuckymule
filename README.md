@@ -19,3 +19,5 @@ The prototype in this repo computes outline types I described in the blog post. 
 Kentucky Mule is processes over two thousand lines of code in 600ms on a cold JVM.
 
 Once JVM is warmed up the parser becomes bottleneck. If I skip parsing in benchmarking, Kentucky Mule calculates outline types at speed of processing over 4.4 million lines of Scala code per second.
+
+If I add dependency extraction and analysis (as presented above) of scalap sources, the performance is at 1.8 million lines of Scala code per second.
