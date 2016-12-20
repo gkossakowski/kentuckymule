@@ -41,16 +41,17 @@ object BenchmarkScalap {
   }
 
   @State(Scope.Thread)
-  class EnteredSymbolsState {
+  class CompletedSymbolTable {
     var enter: Enter = _
     @Setup(Level.Trial)
-    def enterSymbols(bs: BenchmarkState, pts: ParsedTreeState): Unit = {
+    def enterAndCompleteSymbols(bs: BenchmarkState, pts: ParsedTreeState): Unit = {
       enter = new Enter
       val context = bs.context
       context.definitions.rootPackage.clear()
       ScalapHelper.enterStabSymbolsForScalap(context)
       for (compilationUnit <- pts.compilationUnits)
         enter.enterCompilationUnit(compilationUnit)(context)
+      enter.processJobQueue(memberListOnly = false)(context)
     }
   }
 
@@ -149,22 +150,10 @@ class BenchmarkScalap {
   @Warmup(iterations = 20)
   @Measurement(iterations = 20)
   @Fork(3)
-  def completeMemberSigsAndExtractDependencies(bs: BenchmarkState, pts: ParsedTreeState): (Int, Int, Int) = {
+  def extractDependencies(bs: BenchmarkState, completedSymbolTable: CompletedSymbolTable): Int = {
     import bs.context
-    context.definitions.rootPackage.clear()
-    val enter = new Enter
-    ScalapHelper.enterStabSymbolsForScalap(context)
-    var i = 0
-    while (i < pts.compilationUnits.length) {
-      enter.enterCompilationUnit(pts.compilationUnits(i))(context)
-      i += 1
-    }
-    val jobsCount = enter.processJobQueue(memberListOnly = false)(context)
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()(context)
-    import scala.collection.JavaConverters._
-    val TarjanSCC.SCCResult(components, _) =
-      TarjanSCC.collapsedGraph[ClassSymbol](classes.asScala, from => deps.get(from).asScala)
-    (jobsCount, deps.size, components.size)
+    classes.size()
   }
 }
