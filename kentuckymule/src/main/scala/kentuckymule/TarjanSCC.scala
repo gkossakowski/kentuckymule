@@ -3,7 +3,7 @@ package kentuckymule
 import java.util
 import java.util.Collections
 
-import com.google.common.collect.ImmutableMultimap
+import com.google.common.collect.{ImmutableMultimap, ImmutableSet, Lists}
 
 import scala.collection.mutable
 
@@ -13,9 +13,9 @@ import scala.collection.mutable
   * See documentation in the companion class for implementation details.
   */
 object TarjanSCC {
-  case class Component[T](id: Int)(val vertices: Set[T])
-  case class SCCResult[T](components: Seq[Component[T]], edges: ImmutableMultimap[Component[T], Component[T]])
-  def components[T >: Null](allNodes: Iterable[T], edges: T => Iterable[T]): Seq[Component[T]] = {
+  case class Component[T](id: Int)(val vertices: ImmutableSet[T])
+  case class SCCResult[T](components: util.List[Component[T]], edges: ImmutableMultimap[Component[T], Component[T]])
+  def components[T >: Null](allNodes: Iterable[T], edges: T => Iterable[T]): util.List[Component[T]] = {
     val alg = new TarjanSCC[T](allNodes, edges)
     alg.run().components
   }
@@ -35,8 +35,8 @@ object TarjanSCC {
     */
   def longestPath[T](sccResult: SCCResult[T]): Seq[Component[T]] = {
     // Tarjan returns components in the reverse topological order
-    val topoOrder = sccResult.components.reverse
-    val size = topoOrder.length
+    val topoOrder =  Lists.reverse(sccResult.components)
+    val size = topoOrder.size
     if (size == 0)
       return Seq.empty
     val reverseEdges = sccResult.edges.inverse()
@@ -44,7 +44,7 @@ object TarjanSCC {
     val longestPathOrigin: Array[Component[T]] = Array.ofDim(size)
     var i = 0
     while (i < size) {
-      val node = topoOrder(i)
+      val node = topoOrder.get(i)
       val incomingNeighbors = reverseEdges.get(node)
       if (incomingNeighbors.isEmpty) {
         longestPath(node.id) = 0
@@ -93,11 +93,11 @@ object TarjanSCC {
     }
     maxIndex
   }
-  private def findComponent[T](a: Seq[Component[T]], id: Int): Component[T] = {
+  private def findComponent[T](a: util.List[Component[T]], id: Int): Component[T] = {
     var i = 0
     while (i < a.size) {
-      if (a(i).id == id)
-        return a(i)
+      if (a.get(i).id == id)
+        return a.get(i)
       i += 1
     }
     null
@@ -131,23 +131,23 @@ private class TarjanSCC[T >: Null](nodes: Iterable[T], edges: T => Iterable[T]) 
   // stack with fast `contains` operation
   private object vertexStack {
     private val underlying: util.Stack[VertexData] = new util.Stack[VertexData]()
-    private val onStack: mutable.Set[T] = mutable.Set.empty[T]
+    private val onStack: util.Set[T] = new util.HashSet[T]()
     def push(data: VertexData): Unit = {
       underlying.push(data)
-      onStack += data.vertex
+      onStack.add(data.vertex)
     }
     def pop(): VertexData = {
       val data = underlying.pop()
-      onStack -= data.vertex
+      onStack.remove(data.vertex)
       data
     }
     def contains(v: T): Boolean = onStack contains v
   }
   private case class ComponentBacklink(component: Component, backLink: Int)
   private val componentStack: util.Stack[ComponentBacklink] = new util.Stack[ComponentBacklink]
-  private val vertexData: mutable.Map[T, VertexData] = mutable.Map.empty
-  private val collectedComponents: mutable.Buffer[Component] = mutable.Buffer.empty
-  private val vertexToComponent: mutable.Map[Int, Component] = mutable.Map.empty
+  private val vertexData: util.Map[T, VertexData] = new util.HashMap[T, VertexData]()
+  private val collectedComponents: util.List[Component] = new util.ArrayList[Component]()
+  private val vertexToComponent: util.Map[Int, Component] = new util.HashMap[Int, Component]()
   private val componentEdges: ImmutableMultimap.Builder[Component, Component] = ImmutableMultimap.builder()
 
   def run(): SCCResult[T] = {
@@ -159,11 +159,11 @@ private class TarjanSCC[T >: Null](nodes: Iterable[T], edges: T => Iterable[T]) 
     SCCResult[T](collectedComponents, edges)
   }
 
-  private def visited(v: T): Boolean = vertexData contains v
+  private def visited(v: T): Boolean = vertexData.containsKey(v)
   private def strongConnect(v: T): Component = {
     val vIndex = vertexIndices.nextIndex()
     val vData = VertexData(v, index = vIndex, lowLink = vIndex)
-    vertexData(v) = vData
+    vertexData.put(v, vData)
     vertexStack.push(vData)
     val vEdges = edges(v)
     for (w <- vEdges) {
@@ -172,35 +172,35 @@ private class TarjanSCC[T >: Null](nodes: Iterable[T], edges: T => Iterable[T]) 
         if (wComponent != null) {
           componentStack.push(ComponentBacklink(wComponent, vIndex))
         }
-        val wData = vertexData(w)
+        val wData = vertexData.get(w)
         vData.lowLink = math.min(vData.lowLink, wData.lowLink)
       } else if (vertexStack contains w) {
-        vData.lowLink = math.min(vData.lowLink, vertexData(w).index)
+        vData.lowLink = math.min(vData.lowLink, vertexData.get(w).index)
       } else {
         // vertex has been visited and is not on the stack: it's part of an existing component
         // we should capture that dependency
-        val wIndex = vertexData(w).index
-        val wComponent = vertexToComponent(wIndex)
+        val wIndex = vertexData.get(w).index
+        val wComponent = vertexToComponent.get(wIndex)
         componentStack.push(ComponentBacklink(wComponent, vData.index))
       }
     }
 
     if (vData.lowLink == vData.index) {
-      val buf = mutable.Buffer.empty[T]
+      val buf = ImmutableSet.builder[T]()
       val dataToUpdate = mutable.Buffer.empty[VertexData]
       var w: T = null
       do {
         w = vertexStack.pop().vertex
-        dataToUpdate += vertexData(w)
-        buf += w
+        dataToUpdate += vertexData.get(w)
+        buf.add(w)
       } while (w != v)
-      val vertexSet = buf.toSet
+      val vertexSet = buf.build()
       val component = Component(componentIndices.nextIndex())(vertexSet)
-      collectedComponents += component
+      collectedComponents.add(component)
       var i = 0
       while (i < dataToUpdate.length) {
         val vertexData = dataToUpdate(i)
-        vertexToComponent(vertexData.index) = component
+        vertexToComponent.put(vertexData.index, component)
         i += 1
       }
       while (!componentStack.empty && componentStack.peek.backLink >= vData.index) {

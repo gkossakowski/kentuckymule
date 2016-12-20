@@ -1,6 +1,7 @@
 package kentuckymule
 
 import utest._
+import scala.collection.JavaConverters._
 
 object TarjanSCCTest extends TestSuite {
   val alg = TarjanSCC
@@ -8,7 +9,7 @@ object TarjanSCCTest extends TestSuite {
     'singleNode {
       val scc = alg.components[Symbol](Seq('a), _ => Set.empty)
       assert(scc.size == 1)
-      assert(scc.head.vertices == Set('a))
+      assert(scc.get(0).vertices.asScala == Set('a))
     }
     // taken from https://en.wikipedia.org/wiki/Tarjan's_strongly_connected_components_algorithm
     'wikipediaExample {
@@ -23,14 +24,15 @@ object TarjanSCCTest extends TestSuite {
         'v7 -> Set('v6),
         'v8 -> Set('v5, 'v7, 'v8)
       )
-      val TarjanSCC.SCCResult(sccNodes, sccEdges) = alg.collapsedGraph[Symbol](nodes, edges)
+      val sccResult = alg.collapsedGraph[Symbol](nodes, edges)
+      val sccNodes = sccResult.components.asScala
       assert(sccNodes.size == 4)
       //noinspection ZeroIndexToHead
-      assert(sccNodes(0).vertices == Set('v1, 'v2, 'v3))
-      assert(sccNodes(1).vertices == Set('v6, 'v7))
-      assert(sccNodes(2).vertices == Set('v4, 'v5))
-      assert(sccNodes(3).vertices == Set('v8))
-      import scala.collection.JavaConverters._
+      assert(sccNodes(0).vertices.asScala == Set('v1, 'v2, 'v3))
+      assert(sccNodes(1).vertices.asScala == Set('v6, 'v7))
+      assert(sccNodes(2).vertices.asScala == Set('v4, 'v5))
+      assert(sccNodes(3).vertices.asScala == Set('v8))
+      val sccEdges = sccResult.edges
       val sccTargets = sccNodes.map(sccEdges.get(_).asScala.map(_.id))
       //noinspection ZeroIndexToHead
       assert(sccTargets(0).toSeq == Seq.empty)

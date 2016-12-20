@@ -73,7 +73,7 @@ object Main {
     for (component <- longestPath) {
       val symbols = component.vertices
       print(s"Component.size = ${symbols.size}: ")
-      print((symbols take 4).map(printSymbol).mkString(", "))
+      print((symbols.asScala take 4).map(printSymbol).mkString(", "))
       if (symbols.size > 4)
         println(", ...")
       else
