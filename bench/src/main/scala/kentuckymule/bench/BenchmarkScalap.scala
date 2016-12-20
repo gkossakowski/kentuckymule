@@ -154,6 +154,9 @@ class BenchmarkScalap {
     import bs.context
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()(context)
-    classes.size()
+    import scala.collection.JavaConverters._
+    val TarjanSCC.SCCResult(components, _) =
+      TarjanSCC.collapsedGraph[ClassSymbol](classes.asScala, from => deps.get(from).asScala)
+    components.size
   }
 }
