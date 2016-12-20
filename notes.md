@@ -62,7 +62,7 @@ shows that, unfortunately, `Context` became a kitchen sink equivalent of
 
 Also, I ripped out the phase travel functionality that I didn't need because I
 have only just one phase: parsing. Lastly, there are some maps and caches
-related to types and symbols that I didnd't need so I deleted them too.
+related to types and symbols that I didn't need so I deleted them too.
 
 My suggestion would be to refactor the `Context` to separate better the minimal
 context object required by parser, typer and then the rest of the compiler. For
@@ -76,7 +76,7 @@ I did a basic testing of parser's performance.
 Parsing speed of `basic.ignore.scala`: 990k LoC per second
 Parsing speed of `Typer.ignore.scala`: 293k LoC per second
 
-The single-threaeed parsing performance is decent. It would take roughly 30s to
+The single-threaded parsing performance is decent. It would take roughly 30s to
 parse 10m LoC.
 
 Here are results of testing parser performance in multi-threaded setting.
@@ -117,7 +117,7 @@ symbol table can be populated with symbols from `Typer.scala` the rate of 85k
 full symbol table creations per second. Switching from Scala's mutable Map to
 Guava's `MultiMap` improved the performance from 85k to 125k per second.
 
-Later work on fixing bugs decraesed the performance to 113k ops/s in
+Later work on fixing bugs decreased the performance to 113k ops/s in
 `BenchmarkEnter.enter` (using the tree from parsing `Typer.scala`). Switching
 from a combo of `MultiMap` and `ArrayBuffer` to `Scope` (borrowed almost
 verbatim from dotty) increased performance to 348k ops/s. This is an astonishing
@@ -128,14 +128,14 @@ The entering of symbols itself is implemented as a single, breadth-first tree
 traversal. During the traversal symbols get created, entered into symbol table
 and their outline type completers are set up. The type completers receive
 `LookupScope` instance that enables completers to resolve identifiers with
-respect for Scala's scaping rules. Symbols corresponding to classes and modules
+respect for Scala's scoping rules. Symbols corresponding to classes and modules
 (objects) are added to `completers` job queue (more about it later).
 
 The code in Kentucky Mule responsible for entering symbols into a symbol table
 is similar to one found in scalac and dottyc implementation. However, both
 scalac and dottyc traverse trees lazily, starting with top-level definitions and
 enter symbols for inner classes and definitions only when a completer for out
-symbol is forced. For exmaple
+symbol is forced. For example
 
 ```scala
 class Foo {
@@ -179,7 +179,7 @@ class Base
 Kentucky Mule computes outline types at the speed of processing 4.4 million
 lines of code per second on a warmed up JVM. The 4.4 million LoC/s performance
 number doesn't account for parsing time. This exact number was based on
-benchmarking processing speed of `scalap` sources. The `scalap` projet has
+benchmarking processing speed of `scalap` sources. The `scalap` project has
 over 2100 lines of Scala code and is reasonably representive of the Scala
 projects people in the wild.
 
@@ -231,10 +231,10 @@ figure it out, it had to see the following things:
 
    1. The method `f1` is declared in the class `Foo` so it sees all class
    members, e.g. the class `A`
-   2. The method `f2` is preceeded with an import
+   2. The method `f2` is preceded by an import
    statement that has to be taken into account.
    3. The import statement refers to an identifier `Bar` and the typechecker needs to realize that the `Bar`
-   refers to an object is declared in the same file as `Foo` and it's visisble
+   refers to an object is declared in the same file as `Foo` and it's visible
    to the import statement. Note that the reference `Bar` in the import
    statement points at is an object declared further down the source file.
 
@@ -248,7 +248,7 @@ Scala Language Specification.
 
 ## Scope of import clauses
 
-I'd like to highlight an irregurality of `import` clauses compared to other ways
+I'd like to highlight an irregularity of `import` clauses compared to other ways
 of introducing bindings (names that identifiers resolve to): declarations,
 inheritance, package clauses. Let's look at a modified version of the example
 from previous section:
@@ -275,7 +275,7 @@ object Bar {
 }
 ```
 
-The method `f2` refers to the class `A` imported by the preceeding import
+The method `f2` refers to the class `A` imported by the preceding import
 clause. However, the imported class cannot be accessed in a random order from
 any declaration in class `Foo`. The imported name `A` is visible only to
 declarations appearing after the import clause.
@@ -287,7 +287,7 @@ lookup in a chain of nested scopes. However, import clauses require special
 care. The fair amount of complexity of implementation of looking up identifiers
 comes from supporting import clauses potentially appearing at an arbitrary
 point. Making it performant required a careful sharing of `LookupScope`
-instances between declarations that are not separated by import clases. In this
+instances between declarations that are not separated by import classes. In this
 example:
 
 ```scala
@@ -298,9 +298,13 @@ class Foo {
 ```
 
 Both method `f1` and `f2` share exactly the same `LookupScope` instance that
-resolves identifiers using class `Foo` scope. This helps both CPU and memory performance. The sharing is of `LookupScope` instances is implemented by `LookupScopeContext`.
+resolves identifiers using class `Foo` scope. This helps both CPU and memory
+performance. The sharing is of `LookupScope` instances is implemented by
+`LookupScopeContext`.
 
-While having imports at arbitrary locations in Scala programs is handy, there's an implementation cost to this feature. Fortunately enough, with care, one can support this feature without a big effect on performance.
+While having imports at arbitrary locations in Scala programs is handy, there's
+an implementation cost to this feature. Fortunately enough, with care, one can
+support this feature without a big effect on performance.
 
 ## Lookup performance
 
@@ -349,9 +353,9 @@ However, if a class doesn't introduce any new type parameters, we don't need a
 lookup scope dedicated to class's signature because there no new identifiers
 that are introduced. This distinction between generic and non-generic classes
 contributes to over 6% better performance of typechecking `scalap` sources. I
-found such a big difference surprising. I didn't expect an uncoditional creation
-of an empty lookup scope dedicated to class signature to introduce such a slow
-down.
+found such a big difference surprising. I didn't expect an unconditional
+creation of an empty lookup scope dedicated to class signature to introduce
+such a slow down.
 
 ### Imports lookup implementation
 
@@ -380,16 +384,16 @@ between all lookup scope instances. I picked that strategy for two reasons:
 
   1. Performance - I wanted to have a very fast way of searching all import
   clauses and iterating over an array is the fastest for short sequences
-  2. Correctness - previous imports need to be visible while completing subsequent
-  imports
+  2. Correctness - previous imports need to be visible while completing
+  subsequent imports
 
 To illustrate the second point, the `import a.b` refers to just imported `Bar.a`
 so when I complete `a.b`, I need to take into account `Bar.a`. I found it's the
 easiest to do by having all imports in one array and then complete them in the
 top-down order (so previous imports can be taken into account) but perform
 lookups in bottom-up order (which is respecting shadowing Scala rules). Having a
-datastructure that lets me traverse efficently in both directions was a reason I
-picked an Array.
+datastructure that lets me traverse efficiently in both directions was a reason
+I picked an Array.
 
 # Completers design
 
@@ -401,7 +405,9 @@ you with a simple example what completers do:
 class Foo(x: Bar.X)
 
 object Bar extends Abc
-class Abc { class X }
+class Abc {
+  class X
+}
 ```
 
 When typechecking the constructor of `Foo` the following steps are taken:
@@ -412,8 +418,8 @@ When typechecking the constructor of `Foo` the following steps are taken:
   2. To select member `X` from the type of `Bar`, we need to compute it: force
   completer for the object `Bar`
   3. The completer for the object `Bar` sees `Abc` as a parent. The completer
-  resoves `Abc` to the class declared below. In order to compute the full type
-  of the object `Bar` (e.g. list of all members), the type of `Abc` is reuired
+  resolves `Abc` to the class declared below. In order to compute the full type
+  of the object `Bar` (e.g. list of all members), the type of `Abc` is required
   4. The completer for the class `Abc` is forced. During the computation of
   the type of the class `Abc`, the class `X` is entered as `Abc`'s member.
   5. The completer for the object `Bar` can recognize the class `X` as an
@@ -431,13 +437,13 @@ in Kentucky Mule:
 
   1. Unknown (uncompleted *yet*) type information of other symbols is
   a fundamental problem of typechecking and should be handled explicitly
-  2. Completers should be as eager in evoluation as possible. Unneccesary
+  2. Completers should be as eager in evaluation as possible. Unnecessary
   laziness is both expensive to orchestrate and makes reasoning about the code
   hard.
   3. Completers should be designed for observability: I want to understand what
   are they doing, how much work if left to do and how much time is spent on
   each task
-  4. Completers design should encourage tight loops and shallow strack traces
+  4. Completers design should encourage tight loops and shallow stack traces
   that are both JVM performance-friendly and make profiling easier
 
 These principles led me to designing an asynchronous-like interface to
@@ -448,7 +454,7 @@ I/O setting. I want my completers to not block on missing information.
 To achieve non-blocking, my completers are written in a style resembling
 cooperative multitasking. When a completer misses the type of one of its
 dependencies, it yields the control back to the completers' scheduler with an
-information what's missing (what caused an interraption). The scheduler is free
+information what's missing (what caused an interruption). The scheduler is free
 to schedule a completion of the missing dependency first and retry the
 interrupted completer afterwards.
 
@@ -500,4 +506,3 @@ info] Benchmark                                  (filePath)   Mode  Cnt       Sc
 [info] BenchmarkEnter.enter  sample-files/Typer.scala.ignore  thrpt   60  242336.865 ± 1837.541  ops/s
 [info] BenchmarkEnter.enter    sample-files/10k.scala.ignore  thrpt   60    2916.501 ±   32.409  ops/s
 ```
-
