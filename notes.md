@@ -477,6 +477,71 @@ few more benefits in addition to adhering to principles I started off with:
   3. Tracking progress of typechecking is easy: I just check the size of the
   work queue.
 
+# Extracting dependencies from a symbol table
+
+## Intro
+
+If we know the dependencies between symbols in the symbol table, an efficient
+and parallel computation of the whole symbol table can be implemented. Given
+that the whole dependency graph is known in advance, completing of symbols'
+types can be scheduled in a way following dependencies so there is little need
+for any synchronization between threads completing different types. Global view
+over dependency graph enables performance tricks like grouping multiple type
+completion tasks together and assigning them to one thread which minimizes the
+cost of context switching and the cost of synchronizing against the job queue.
+
+## Implementation of the extraction
+
+Once symbol table has outline types completed, dependencies between symbols can
+be collected by simply walking symbols recursively. The walk that collects
+dependencies is implemented in `DependenciesExtraction.scala`. Walking the
+entire symbol table is fast. The symbol table built for `scalap` sources is
+walked 4214 times per second.
+
+The current implementation tracks dependencies at granularity of top-level
+classes. For example:
+
+```scala
+class A {
+  class B {
+    def c: C = //...
+  }
+}
+class C
+```
+
+gives rise to just one dependency: `A->C`. The actual dependency in the symbol
+table is between the method symbol `c` and the class symbol `C` but the code
+maps all symbols to their enclosing top-level classes.
+
+## Collapsing dependency graph into a DAG
+
+Cycles are common in a dependency graph corresponding to Scala sources.
+If we want to implement a parallel computation of full types in the symbol
+table, we need to deal with cycles. An easy way to deal with cycles is to lump
+all classes in the cycle together and treat them as one unit of work. As a
+result of collapsing cycles into single nodes in the dependency graph, we get
+a DAG. Parallel scheduling of computations with dependencies as DAGs is
+a common problem that is well understood and can be implemented efficiently.
+
+Kentucky Mule collapses cycles in the dependency graph using the Tarjan's algorithm
+for finding Strongly Connected Components. The implementation can be found in
+`TarjanSCC.scala`. My implementation is a little bit different from the original
+algorithm because it not only finds components, but also constructs edges of the
+DAG formed between components. My modification to the original algorithm was
+fairly modest and required an addition of another stack that tracks components
+touched by DFS performed by Tarjan's algorithm. Check the implementation in
+`TarjanSCC.scala` for details.
+
+My current implementation of Tarjan's algorithm is fairly slow. It's more than
+3x slower than dependency extraction walk over symbol table. The reason for
+slow performance is hashing of all nodes in the graph. It's done `O(|E|)` times
+(the number of edges in the dependency graph). Tarjan receives `ClassSymbol`
+instances as nodes in the graph. The class `ClassSymbol` is a case class and
+doesn't implement any form caching hash code computation so hashing is an
+expensive operation. There might be other reasons for slowness but I haven't
+investigated them.
+
 # Benchmmarks for enter
 
 Below are some sample performance numbers I collected and saved for
