@@ -542,6 +542,45 @@ doesn't implement any form caching hash code computation so hashing is an
 expensive operation. There might be other reasons for slowness but I haven't
 investigated them.
 
+# Comparsion to real typechecking performance
+
+Kentucky Mule implements a tiny fraction of the work required by the full
+typechecking of Scala definitions. By design, most of expensive operations
+(like subtyping) are skipped.
+
+However, the `10k.scala` source file is so simple that makes outline
+typechecking and the real typchecking as implemented in the Scala compiler
+to meet very closely. The code in `10k.scala` looks like this:
+
+```scala
+class Foo1 {
+  def a: Base = null
+}
+
+class Foo2 {
+  def a: Base = null
+}
+// repeat of declaration of the class FooN until
+class Foo2500 {
+  def a: Base = null
+}
+
+class Base
+```
+
+Typechecking of this particular file is very simple. It boils down to just
+resolving references to the `Base` class.
+
+In this specific case, it makes sense to compare performance of `scalac` and
+Kentucky Mule. `scalac` typechecks `10k.scala` in 1630ms which yields
+performance of 7k lines of code per second.
+
+Kentucky Mule can typecheck the same file at rate 1500 ops/s which yields
+performance of 15m lines of code per second. Kentucky Mule, doing essentially
+the same work as scalac for this specific file, is over 3 orders of magnitude
+faster. I don't understand where such a big performance difference comes from
+exactly apart from Kentucky Mule being written with performance in mind.
+
 # Benchmmarks for enter
 
 Below are some sample performance numbers I collected and saved for
