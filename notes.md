@@ -226,7 +226,7 @@ object Bar {
 When the result type of methods `f1` and `f2` is calculated, the typechecker
 needs to understand what identifier `A` refers to. That's called resolving
 identifiers. In the example, the result type of method `f1` is the type `Foo#A`
-but the result type of method `f2` is the type `Bar#Foo`. For the typechecker to
+but the result type of method `f2` is the type `Bar#A`. For the typechecker to
 figure it out, it had to see the following things:
 
    1. The method `f1` is declared in the class `Foo` so it sees all class
