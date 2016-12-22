@@ -150,7 +150,7 @@ object ScalapHelper {
       "sample-projects/scalap/scala/tools/scalap/scalax/rules/scalasig/Symbol.scala",
       "sample-projects/scalap/scala/tools/scalap/scalax/rules/scalasig/Type.scala",
       "sample-projects/scalap/scala/tools/scalap/scalax/rules/SeqRule.scala",
-      "sample-projects/scalap/scala/tools/scalap/scalax/Util/StringUtil.scala") map {
+      "sample-projects/scalap/scala/tools/scalap/scalax/util/StringUtil.scala") map {
       relativePath => projectDir.resolve(relativePath).toAbsolutePath.toString
     }
     sourcesFiles.toArray
