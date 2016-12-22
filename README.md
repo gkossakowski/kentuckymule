@@ -12,9 +12,9 @@ typechecker?](https://medium.com/@gkossakowski/can-scala-have-a-highly-parallel-
 Since the time I wrote the blog post, I rephrased the original question into a
 twofold one with only winning outcomes:
 
-> How to build a highly parallel and high performance typechecker, or does >
-Scala have a fundamental language design flaw that prevents such from being
-built?
+  > How to build a highly parallel and high performance typechecker, or does
+  > Scala have a fundamental language design flaw that prevents such from being
+  built?
 
 The prototype in this repo computes outline types I described in the blog post.
 The outline types enable computation of dependencies between symbols in the
@@ -114,3 +114,11 @@ can find.
 
 Check notes.md for details of the architecture explored in Kentucky Mule that
 leads to an extremely fast performance.
+
+## License
+
+Kentucky Mule is licensed under the [3-Clause BSD License](https://github.com/gkossakowski/kentuckymule/blob/master/LICENSE.md)
+
+Kentucky Mule borrows the Scala parser from
+[Dotty](https://github.com/lampepfl/dotty) and for that reason is licensed
+under the same license.
