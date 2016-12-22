@@ -12,8 +12,8 @@ typechecker?](https://medium.com/@gkossakowski/can-scala-have-a-highly-parallel-
 Since the time I wrote the blog post, I rephrased the original question into a
 twofold one with only winning outcomes:
 
-> How to build a highly parallel and high performance typechecker, or does >
-Scala have a fundamental language design flaw that prevents such from being
+> How to build a highly parallel and high performance typechecker, or does
+> Scala have a fundamental language design flaw that prevents such from being
 built?
 
 The prototype in this repo computes outline types I described in the blog post.
