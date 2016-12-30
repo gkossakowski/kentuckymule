@@ -88,7 +88,7 @@ The original goal drove principles of Kentucky Mule development:
   compiler performance before by following the conventional wisdom to "avoid premature
   optimization" and had very limited results. Kentucky Mule takes a paranoid
   approach and assumes itself to sit at the fringes of the conventional
-  software construction practices. In particular, almost everything in Kentucky
+  software construction practices. Almost everything in Kentucky
   Mule is an exercise in premature optimization.
   3. It's a voyage - my goal was to explore fresh ideas in compiler architecture
   I wanted to see effects on potential performance gains of an implementation
