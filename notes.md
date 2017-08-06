@@ -610,3 +610,22 @@ info] Benchmark                                  (filePath)   Mode  Cnt       Sc
 [info] BenchmarkEnter.enter  sample-files/Typer.scala.ignore  thrpt   60  242336.865 ± 1837.541  ops/s
 [info] BenchmarkEnter.enter    sample-files/10k.scala.ignore  thrpt   60    2916.501 ±   32.409  ops/s
 ```
+
+I switched laptop so here're updated numbers:
+
+## fd6999c435122fde497d8afac75a9c56391d6b34
+
+```
+[info]
+[info] Benchmark                                  (filePath)   Mode  Cnt       Score      Error  Units
+[info] BenchmarkEnter.enter  sample-files/Typer.scala.ignore  thrpt   60  243507.676 ± 5625.307  ops/s
+[info] BenchmarkEnter.enter    sample-files/10k.scala.ignore  thrpt   60    3224.569 ±   21.937  ops/s
+```
+
+and then after upgrading to 2.12.3 and enabling the optimizer (with global inlining):
+
+```
+[info] Benchmark                                  (filePath)   Mode  Cnt       Score      Error  Units
+[info] BenchmarkEnter.enter  sample-files/Typer.scala.ignore  thrpt   60  235167.355 ± 5256.694  ops/s
+[info] BenchmarkEnter.enter    sample-files/10k.scala.ignore  thrpt   60    3175.623 ±   48.663  ops/s
+```
