@@ -629,3 +629,11 @@ and then after upgrading to 2.12.3 and enabling the optimizer (with global inlin
 [info] BenchmarkEnter.enter  sample-files/Typer.scala.ignore  thrpt   60  235167.355 ± 5256.694  ops/s
 [info] BenchmarkEnter.enter    sample-files/10k.scala.ignore  thrpt   60    3175.623 ±   48.663  ops/s
 ```
+
+after creating `forEachWithIndex` and switching to it from while loops:
+
+```
+[info] Benchmark                                  (filePath)   Mode  Cnt       Score      Error  Units
+[info] BenchmarkEnter.enter  sample-files/Typer.scala.ignore  thrpt   60  241641.924 ± 2224.430  ops/s
+[info] BenchmarkEnter.enter    sample-files/10k.scala.ignore  thrpt   60    3191.670 ±   51.819  ops/s
+```

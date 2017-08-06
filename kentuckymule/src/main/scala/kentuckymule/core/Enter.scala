@@ -214,30 +214,22 @@ class Enter {
     case t@TypeDef(name, tmpl: Template) if t.isClassDef =>
       val classSym = ClassSymbol(name, owner)
       // t.tParams is empty for classes, the type parameters are accessible thorugh its primary constructor
-      var remainingTparams = tmpl.constr.tparams
-      var tParamIndex = 0
-      while (remainingTparams.nonEmpty) {
-        val tParam = remainingTparams.head
+      foreachWithIndex(tmpl.constr.tparams) { (tParam, tParamIndex) =>
         // TODO: setup completers for TypeDef (resolving bounds, etc.)
         classSym.typeParams.enter(TypeParameterSymbol(tParam.name, tParamIndex, classSym))
-        remainingTparams = remainingTparams.tail
-        tParamIndex += 1
       }
       owner.addChild(classSym)
       // surprisingly enough, this conditional lets us save over 100 ops/s for the completeMemberSigs benchmark
       // we get 1415 ops/s if we unconditionally push class signature lookup scope vs 1524 ops/s with the condition
       // below
       val classSignatureLookupScopeContext =
-        if (tParamIndex > 0)
+        if (tmpl.constr.tparams.nonEmpty)
           parentLookupScopeContext.pushClassSignatureLookupScope(classSym)
         else
           parentLookupScopeContext
       assert(tmpl.constr.vparamss.size <= 1, "Multiple value parameter lists are not supported for class constructor")
       if (tmpl.constr.vparamss.size == 1) {
-        var remainingVparams = tmpl.constr.vparamss.head
-        while (remainingVparams.nonEmpty) {
-          val vparam = remainingVparams.head
-          remainingVparams = remainingVparams.tail
+        tmpl.constr.vparamss.head foreach { vparam =>
           // we're entering constructor parameter as a val declaration in a class
           // TODO: these parameters shouldn't be visible as members outside unless they are declared as vals
           // compare: class Foo(x: Int) vs class Foo(val x: Int)
@@ -262,12 +254,9 @@ class Enter {
       val defSym = DefDefSymbol(t.name)
       var remainingTparams = t.tparams
       var tParamIndex = 0
-      while (remainingTparams.nonEmpty) {
-        val tParam = remainingTparams.head
+      foreachWithIndex(t.tparams) { (tParam, tParamIndex) =>
         // TODO: setup completers for TypeDef (resolving bounds, etc.)
         defSym.typeParams.enter(TypeParameterSymbol(tParam.name, tParamIndex, owner))
-        remainingTparams = remainingTparams.tail
-        tParamIndex += 1
       }
       val completer = new DefDefCompleter(defSym, t, parentLookupScopeContext.newDefDefLookupScope(defSym))
       defSym.completer = completer
@@ -797,6 +786,16 @@ object Enter {
       i -= 1
     }
     res
+  }
+
+  @inline final private def foreachWithIndex[T](xs: List[T])(f: (T, Int) => Unit): Unit = {
+    var index = 0
+    var remaining = xs
+    while (remaining.nonEmpty) {
+      f(remaining.head, index)
+      remaining = remaining.tail
+      index += 1
+    }
   }
 
   private val maxFunctionArity = 22
