@@ -637,3 +637,19 @@ after creating `forEachWithIndex` and switching to it from while loops:
 [info] BenchmarkEnter.enter  sample-files/Typer.scala.ignore  thrpt   60  241641.924 ± 2224.430  ops/s
 [info] BenchmarkEnter.enter    sample-files/10k.scala.ignore  thrpt   60    3191.670 ±   51.819  ops/s
 ```
+
+Benchmark for completing `memberSigs` before (1f69c5c3e046aa6035ad91a5303d980601bd7a72) refactorings that
+factor out low-level while loops and matching on `LookupResult`:
+
+```
+[info] Benchmark                                             (filePath)   Mode  Cnt     Score    Error  Units
+[info] BenchmarkEnter.completeMemberSigs  sample-files/10k.scala.ignore  thrpt   60  1630.662 ± 17.961  ops/s
+```
+
+and refactorings:
+
+```
+[info]
+[info] Benchmark                            Mode  Cnt     Score    Error  Units
+[info] BenchmarkScalap.completeMemberSigs  thrpt   60  2290.022 ± 20.515  ops/s
+```

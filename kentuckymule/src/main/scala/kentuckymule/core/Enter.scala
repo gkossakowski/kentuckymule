@@ -345,20 +345,15 @@ class Enter {
   }
 
   private def scheduleMembersCompletion(sym: ClassSymbol)(implicit ctx: Context): Unit = {
-    var remainingDecls = sym.decls.toList
-    while (remainingDecls.nonEmpty) {
-      val decl = remainingDecls.head
-      decl match {
-        case defSym: DefDefSymbol => completers.add(defSym.completer)
-        case valSym: ValDefSymbol => completers.add(valSym.completer)
-        case _: ClassSymbol | _: ModuleSymbol =>
-        case _: TypeDefSymbol =>
-          if (ctx.verbose)
-            println(s"Ignoring type def $decl in ${sym.name}")
-        case _: TypeParameterSymbol | _: PackageSymbol | NoSymbol =>
-          sys.error(s"Unexpected class declaration: $decl")
-      }
-      remainingDecls = remainingDecls.tail
+    sym.decls.toList foreach {
+      case defSym: DefDefSymbol => completers.add(defSym.completer)
+      case valSym: ValDefSymbol => completers.add(valSym.completer)
+      case _: ClassSymbol | _: ModuleSymbol =>
+      case decl@(_: TypeDefSymbol) =>
+        if (ctx.verbose)
+          println(s"Ignoring type def $decl in ${sym.name}")
+      case decl@(_: TypeParameterSymbol | _: PackageSymbol | NoSymbol) =>
+        sys.error(s"Unexpected class declaration: $decl")
     }
   }
 
@@ -387,33 +382,27 @@ object Enter {
     private var resolvedSelectors: util.ArrayList[ImportSelectorResolved] = _
     private var isComplete: Boolean = false
     def complete(parentLookupScope: LookupScope)(implicit context: Context): LookupAnswer = {
-      isComplete = true
       val Import(expr, selectors) = importNode
       val exprAns = resolveSelectors(expr, parentLookupScope)
-      exprAns match {
-        case LookedupSymbol(exprSym) =>
-          this.exprSym0 = exprSym
-          if (exprSym.isComplete) {
-            var remainingSelectors = selectors
-            val resolvedSelectors: util.ArrayList[ImportSelectorResolved] = new util.ArrayList[ImportSelectorResolved]
-            while (remainingSelectors.nonEmpty) {
-              val Ident(name) = remainingSelectors.head
-              remainingSelectors = remainingSelectors.tail
-              if (name != nme.WILDCARD) {
-                val termSym = lookupMember(exprSym, name)
-                val typeSym = lookupMember(exprSym, name.toTypeName)
-                if (termSym == NoSymbol && typeSym == NoSymbol)
-                  return NotFound
-                resolvedSelectors.add(new ImportSelectorResolved(termSym, typeSym, isWildcard = false))
-              } else {
-                resolvedSelectors.add(new ImportSelectorResolved(null, null, isWildcard = true))
-              }
-            }
-            this.resolvedSelectors = resolvedSelectors
-            LookedupSymbol(exprSym)
-          } else IncompleteDependency(exprSym)
-        case _ => exprAns
+      val result = mapCompleteAnswer(exprAns) { exprSym =>
+        this.exprSym0 = exprSym
+        val resolvedSelectors = mapToArrayList(selectors) { selector =>
+          val Ident(name) = selector
+          if (name != nme.WILDCARD) {
+            val termSym = lookupMember(exprSym, name)
+            val typeSym = lookupMember(exprSym, name.toTypeName)
+            if (termSym == NoSymbol && typeSym == NoSymbol)
+              return NotFound
+            new ImportSelectorResolved(termSym, typeSym, isWildcard = false)
+          } else {
+            new ImportSelectorResolved(null, null, isWildcard = true)
+          }
+        }
+        this.resolvedSelectors = resolvedSelectors
+        exprSym
       }
+      isComplete = true
+      result
     }
     def matches(name: Name)(implicit context: Context): Symbol = {
       assert(isComplete, s"the import node hasn't been completed: $importNode")
@@ -796,6 +785,28 @@ object Enter {
       remaining = remaining.tail
       index += 1
     }
+  }
+
+  @inline final private def mapCompleteAnswer(ans: LookupAnswer)(f: Symbol => Symbol): LookupAnswer = {
+    ans match {
+      case LookedupSymbol(sym) =>
+        if (sym.isComplete)
+           LookedupSymbol(f(sym))
+        else
+          IncompleteDependency(sym)
+      case other => other
+    }
+  }
+
+  @inline final private def mapToArrayList[T, U](xs: List[T])(f: T => U): util.ArrayList[U] = {
+    val result = new util.ArrayList[U]()
+    var remaining = xs
+    while (remaining.nonEmpty) {
+      val elem = f(remaining.head)
+      result.add(elem)
+      remaining = remaining.tail
+    }
+    result
   }
 
   private val maxFunctionArity = 22
