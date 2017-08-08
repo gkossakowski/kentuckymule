@@ -570,25 +570,17 @@ object Enter {
     private var cachedInfo: MethodInfoType = _
     def complete()(implicit context: Context): CompletionResult = {
       val paramTypes = {
-        var remainingVparamGroups = defDef.vparamss
-        val resolvedParamTypeGroups = new util.ArrayList[util.ArrayList[Type]]()
-        while(remainingVparamGroups.nonEmpty) {
-          var remainingVparams = remainingVparamGroups.head
-          remainingVparamGroups = remainingVparamGroups.tail
-          val resolvedParamTypes = new util.ArrayList[Type]()
-          while (remainingVparams.nonEmpty) {
-            val vparam = remainingVparams.head
+        // TODO: write interruptible map2, def interMap2[T](xss: List[List[T])(f: T => CompletionResult): List[List[Type]]
+        defDef.vparamss map {  vParams =>
+          vParams map { vparam =>
             val resolvedType = resolveTypeTree(vparam.tpt, lookupScope)
             resolvedType match {
-              case CompletedType(tpe) => resolvedParamTypes.add(tpe)
+              case CompletedType(tpe) => tpe
               case res: IncompleteDependency => return res
               case NotFound => sys.error(s"Couldn't resolve ${vparam.tpt}")
             }
-            remainingVparams = remainingVparams.tail
           }
-          resolvedParamTypeGroups.add(resolvedParamTypes)
         }
-        asScalaList2(resolvedParamTypeGroups)
       }
       val resultType: Type = if (defDef.tpt.isEmpty) InferredTypeMarker else {
         val resolvedType = resolveTypeTree(defDef.tpt, lookupScope)
