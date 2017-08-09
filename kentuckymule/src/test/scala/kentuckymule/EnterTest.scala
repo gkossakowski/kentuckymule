@@ -113,6 +113,45 @@ object EnterTest extends TestSuite {
         assert(resultTypeSym == Csym)
       }
     }
+    'predefAndScalaPackagePrecedence {
+      implicit val context = ctx
+      val src =
+        """|package scala {
+           |  class A
+           |  class B
+           |  object Predef {
+           |    class A
+           |  }
+           |}
+           |class C
+           |
+        """.stripMargin
+      val enter = enterToSymbolTable(src, ctx)
+      val templateCompleters = (enter.completers.asScala collect {
+        case cp: TemplateMemberListCompleter => cp.clsSym.name.toString -> cp
+      }).toMap
+      enter.processJobQueue(memberListOnly = false)(ctx)
+      val allPaths = descendantPaths(ctx.definitions.rootPackage)
+      val classes = allPaths.flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val objects = allPaths.flatten.collect {
+        case modSym: ModuleSymbol => modSym.name -> modSym
+      }.toMap
+      locally {
+        val Csym = classes("C".toTypeName)
+        val ClookupScope = templateCompleters("C").lookupScope
+        val predef = objects("Predef".toTermName)
+        val aInPredef = predef.info.lookup("A".toTypeName)
+        val LookedupSymbol(aResolvedFromC) = ClookupScope.lookup("A".toTypeName)
+        assert(aResolvedFromC == aInPredef)
+      }
+      locally {
+        val predef = objects("Predef".toTermName)
+        val predefLookupScope = templateCompleters("Predef$").lookupScope
+        assert(predefLookupScope.lookup("C".toTypeName) == NotFound)
+      }
+    }
     'emptyPackageScope {
       implicit val context = ctx
       val src =

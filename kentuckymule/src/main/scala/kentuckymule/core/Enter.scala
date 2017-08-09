@@ -89,12 +89,60 @@ class Enter {
   }
 
   object RootPackageLookupScope extends LookupScope {
+    private var scalaPkg: Symbol = _
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
+      // TODO: lookup in the scala package performed in the root package
+      // lookup scope is a hack. We should either introduce as a separate scope
+      // or add an implicit import as it's specified in the spec
+      if (scalaPkg == null) {
+        // fun fact: if we don't cache the scala pkg symbol but perform the lookup
+        // below every time in this method, we loose 100 ops/s in the
+        // BenchmarkScalap.completeMemberSigs
+        scalaPkg = context.definitions.rootPackage.lookup(nme.scala_)
+      }
+      if (scalaPkg != NoSymbol) {
+        if (!scalaPkg.isComplete)
+          return IncompleteDependency(scalaPkg)
+        val sym = scalaPkg.lookup(name)
+        if (sym == NoSymbol)
+          NotFound
+        else
+          return LookedupSymbol(sym)
+      }
       val sym = context.definitions.rootPackage.lookup(name)
-      if (sym == NoSymbol)
-        NotFound
-      else
+      if (sym != NoSymbol)
         LookedupSymbol(sym)
+      else if (name == context.definitions.rootPackage.name)
+        LookedupSymbol(context.definitions.rootPackage)
+      else
+        NotFound
+    }
+
+    override def replaceImports(imports: ImportsLookupScope): LookupScope =
+      sys.error("unsupported operation")
+  }
+
+  class PredefLookupScope(parentScope: LookupScope) extends LookupScope {
+    var predefSymbol: Symbol = _
+    override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
+      if (predefSymbol == null) {
+        val scalaPkg = context.definitions.rootPackage.lookup(nme.scala_)
+        if (scalaPkg != NoSymbol) {
+          if (!scalaPkg.isComplete)
+            return IncompleteDependency(scalaPkg)
+          val sym = scalaPkg.lookup(nme.Predef)
+          predefSymbol = sym
+        } else predefSymbol = NoSymbol
+      }
+
+      if (predefSymbol != NoSymbol) {
+        if (!predefSymbol.isComplete)
+          return IncompleteDependency(predefSymbol)
+        val sym = predefSymbol.info.lookup(name)
+        if (sym != NoSymbol)
+          return LookedupSymbol(sym)
+      }
+      parentScope.lookup(name)
     }
 
     override def replaceImports(imports: ImportsLookupScope): LookupScope =
@@ -115,8 +163,9 @@ class Enter {
   }
 
   def enterCompilationUnit(unit: CompilationUnit)(implicit context: Context): Unit = {
-    val importsInCompilationUnit = new ImportsCollector(RootPackageLookupScope)
-    val compilationUnitScope = new LookupCompilationUnitScope(importsInCompilationUnit.snapshot(), RootPackageLookupScope)
+    val toplevelScope = new PredefLookupScope(RootPackageLookupScope)
+    val importsInCompilationUnit = new ImportsCollector(toplevelScope)
+    val compilationUnitScope = new LookupCompilationUnitScope(importsInCompilationUnit.snapshot(), toplevelScope)
     val normalizedTrees = unit.untpdTree match {
       case PackageDef(Ident(nme.EMPTY_PACKAGE), stats) =>
         val (pkgs, objOrClass) = stats.partition(_.isInstanceOf[PackageDef])
