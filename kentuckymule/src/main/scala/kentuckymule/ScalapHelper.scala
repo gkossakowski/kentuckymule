@@ -1,111 +1,106 @@
 package kentuckymule
 
+import java.nio.file.{FileSystems, Files}
+
 import dotty.tools.dotc.core.Contexts.Context
 import kentuckymule.core.Enter
-import kentuckymule.core.Symbols.{ClassSymbol, PackageSymbol, StubClassSymbol}
 import Enter.CompletionResult
+import kentuckymule.core.Symbols.{ClassSymbol, PackageSymbol, StubClassSymbol, Symbol}
 
 object ScalapHelper {
   import dotty.tools.dotc.core.Decorators._
   def enterStabSymbolsForScalap(implicit ctx: Context): Unit = {
     // enter java.io
     val root = ctx.definitions.rootPackage
-    val javaPkg = new PackageSymbol("java".toTermName)
-    root.addChild(javaPkg)
-    val ioPkg = new PackageSymbol("io".toTermName)
-    javaPkg.addChild(ioPkg)
+    val javaPkg = enterStubPackage("java", root)
+    val ioPkg = enterStubPackage("io", javaPkg)
     enterStubClasses(ioPkg, "ByteArrayOutputStream", "OutputStreamWriter", "PrintStream", "IOException", "Writer")
 
     // enter java.util
-    val javaUtilPkg = new PackageSymbol("util".toTermName)
-    javaPkg.addChild(javaUtilPkg)
+    val javaUtilPkg = enterStubPackage("util", javaPkg)
 
     // enter java.util.regex
-    val javaUtilRegexPkg = new PackageSymbol("regex".toTermName)
-    javaUtilPkg.addChild(javaUtilRegexPkg)
+    val javaUtilRegexPkg = enterStubPackage("regex", javaUtilPkg)
     enterStubClasses(javaUtilRegexPkg, "Pattern")
 
     // enter java.lang
-    val javaLangPkg = new PackageSymbol("lang".toTermName)
-    javaPkg.addChild(javaLangPkg)
+    val javaLangPkg = enterStubPackage("lang", javaPkg)
     enterStubClasses(javaLangPkg, "String")
 
     // enter java.beans
-    val javaBeansPkg = new PackageSymbol("beans".toTermName)
-    javaPkg.addChild(javaBeansPkg)
+    val javaBeansPkg = enterStubPackage("beans", javaPkg)
     enterStubClasses(javaBeansPkg, "Introspector")
 
     // enter scala
-    val scalaPkg = new PackageSymbol("scala".toTermName)
-    root.addChild(scalaPkg)
+    val scalaPkg = enterStubPackage("scala", root)
+
+    enterStubClasses(scalaPkg, "Any", "AnyRef", "Nothing", "Unit")
 
     // enter things visible by default from Predef, scala or java.lang packages into root package
     // normally, you would have separate package for scala and java.lang that are seen from every compilation unit
     // but we don't care about details when just trying to get some performance numbers
-    enterStubClasses(root, "Nothing", "RuntimeException", "String", "Array", "Char", "Unit", "Boolean",
-      "Option", "List", "Byte", "Int", "Long", "Float", "Double", "Short", "AnyRef", "Any", "Seq", "Class",
+    enterStubClasses(root, "RuntimeException", "String", "Array", "Char", "Unit", "Boolean",
+      "Option", "List", "Byte", "Int", "Long", "Float", "Double", "Short", "Seq", "Class",
       "PartialFunction")
     enterStubClasses(root, Seq.tabulate(23)(i => s"Function$i"): _*)
 
     // enter scala.reflect
-    val reflectPkg = new PackageSymbol("reflect".toTermName)
-    scalaPkg.addChild(reflectPkg)
+    val reflectPkg = enterStubPackage("reflect", scalaPkg)
     enterStubClasses(reflectPkg, "NameTransformer")
 
     // enter scala.reflect.internal
-    val reflectInternalPkg = new PackageSymbol("internal".toTermName)
-    reflectPkg.addChild(reflectInternalPkg)
+    val reflectInternalPkg = enterStubPackage("internal", reflectPkg)
 
     // enter scala.reflect.internal.pickling
-    val internalPicklingPkg = new PackageSymbol("pickling".toTermName)
-    reflectInternalPkg.addChild(internalPicklingPkg)
+    val internalPicklingPkg = enterStubPackage("pickling", reflectInternalPkg)
     enterStubClasses(internalPicklingPkg, "ByteCodecs")
 
     // enter scala.reflect.internal.util
-    val internalUtilPkg = new PackageSymbol("util".toTermName)
-    reflectInternalPkg.addChild(internalUtilPkg)
+    val internalUtilPkg = enterStubPackage("util", reflectInternalPkg)
     enterStubClasses(internalUtilPkg, "ScalaClassLoader")
 
     // enter scala.tools.nsc
-    val toolsPkg = new PackageSymbol("tools".toTermName)
-    scalaPkg.addChild(toolsPkg)
-    val nscPkg = new PackageSymbol("nsc".toTermName)
-    toolsPkg.addChild(nscPkg)
+    val toolsPkg = enterStubPackage("tools", scalaPkg)
+    val nscPkg = enterStubPackage("nsc", toolsPkg)
     enterStubClasses(nscPkg, "Settings")
 
     // enter scala.tools.nsc.classpath
-    val classpathPkg = new PackageSymbol("classpath".toTermName)
-    nscPkg.addChild(classpathPkg)
+    val classpathPkg = enterStubPackage("classpath", nscPkg)
     enterStubClasses(classpathPkg, "AggregateClassPath", "ClassPathFactory")
 
     // enter scala.tools.nsc.util
-    val nscUtilPkg = new PackageSymbol("util".toTermName)
-    nscPkg.addChild(nscUtilPkg)
+    val nscUtilPkg = enterStubPackage("util", nscPkg)
     enterStubClasses(nscUtilPkg, "ClassPath")
 
     // enter scala.tools.util
-    val toolsUtilPkg = new PackageSymbol("util".toTermName)
-    toolsPkg.addChild(toolsUtilPkg)
+    val toolsUtilPkg = enterStubPackage("util", toolsPkg)
     enterStubClasses(toolsUtilPkg, "PathResolver")
 
     // enter scala.util
-    val scalaUtilPkg = new PackageSymbol("util".toTermName)
-    scalaPkg.addChild(scalaUtilPkg)
+    val scalaUtilPkg = enterStubPackage("util", scalaPkg)
     enterStubClasses(scalaUtilPkg, "PropertiesTrait")
 
+    // enter scala.collection
+    val collectionPkg = enterStubPackage("collection", scalaPkg)
     // enter scala.collection.mutable
-    val collectionPkg = new PackageSymbol("collection".toTermName)
-    scalaPkg.addChild(collectionPkg)
-    val mutablePkg = new PackageSymbol("mutable".toTermName)
-    collectionPkg.addChild(mutablePkg)
+    val mutablePkg = enterStubPackage("mutable", collectionPkg)
     enterStubClasses(mutablePkg, "ListBuffer", "Set", "Map")
 
+    // enter scala.collection.concurrent
+    val concurrentPkg = enterStubPackage("concurrent", collectionPkg)
+    enterStubClasses(concurrentPkg, "MainNode")
+
     // enter scala.language
-    val languagePkg = new PackageSymbol("language".toTermName)
-    scalaPkg.addChild(languagePkg)
+    val languagePkg = enterStubPackage("language", scalaPkg)
     // we model implicitConversions as a class inside of a language package. In Scala, the "language" is an object
     // and "implicitConversions" is a val
     enterStubClasses(languagePkg, "implicitConversions", "postfixOps")
+  }
+
+  def enterStubPackage(name: String, owner: PackageSymbol)(implicit context: Context): PackageSymbol = {
+    val pkgSym = PackageSymbol(name.toTermName)
+    owner.addChild(pkgSym)
+    pkgSym
   }
 
   private class StubClassCompleter(sym: ClassSymbol) extends Enter.Completer(sym) {
