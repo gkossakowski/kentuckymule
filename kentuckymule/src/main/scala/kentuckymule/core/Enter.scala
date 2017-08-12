@@ -303,15 +303,16 @@ class Enter {
           parentLookupScopeContext.pushClassSignatureLookupScope(classSym)
         else
           parentLookupScopeContext
-      assert(tmpl.constr.vparamss.size <= 1, "Multiple value parameter lists are not supported for class constructor")
-      if (tmpl.constr.vparamss.size == 1) {
-        tmpl.constr.vparamss.head foreach { vparam =>
+
+      tmpl.constr.vparamss foreach { vparams =>
+        vparams foreach { vparam =>
           // we're entering constructor parameter as a val declaration in a class
           // TODO: these parameters shouldn't be visible as members outside unless they are declared as vals
           // compare: class Foo(x: Int) vs class Foo(val x: Int)
           enterTree(vparam, classSym, classSignatureLookupScopeContext)
         }
       }
+
       val lookupScopeContext = classSignatureLookupScopeContext.pushClassLookupScope(classSym)
       val completer = new TemplateMemberListCompleter(classSym, tmpl, lookupScopeContext.parentScope)
       queueCompleter(completer)

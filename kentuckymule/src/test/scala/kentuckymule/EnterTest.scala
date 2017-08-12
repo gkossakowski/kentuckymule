@@ -52,6 +52,17 @@ object EnterTest extends TestSuite {
         )
       )
     }
+    'constructorMultipleParamList {
+      val src = "class Foo(val x: Foo)(val y: Foo)"
+      val enter = enterToSymbolTable(ctx, src)
+      enter.processJobQueue(memberListOnly = false)(ctx)
+      val classes = descendantPathsFromRoot().flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val fooSym = classes("Foo".toTypeName)
+      val fooMembers = fooSym.info.members.toList.map(_.name)
+      assert(fooMembers == List("x".toTermName, "y".toTermName))
+    }
     import scala.collection.JavaConverters._
     'resolveImport {
       val src = "object A { class B }; class X { import A.B; class Y }"
