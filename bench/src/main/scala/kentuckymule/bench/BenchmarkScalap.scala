@@ -48,7 +48,7 @@ object BenchmarkScalap {
       enter = new Enter
       val context = bs.context
       context.definitions.rootPackage.clear()
-      ScalapHelper.enterStabSymbolsForScalap(context)
+      ScalapHelper.enterStabSymbolsForScalap(enter)(context)
       for (compilationUnit <- pts.compilationUnits)
         enter.enterCompilationUnit(compilationUnit)(context)
       enter.processJobQueue(memberListOnly = false)(context)
@@ -91,7 +91,7 @@ class BenchmarkScalap {
     val context = bs.context
     context.definitions.rootPackage.clear()
     val enter = new Enter
-    ScalapHelper.enterStabSymbolsForScalap(context)
+    ScalapHelper.enterStabSymbolsForScalap(enter)(context)
     var i = 0
     while (i < pts.compilationUnits.length) {
       enter.enterCompilationUnit(pts.compilationUnits(i))(context)
@@ -138,7 +138,7 @@ class BenchmarkScalap {
 
     context.definitions.rootPackage.clear()
     val enter = new Enter
-    ScalapHelper.enterStabSymbolsForScalap(context)
+    ScalapHelper.enterStabSymbolsForScalap(enter)(context)
     var i = 0
     while (i < compilationUnits.length) {
       enter.enterCompilationUnit(compilationUnits(i))(context)

@@ -495,6 +495,100 @@ lookups in bottom-up order (which is respecting shadowing Scala rules). Having a
 datastructure that lets me traverse efficiently in both directions was a reason
 I picked an Array.
 
+## Package objects
+
+Initially, Kentucky Mule didn't support package objects. I felt that they're
+not an essential Scala feature and implementing package objects would be
+tedious process but not affecting the design of Kentucky Mule in substantial
+way. Now, I'm looking into implementing support of package objects and I see
+they're tricky to implement. The complexity boils down to combining two features
+
+  * openness of packages
+  * inheritance from parents in objects
+
+This makes it pretty tricky to compute all members of a package. Without package
+objects support, list of members in a package is available right after entering
+of all symbols is done: members of a package can be determined purely from
+lexical scoping extended across all source files. Previously, I implemented
+lookup in package by simply looking at its scope but once package objects
+get involved, member lookup has to go through a type. Packages need to receive
+support for type completers as a result.
+
+My current plan is to have two different paths for completing package type:
+
+  * no-op type completer for packages that doesn't have a package object
+    associated with them
+  * a type completer that merges members declared lexically in package
+    with members computed by a type completer for package object
+
+The end result will be that lookups through package type will be as performant
+as the current implementation that accesses package scope directly.
+
+Nov 5th update:
+I implemented the package object support via adding package types as described
+above. I experimented with two different designs for looking up members in
+packages:
+
+  1. In package type have two phase lookup: a) lookup in package object's
+     members (if there's a package object declared for that package) b)
+     if member not found in package object, check package declarations
+  2. Have package type completer collapse (copy) members from package object
+     and declarations of package into one Scope. Lookups are probing just
+     that one scope.
+
+The tradeoff between 1. and 2. is the performance cost of PackageCompleter's vs lookups
+in the package.
+
+The 1. optimizes for faster package completer: if there's no
+package object declared, package completer is noop. However, package member
+lookups are slower because two scopes need to be queried.
+
+The 2. optimizes for faster package lookups: all members are collapsed into
+one Scope instance and package lookups is simply one operation on a Scope.
+The price for it is slower completer: it has to copy all members from package
+Scope and from package object Scope into a new scope.
+
+Initially, I thought 2. is too expensive. Copying of all members sounded really
+wasteful. However, benchmarking showed that the overall performance of completing
+all types in `scalap` is better with the second strategy. In retrospect it's
+actually not surprising: copying things is pretty cheap with modern CPUs but
+handling branches and two Hashmap lookups continues to be expensive. Also,
+one performs many more lookups in package compared to a single completion of the
+package.
+
+### Package object performance cost
+
+Even with the very careful analysis of all options I could think of, I didn't
+manage to find a design that would make package object implementation not
+expensive. Let's look at the numbers:
+
+```
+Before package object implementation (d382f2382ddefda3bebc950185083d6fa4446b27)
+[info] # Run complete. Total time: 00:09:17
+[info] Benchmark                            Mode  Cnt      Score     Error  Units
+[info] BenchmarkScalap.completeMemberSigs  thrpt  120   2169.029 ±  11.857  ops/s
+[info] BenchmarkScalap.enter               thrpt  120  12564.843 ± 205.093  ops/s
+
+Package object implemented
+[info] Benchmark                            Mode  Cnt      Score    Error  Units
+[info] BenchmarkScalap.completeMemberSigs  thrpt   60  2046.740 ± 21.525  ops/s
+[info] BenchmarkScalap.enter               thrpt  120  12454.014 ± 96.721  ops/s
+```
+
+Enter performance is about the same. However, `completeMemberSigs` loses ~130 ops/s
+which is around 6% performance drop. I think for such a fundamental feature as
+package objects, the cost is somewhat accepatable.
+
+I was curious what's the source of slow-down, though. One way to look at is the
+size of the completer's queue. Adding package completers increases the number of
+tasks from 930 to 974 (this is 4.5% increase). I also experimented with running
+package completers but still relying on the old package lookup directly in symbol's
+scope instead of going through it's type. I found that additional indirection of
+package member lookups (going via type) in `lookupOrCreatePackage` is
+responsible for about 1.5% performance drop. The rest of it is attributed to more
+complex logic in `enterTree` (that handles package objects) and to running package
+completers that need to copy members.
+
 # Completers design
 
 Completer is a piece of logic that computes ("completes") the type of a symbol
@@ -753,3 +847,4 @@ and refactorings:
 [info] Benchmark                            Mode  Cnt     Score    Error  Units
 [info] BenchmarkScalap.completeMemberSigs  thrpt   60  2290.022 ± 20.515  ops/s
 ```
+

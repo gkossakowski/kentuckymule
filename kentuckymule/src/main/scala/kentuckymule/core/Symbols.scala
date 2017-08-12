@@ -37,8 +37,18 @@ object Symbols {
   abstract sealed class TypeSymbol(name: Name) extends Symbol(name)
 
   final case class PackageSymbol(override val name: Name) extends TermSymbol(name) {
-    val info: Type = new PackageInfoType(this)
-    override def isComplete: Boolean = true
+    var info: Type = _
+    private var pkgObject: Symbol = NoSymbol
+    override def isComplete: Boolean = info != null
+    def packageObject_=(pkgObject: ModuleSymbol): Unit = {
+      assert(this.pkgObject == NoSymbol, s"illegal overwrite of previously set package object ${this.pkgObject} by $pkgObject")
+      this.pkgObject = pkgObject
+    }
+    def packageObject: Symbol = pkgObject
+    var completer: Completer = _
+    def completeInfo()(implicit context: Context): CompletionResult = {
+      completer.complete()
+    }
   }
   sealed case class ClassSymbol(override val name: Name, owner: Symbol) extends TypeSymbol(name) {
     var info: ClassInfoType = _

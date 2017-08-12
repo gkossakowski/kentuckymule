@@ -11,7 +11,7 @@ import dotc.core.Decorators._
 import dotc.core.StdNames._
 import Symbols._
 import Types._
-import dotc.core.TypeOps
+import dotc.core.{Decorators, Flags, TypeOps}
 
 /**
   * Creates symbols for declarations and enters them into a symbol table.
@@ -176,9 +176,13 @@ class Enter {
 
   class PackageLookupScope(val pkgSym: Symbol, val parent: LookupScope, val imports: ImportsLookupScope) extends LookupScope {
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
-      val foundSym = pkgSym.lookup(name)
-      if (foundSym != NoSymbol)
-        LookedupSymbol(foundSym)
+      val pkgMember = if (!pkgSym.isComplete) {
+        return IncompleteDependency(pkgSym)
+      } else {
+        pkgSym.info.lookup(name)
+      }
+      if (pkgMember != NoSymbol)
+        LookedupSymbol(pkgMember)
       else {
         val ans = imports.lookup(name)
         ans match {
@@ -247,12 +251,25 @@ class Enter {
       for (stat <- stats) enterTree(stat, pkgSym, lookupScopeContext)
     case imp: Import =>
       parentLookupScopeContext.addImport(imp)
-    case ModuleDef(name, tmpl) =>
+    case md@ModuleDef(name, tmpl) =>
       import dotty.tools.dotc.core.NameOps._
-      val modClsSym = ClassSymbol(name.moduleClassName, owner)
-      val modSym = ModuleSymbol(name, modClsSym, owner)
-      owner.addChild(modSym)
-      val lookupScopeContext = parentLookupScopeContext.pushModuleLookupScope(modSym)
+      val isPackageObject = md.mods is Flags.Package
+      val modName = if (isPackageObject) nme.PACKAGE else name
+      val modOwner = if (isPackageObject) lookupOrCreatePackage(name, owner) else owner
+      val modClsSym = ClassSymbol(modName.moduleClassName, owner)
+      val modSym = ModuleSymbol(modName, modClsSym, owner)
+      if (isPackageObject) {
+        assert(modOwner.isInstanceOf[PackageSymbol], "package object has to be declared inside of a package (enforced by syntax)")
+        modOwner.asInstanceOf[PackageSymbol].packageObject = modSym
+      }
+      val lookupScopeContext = if (isPackageObject) {
+        parentLookupScopeContext.
+          pushPackageLookupScope(modOwner.asInstanceOf[PackageSymbol]).
+          pushModuleLookupScope(modSym)
+      } else {
+        parentLookupScopeContext.pushModuleLookupScope(modSym)
+      }
+      modOwner.addChild(modSym)
       locally {
         val completer = new TemplateMemberListCompleter(modClsSym, tmpl, lookupScopeContext.parentScope)
         queueCompleter(completer)
@@ -405,6 +422,9 @@ class Enter {
       case pkgSym: PackageSymbol => pkgSym
       case _ =>
         val pkgSym = PackageSymbol(name)
+        val pkgCompleter = new PackageCompleter(pkgSym)
+        pkgSym.completer = pkgCompleter
+        completers.add(pkgCompleter)
         resolvedOwner.addChild(pkgSym)
         pkgSym
     }
@@ -448,12 +468,18 @@ class Enter {
           case IncompleteDependency(sym: DefDefSymbol) =>
             completers.add(sym.completer)
             completers.add(completer)
+          case IncompleteDependency(sym: PackageSymbol) =>
+            completers.add(sym.completer)
+            completers.add(completer)
           case CompletedType(tpe: MethodInfoType) =>
             val defDefSym = completer.sym.asInstanceOf[DefDefSymbol]
             defDefSym.info = tpe
           case CompletedType(tpe: ValInfoType) =>
             val valDefSym = completer.sym.asInstanceOf[ValDefSymbol]
             valDefSym.info = tpe
+          case CompletedType(tpe: PackageInfoType) =>
+            val pkgSym = completer.sym.asInstanceOf[PackageSymbol]
+            pkgSym.info = tpe
           // error cases
           case completed: CompletedType =>
             sys.error(s"Unexpected completed type $completed returned by completer for ${completer.sym}")
@@ -694,6 +720,28 @@ object Enter {
       CompletedType(info)
     }
     def isCompleted: Boolean = cachedInfo != null
+  }
+
+  class PackageCompleter(pkgSym: PackageSymbol) extends Completer(pkgSym) {
+    private var cachedInfo: PackageInfoType = _
+    override def complete()(implicit context: Context): CompletionResult = {
+      if (cachedInfo != null)
+        CompletedType(cachedInfo)
+      else if ((pkgSym.packageObject != NoSymbol) && (!pkgSym.packageObject.isComplete))
+        IncompleteDependency(pkgSym.packageObject)
+      else {
+        val info = new PackageInfoType(pkgSym)
+        // TODO: check for conflicting definitions in the package and package object, e.g.:
+        // package foo { class Abc }; package object foo { class Abc }
+        if (pkgSym.packageObject != NoSymbol)
+          info.members.enterAll(pkgSym.packageObject.asInstanceOf[ModuleSymbol].info.members)
+        info.members.enterAll(pkgSym.decls)
+
+        cachedInfo = info
+        CompletedType(cachedInfo)
+      }
+    }
+    override def isCompleted: Boolean = cachedInfo != null
   }
 
   class DefDefCompleter(sym: DefDefSymbol, defDef: DefDef, val lookupScope: LookupScope) extends Completer(sym) {

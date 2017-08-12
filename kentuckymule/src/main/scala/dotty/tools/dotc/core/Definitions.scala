@@ -70,9 +70,14 @@ class Definitions {
     override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
   }
 
-  val rootPackage = new PackageSymbol(StdNames.nme.ROOTPKG)
+  val rootPackage: PackageSymbol = {
+    val rootPkg = PackageSymbol(StdNames.nme.ROOTPKG)
+    rootPkg.info = new RootPackageInfoType(rootPkg)
+    rootPkg
+  }
   val emptyPackage: PackageSymbol = {
     val emptyPkgSym = PackageSymbol(StdNames.nme.EMPTY_PACKAGE)
+    emptyPkgSym.info = new EmptyPackageInfoType(emptyPkgSym)
     rootPackage.addChild(emptyPkgSym)
     emptyPkgSym
   }

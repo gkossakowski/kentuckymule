@@ -4,6 +4,7 @@ import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.core.Names.Name
 import dotty.tools.dotc.core.Scopes._
 import dotty.tools.sharable
+import kentuckymule.core.Enter.LookedupSymbol
 import kentuckymule.core.Symbols._
 
 import scala.language.implicitConversions
@@ -94,8 +95,25 @@ object Types {
   }
 
   final class PackageInfoType(pkgSymbol: PackageSymbol) extends Type {
+    val members: MutableScope = newScope
     override def typeSymbol: Symbol = pkgSymbol
-    override def lookup(name: Name)(implicit contexts: Context): Symbol = pkgSymbol.lookup(name)
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = {
+      members.lookup(name)
+    }
+  }
+
+  final class RootPackageInfoType(pkgSymbol: PackageSymbol) extends Type {
+    override def typeSymbol: Symbol = pkgSymbol
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = {
+      pkgSymbol.lookup(name)
+    }
+  }
+
+  final class EmptyPackageInfoType(pkgSymbol: PackageSymbol) extends Type {
+    override def typeSymbol: Symbol = pkgSymbol
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = {
+      pkgSymbol.lookup(name)
+    }
   }
 
   object WildcardType extends Type {

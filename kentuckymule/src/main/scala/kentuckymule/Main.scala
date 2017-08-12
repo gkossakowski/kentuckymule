@@ -55,8 +55,8 @@ object Main {
       unit.untpdTree = parser.parse()
       unit
     }
-    ScalapHelper.enterStabSymbolsForScalap(context)
     val enter = new Enter
+    ScalapHelper.enterStabSymbolsForScalap(enter)(context)
     for (compilationUnit <- compilationUnits)
       enter.enterCompilationUnit(compilationUnit)(context)
 

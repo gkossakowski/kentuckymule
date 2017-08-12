@@ -113,6 +113,45 @@ object EnterTest extends TestSuite {
         assert(resultTypeSym == Csym)
       }
     }
+    'packageObject {
+      val src = "package foo; package object bar { class D }; package bar { class C }"
+      val enter = enterToSymbolTable(ctx, src)
+      val templateCompleters = enter.completers.asScala
+      val Some(dCompleter) = templateCompleters collectFirst {
+        case cp: TemplateMemberListCompleter if cp.clsSym.name == "D".toTypeName => cp
+      }
+      val descendants = descendantPaths(ctx.definitions.rootPackage)
+      val descendantNames = descendants.map(_.map(_.name))
+      assert(descendantNames ==
+        List(
+          List(StdNames.nme.ROOTPKG, "foo".toTermName, "bar".toTermName, "package".toTermName, "D".toTypeName),
+          List(StdNames.nme.ROOTPKG, "foo".toTermName, "bar".toTermName, "C".toTypeName)
+        )
+      )
+      enter.processJobQueue(memberListOnly = false)(ctx)
+      val dLookupScope = dCompleter.lookupScope
+      val ans = dLookupScope.lookup("C".toTypeName)(ctx)
+      assert(ans.isInstanceOf[Enter.LookedupSymbol])
+    }
+    'packageObjectInEmptyPackage {
+      val src = "package object bar { class D }; package bar { class C }"
+      val enter = enterToSymbolTable(ctx, src)
+      val templateCompleters = enter.completers.asScala
+      val Some(dCompleter) = templateCompleters collectFirst {
+        case cp: TemplateMemberListCompleter if cp.clsSym.name == "D".toTypeName => cp
+      }
+      val descendantNames = this.descendantNames(ctx.definitions.rootPackage)
+      assert(descendantNames ==
+        List(
+          List(StdNames.nme.ROOTPKG, "bar".toTermName, "package".toTermName, "D".toTypeName),
+          List(StdNames.nme.ROOTPKG, "bar".toTermName, "C".toTypeName)
+        )
+      )
+      enter.processJobQueue(memberListOnly = false)(ctx)
+      val dLookupScope = dCompleter.lookupScope
+      val ans = dLookupScope.lookup("C".toTypeName)(ctx)
+      assert(ans.isInstanceOf[Enter.LookedupSymbol])
+    }
     'predefAndScalaPackagePrecedence {
       val src =
         """|package scala {
