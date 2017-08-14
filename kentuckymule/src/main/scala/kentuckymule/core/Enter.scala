@@ -171,7 +171,12 @@ class Enter {
     val importsInCompilationUnit = new ImportsCollector(toplevelScope)
     val compilationUnitScope = new LookupCompilationUnitScope(importsInCompilationUnit.snapshot(), toplevelScope)
     val lookupScopeContext = new LookupScopeContext(importsInCompilationUnit, compilationUnitScope)
-    enterTree(unit.untpdTree, context.definitions.rootPackage, lookupScopeContext)
+    try { 
+      enterTree(unit.untpdTree, context.definitions.rootPackage, lookupScopeContext)
+    } catch {
+      case ex: Exception => throw new RuntimeException(s"Error while entering symbols from ${unit.source}", ex)
+    }
+
   }
 
   class PackageLookupScope(val pkgSym: Symbol, val parent: LookupScope, val imports: ImportsLookupScope) extends LookupScope {
