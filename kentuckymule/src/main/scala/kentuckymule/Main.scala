@@ -30,12 +30,23 @@ object Main {
   def main(args: Array[String]): Unit = {
     val start = System.currentTimeMillis()
 
+    val srcsToProcess: String = args match {
+      case Array("scalalib") => "scalalib"
+      case _ => "scalap"
+    }
+
     val ctx = initCtx.fresh
     ctx.settings.verbose.update(false)(ctx)
+    ctx.settings.language.update(dotty.tools.dotc.core.StdNames.nme.Scala2.toString :: Nil)(ctx)
     try {
       for (i <- 1 to 1) {
         ctx.definitions.rootPackage.clear()
-        val CompleterStats(jobsNumber, dependencyMisses) = processScalap(ctx)
+        val CompleterStats(jobsNumber, dependencyMisses) = {
+          srcsToProcess match {
+            case "scalalib" => processScalaLib(ctx)
+            case "scalap" => processScalap(ctx)
+          }
+        }
         println(s"Number of jobs processed: $jobsNumber out of which $dependencyMisses finished with dependency miss")
       }
     } finally {
@@ -57,6 +68,46 @@ object Main {
     }
     val enter = new Enter
     ScalapHelper.enterStabSymbolsForScalap(enter)(context)
+    for (compilationUnit <- compilationUnits)
+      enter.enterCompilationUnit(compilationUnit)(context)
+
+    val progressListener = if (context.verbose) Enter.NopJobQueueProgressListener else new ProgressBarListener
+    val jobsNumber = enter.processJobQueue(memberListOnly = false, progressListener)(context)
+    val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
+    val (classes, deps) = depsExtraction.extractAllDependencies()
+    import scala.collection.JavaConverters._
+    val sccResult@TarjanSCC.SCCResult(components, edges) =
+      TarjanSCC.collapsedGraph[ClassSymbol](classes.asScala, from => deps.get(from).asScala)
+    println(s"Found ${components.size} dependency groups")
+    def printSymbol(cls: ClassSymbol): String = s"${cls.owner.name}.${cls.name}"
+    val longestPath = TarjanSCC.longestPath(sccResult)
+    println(s"Printing the longest (${longestPath.size}) dependency path ")
+    for (component <- longestPath) {
+      val symbols = component.vertices
+      print(s"Component.size = ${symbols.size}: ")
+      print((symbols.asScala take 4).map(printSymbol).mkString(", "))
+      if (symbols.size > 4)
+        println(", ...")
+      else
+        println()
+    }
+
+    jobsNumber
+  }
+
+  def processScalaLib(implicit context: Context): Enter.CompleterStats = {
+    import java.nio.file.Paths
+    println("Calculating outline types for scala library sources...")
+    val scalaLibDir = Paths.get("./sample-projects/scala/src/library").toAbsolutePath.toString
+    val compilationUnits = for (filePath <- ScalaLibHelper.scalaLibraryFiles(scalaLibDir)) yield {
+      val source = getSource(filePath)(context)
+      val unit = new CompilationUnit(source)
+      val parser = new parsing.Parsers.Parser(source)(context)
+      unit.untpdTree = parser.parse()
+      unit
+    }
+    val enter = new Enter
+    ScalaLibHelper.enterStabSymbolsForScalaLib(context)
     for (compilationUnit <- compilationUnits)
       enter.enterCompilationUnit(compilationUnit)(context)
 
