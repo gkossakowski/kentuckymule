@@ -661,6 +661,7 @@ object Enter {
   abstract class Completer(val sym: Symbol) {
     def complete()(implicit context: Context): CompletionResult
     def isCompleted: Boolean
+    override def toString: String = s"${this.getClass.getName}: $sym"
   }
 
   class ModuleCompleter(modSym: ModuleSymbol) extends Completer(modSym) {
