@@ -23,6 +23,10 @@ class Enter {
 
   val completers: util.Queue[Completer] = new util.ArrayDeque[Completer]()
 
+  def queueCompleter(completer: Completer): Unit = {
+    completers.add(completer)
+  }
+
   class ClassSignatureLookupScope(classSym: ClassSymbol, parentScope: LookupScope) extends LookupScope {
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
       if (name.isTypeName) {
@@ -260,12 +264,12 @@ class Enter {
       val lookupScopeContext = parentLookupScopeContext.pushModuleLookupScope(modSym)
       locally {
         val completer = new TemplateMemberListCompleter(modClsSym, tmpl, lookupScopeContext.parentScope)
-        completers.add(completer)
+        queueCompleter(completer)
         modClsSym.completer = completer
       }
       locally {
         val completer = new ModuleCompleter(modSym)
-        completers.add(completer)
+        queueCompleter(completer)
         modSym.completer = completer
       }
       for (stat <- tmpl.body) enterTree(stat, modClsSym, lookupScopeContext)
@@ -297,7 +301,7 @@ class Enter {
       }
       val lookupScopeContext = classSignatureLookupScopeContext.pushClassLookupScope(classSym)
       val completer = new TemplateMemberListCompleter(classSym, tmpl, lookupScopeContext.parentScope)
-      completers.add(completer)
+      queueCompleter(completer)
       classSym.completer = completer
       for (stat <- tmpl.body) enterTree(stat, classSym, lookupScopeContext)
     // type alias or type member
@@ -364,15 +368,15 @@ class Enter {
             modSym.info = tpe
           case IncompleteDependency(sym: ClassSymbol) =>
             assert(sym.completer != null, sym.name)
-            completers.add(sym.completer)
-            completers.add(completer)
+            queueCompleter(sym.completer)
+            queueCompleter(completer)
           case IncompleteDependency(sym: ModuleSymbol) =>
             assert(sym.completer != null, sym.name)
-            completers.add(sym.completer)
-            completers.add(completer)
+            queueCompleter(sym.completer)
+            queueCompleter(completer)
           case IncompleteDependency(sym: ValDefSymbol) =>
-            completers.add(sym.completer)
-            completers.add(completer)
+            queueCompleter(sym.completer)
+            queueCompleter(completer)
           case IncompleteDependency(sym: DefDefSymbol) =>
             completers.add(sym.completer)
             completers.add(completer)
@@ -402,8 +406,8 @@ class Enter {
 
   private def scheduleMembersCompletion(sym: ClassSymbol)(implicit ctx: Context): Unit = {
     sym.decls.toList foreach {
-      case defSym: DefDefSymbol => completers.add(defSym.completer)
-      case valSym: ValDefSymbol => completers.add(valSym.completer)
+      case defSym: DefDefSymbol => queueCompleter(defSym.completer)
+      case valSym: ValDefSymbol => queueCompleter(valSym.completer)
       case _: ClassSymbol | _: ModuleSymbol =>
       case decl@(_: TypeDefSymbol) =>
         if (ctx.verbose)
