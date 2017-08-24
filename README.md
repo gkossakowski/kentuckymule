@@ -84,7 +84,7 @@ The original goal drove principles of Kentucky Mule development:
   1. Transparent pricing - I added many benchmarks and at each step of
   implementing Kentucky Mule I measured performance cost of supporting Scala
   feature.
-  2. Only paranoid survive - many smart people have tried to optimize the Scala
+  2. Only the paranoid survive - many smart people have tried to optimize the Scala
   compiler performance before by following the conventional wisdom to "avoid premature
   optimization" and had very limited results. Kentucky Mule takes a paranoid
   approach and assumes itself to sit at the fringes of the conventional
