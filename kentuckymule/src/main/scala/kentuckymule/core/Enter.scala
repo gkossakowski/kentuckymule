@@ -348,8 +348,10 @@ class Enter {
   }
 
   def processJobQueue(memberListOnly: Boolean,
-                      listener: JobQueueProgressListener = NopJobQueueProgressListener)(implicit ctx: Context): Int = {
+                      listener: JobQueueProgressListener = NopJobQueueProgressListener)(implicit ctx: Context):
+    CompleterStats = {
     var steps = 0
+    var missedDeps = 0
     while (!completers.isEmpty) {
       steps += 1
       if (ctx.verbose)
@@ -357,6 +359,9 @@ class Enter {
       val completer = completers.remove()
       if (!completer.isCompleted) {
         val res = completer.complete()
+        if (res.isInstanceOf[IncompleteDependency]) {
+          missedDeps += 1
+        }
         res match {
           case CompletedType(tpe: ClassInfoType) =>
             val classSym = tpe.clsSym
@@ -401,7 +406,7 @@ class Enter {
       listener.thick(completers.size, steps)
     }
     listener.allComplete()
-    steps
+    CompleterStats(steps, missedDeps)
   }
 
   private def scheduleMembersCompletion(sym: ClassSymbol)(implicit ctx: Context): Unit = {
@@ -435,6 +440,8 @@ object Enter {
     def lookup(name: Name)(implicit context: Context): LookupAnswer
     def replaceImports(imports: ImportsLookupScope): LookupScope
   }
+
+  case class CompleterStats(processedJobs: Int, dependencyMisses: Int)
 
   private class ImportCompleter(val importNode: Import) {
     private class ImportSelectorResolved(val termSym: Symbol, val typeSym: Symbol, val isWildcard: Boolean)

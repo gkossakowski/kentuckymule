@@ -77,7 +77,7 @@ class BenchmarkEnter {
     context.definitions.rootPackage.clear()
     val enter = new Enter
     enter.enterCompilationUnit(pts.compilationUnit)(context)
-    enter.processJobQueue(memberListOnly = true)(context)
+    enter.processJobQueue(memberListOnly = true)(context).processedJobs
   }
 
   @Benchmark
@@ -89,6 +89,6 @@ class BenchmarkEnter {
     context.definitions.rootPackage.clear()
     val enter = new Enter
     enter.enterCompilationUnit(pts.compilationUnit)(context)
-    enter.processJobQueue(memberListOnly = false)(context)
+    enter.processJobQueue(memberListOnly = false)(context).processedJobs
   }
 }

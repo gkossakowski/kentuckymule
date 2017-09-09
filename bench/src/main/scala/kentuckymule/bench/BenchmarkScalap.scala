@@ -97,7 +97,7 @@ class BenchmarkScalap {
       enter.enterCompilationUnit(pts.compilationUnits(i))(context)
       i += 1
     }
-    enter.processJobQueue(memberListOnly = false)(context)
+    enter.processJobQueue(memberListOnly = false)(context).processedJobs
   }
 
   @Benchmark
@@ -144,7 +144,7 @@ class BenchmarkScalap {
       enter.enterCompilationUnit(compilationUnits(i))(context)
       i += 1
     }
-    enter.processJobQueue(memberListOnly = false)(context)
+    enter.processJobQueue(memberListOnly = false)(context).processedJobs
   }
   @Benchmark
   @Warmup(iterations = 20)

@@ -4,6 +4,7 @@ import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
 import kentuckymule.core.Symbols.{ClassSymbol, Symbol}
 import dotty.tools.dotc.util.{NoSource, SourceFile}
 import dotty.tools.dotc.{CompilationUnit, parsing}
+import kentuckymule.core.Enter.CompleterStats
 import kentuckymule.core.{DependenciesExtraction, Enter}
 
 import scala.reflect.io.PlainFile
@@ -34,8 +35,8 @@ object Main {
     try {
       for (i <- 1 to 1) {
         ctx.definitions.rootPackage.clear()
-        val jobsNumber = processScalap(ctx)
-        println("Number of jobs processed: " + jobsNumber)
+        val CompleterStats(jobsNumber, dependencyMisses) = processScalap(ctx)
+        println(s"Number of jobs processed: $jobsNumber out of which $dependencyMisses finished with dependency miss")
       }
     } finally {
       println(s"It took ${System.currentTimeMillis() - start} ms")
@@ -43,7 +44,7 @@ object Main {
     val totalSize = countSymbols(ctx)
   }
 
-  def processScalap(implicit context: Context): Int = {
+  def processScalap(implicit context: Context): Enter.CompleterStats = {
     import java.nio.file.Paths
     println("Calculating outline types for scalap sources...")
     val projectDir = Paths.get(".").toAbsolutePath.toString
