@@ -326,24 +326,21 @@ class Enter {
   private def expandQualifiedPackageDeclaration(pkgDecl: RefTree, owner: Symbol)(implicit ctx: Context): PackageSymbol =
     pkgDecl match {
     case Ident(name: Name) =>
-      val lookedUp = owner.lookup(name)
-      lookedUp match {
-        case pkgSym: PackageSymbol => pkgSym
-        case _ =>
-          val pkgSym = PackageSymbol(name)
-          owner.addChild(pkgSym)
-          pkgSym
-      }
+      lookupOrCreatePackage(name, owner)
     case Select(qualifier: RefTree, name: Name) =>
       val qualPkg = expandQualifiedPackageDeclaration(qualifier, owner)
-      val lookedUp = qualPkg.lookup(name)
-      lookedUp match {
-        case pkgSym: PackageSymbol => pkgSym
-        case _ =>
-          val pkgSym = PackageSymbol(name)
-          qualPkg.addChild(pkgSym)
-          pkgSym
-      }
+      lookupOrCreatePackage(name, qualPkg)
+  }
+
+  private def lookupOrCreatePackage(name: Name, owner: Symbol)(implicit ctx: Context): PackageSymbol = {
+    val lookedUp = owner.lookup(name)
+    lookedUp match {
+      case pkgSym: PackageSymbol => pkgSym
+      case _ =>
+        val pkgSym = PackageSymbol(name)
+        owner.addChild(pkgSym)
+        pkgSym
+    }
   }
 
   def processJobQueue(memberListOnly: Boolean,
