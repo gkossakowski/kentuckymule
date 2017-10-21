@@ -5,7 +5,7 @@ import dotc.core.Contexts.{Context, ContextBase}
 import dotc.core.StdNames
 import dotc.{CompilationUnit, parsing}
 import kentuckymule.core.Enter
-import kentuckymule.core.Enter.TemplateMemberListCompleter
+import kentuckymule.core.Enter.{LookedupSymbol, NotFound, TemplateMemberListCompleter}
 import kentuckymule.core.Symbols._
 import kentuckymule.core.Types.SymRef
 import dotc.core.IOUtils
@@ -111,6 +111,50 @@ object EnterTest extends TestSuite {
         assert(cDefSym.info.resultType.isInstanceOf[SymRef])
         val SymRef(resultTypeSym) = cDefSym.info.resultType
         assert(resultTypeSym == Csym)
+      }
+    }
+    'emptyPackageScope {
+      implicit val context = ctx
+      val src =
+        """|class A
+           |class B
+           |package foo {
+           |  class A1
+           |  class B1
+           |}
+        """.stripMargin
+      val enter = enterToSymbolTable(src, ctx)
+      val templateCompleters = (enter.completers.asScala collect {
+        case cp: TemplateMemberListCompleter => cp.clsSym.name.toString -> cp
+      }).toMap
+      enter.processJobQueue(memberListOnly = false)(ctx)
+      val allPaths = descendantPaths(ctx.definitions.rootPackage)
+      val classes = allPaths.flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val fooSym = ctx.definitions.rootPackage.info.lookup("foo".toTermName)
+      assert(fooSym.isInstanceOf[PackageSymbol])
+      locally {
+        val Asym = classes("A".toTypeName)
+        val Bsym = classes("B".toTypeName)
+        val AlookupScope = templateCompleters("A").lookupScope
+        val BlookupScope = templateCompleters("B").lookupScope
+        assert(AlookupScope.lookup("B".toTypeName) == LookedupSymbol(Bsym))
+        assert(BlookupScope.lookup("A".toTypeName) == LookedupSymbol(Asym))
+        assert(AlookupScope.lookup("A1".toTypeName) == NotFound)
+        assert(BlookupScope.lookup("A1".toTypeName) == NotFound)
+        assert(AlookupScope.lookup("foo".toTermName) == LookedupSymbol(fooSym))
+      }
+      locally {
+        val A1sym = classes("A1".toTypeName)
+        val B1sym = classes("B1".toTypeName)
+        val A1lookupScope = templateCompleters("A1").lookupScope
+        val B1lookupScope = templateCompleters("B1").lookupScope
+        assert(A1lookupScope.lookup("B1".toTypeName) == LookedupSymbol(B1sym))
+        assert(B1lookupScope.lookup("A1".toTypeName) == LookedupSymbol(A1sym))
+        assert(A1lookupScope.lookup("A".toTypeName) == NotFound)
+        assert(B1lookupScope.lookup("A".toTypeName) == NotFound)
+        assert(A1lookupScope.lookup("foo".toTermName) == LookedupSymbol(fooSym))
       }
     }
     'resolveMembers {

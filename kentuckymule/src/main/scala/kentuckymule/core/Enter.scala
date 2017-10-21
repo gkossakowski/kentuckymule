@@ -117,7 +117,17 @@ class Enter {
   def enterCompilationUnit(unit: CompilationUnit)(implicit context: Context): Unit = {
     val importsInCompilationUnit = new ImportsCollector(RootPackageLookupScope)
     val compilationUnitScope = new LookupCompilationUnitScope(importsInCompilationUnit.snapshot(), RootPackageLookupScope)
-    enterTree(unit.untpdTree, context.definitions.rootPackage, new LookupScopeContext(importsInCompilationUnit, compilationUnitScope))
+    val normalizedTrees = unit.untpdTree match {
+      case PackageDef(Ident(nme.EMPTY_PACKAGE), stats) =>
+        val (pkgs, objOrClass) = stats.partition(_.isInstanceOf[PackageDef])
+        pkgs :+ PackageDef(Ident(nme.EMPTY_PACKAGE), objOrClass)
+      case other => List(other)
+    }
+    val lookupScopeContext = new LookupScopeContext(importsInCompilationUnit, compilationUnitScope)
+    normalizedTrees foreach { tree =>
+      enterTree(tree, context.definitions.rootPackage, lookupScopeContext)
+    }
+
   }
 
   class PackageLookupScope(val pkgSym: Symbol, val parent: LookupScope, val imports: ImportsLookupScope) extends LookupScope {
