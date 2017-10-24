@@ -78,6 +78,11 @@ object Types {
     override def lookup(name: Name)(implicit contexts: Context): Symbol = tpe.lookup(name)
   }
 
+  final case class TupleType(types: Array[Type]) extends TypeType {
+    override def typeSymbol: Symbol = NoSymbol
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = NoSymbol
+  }
+
   case object InferredTypeMarker extends Type {
     override def typeSymbol: Symbol = NoSymbol
     override def lookup(name: Name)(implicit contexts: Context): Symbol = NoSymbol

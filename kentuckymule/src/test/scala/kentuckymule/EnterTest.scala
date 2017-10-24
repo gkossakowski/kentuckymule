@@ -7,7 +7,7 @@ import dotc.{CompilationUnit, parsing}
 import kentuckymule.core.Enter
 import kentuckymule.core.Enter.{LookedupSymbol, NotFound, TemplateMemberListCompleter}
 import kentuckymule.core.Symbols._
-import kentuckymule.core.Types.SymRef
+import kentuckymule.core.Types.{SymRef, TupleType}
 import dotc.core.IOUtils
 import dotc.core.Decorators._
 import dotc.core.Names.Name
@@ -406,6 +406,77 @@ object EnterTest extends TestSuite {
         val Aparents = Asym.info.parents
         assert(Aparents.size == 1)
         assert(Aparents.head == SymRef(Bsym))
+      }
+    }
+    'defTupleReturn {
+      val src = "class A { def a[T,U](x: T): (T, U) }"
+      val enter = enterToSymbolTable(ctx, src)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      locally {
+        val aDefSym = Asym.decls.lookup("a".toTermName)(ctx).asInstanceOf[DefDefSymbol]
+        val Tsym = aDefSym.typeParams.lookup("T".toTypeName)
+        val Usym = aDefSym.typeParams.lookup("U".toTypeName)
+        assert(aDefSym.info != null)
+        assert(aDefSym.info.resultType.isInstanceOf[TupleType])
+        val TupleType(types) = aDefSym.info.resultType
+        assert(types.toList match {
+          case SymRef(t) :: SymRef(u) :: Nil => t == Tsym && u == Usym
+          case _ => false
+        })
+      }
+    }
+    'parameterTuple {
+      val src = "class A[T](x: (T, T)) { def y(t: (T, A)): A[T] }"
+      val enter = enterToSymbolTable(ctx, src)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val Tsym = Asym.typeParams.lookup("T".toTypeName)
+      assert(Tsym != NoSymbol)
+      locally {
+        val xDefSym = Asym.decls.lookup("x".toTermName)(ctx).asInstanceOf[ValDefSymbol]
+        assert(xDefSym.info != null)
+        assert(xDefSym.info.resultType.isInstanceOf[TupleType])
+        val TupleType(types) = xDefSym.info.resultType
+        assert(types.toList match {
+          case SymRef(t1) :: SymRef(t2) :: Nil => t1 == Tsym && t2 == Tsym
+          case _ => false
+        })
+      }
+      locally {
+        val yDefSym = Asym.decls.lookup("y".toTermName)(ctx).asInstanceOf[DefDefSymbol]
+        assert(yDefSym.info != null)
+        assert(yDefSym.info.paramTypes.head.head.isInstanceOf[TupleType])
+        val TupleType(types) = yDefSym.info.paramTypes.head.head
+        assert(types.toList match {
+          case SymRef(t1) :: SymRef(t2) :: Nil => t1 == Tsym && t2 == Asym
+          case _ => false
+        })
+
+      }
+    }
+
+    'valTuple {
+      val src = "class A { val tup: (A, A) }"
+      val enter = enterToSymbolTable(ctx, src)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      locally {
+        val aDefSym = Asym.info.members.lookup("tup".toTermName)(ctx).asInstanceOf[ValDefSymbol]
+        val TupleType(types) = aDefSym.info.resultType
+        assert(types.toList match {
+          case SymRef(t1) :: SymRef(t2) :: Nil => t1 == Asym && t2 == Asym
+          case _ => false
+        })
       }
     }
   }
