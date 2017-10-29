@@ -19,7 +19,7 @@ object EnterTest extends TestSuite {
     val ctx = initCtx.fresh
     'flatPackageDeclaration {
       val src = "package foo.bar; class Abc"
-      enterToSymbolTable(src, ctx)
+      enterToSymbolTable(ctx, src)
       val descendants = descendantNames(ctx.definitions.rootPackage)
       assert(descendants ==
         List(
@@ -29,7 +29,7 @@ object EnterTest extends TestSuite {
     }
     'nestedPackageDeclaration {
       val src = "package foo; package bar; class Abc"
-      enterToSymbolTable(src, ctx)
+      enterToSymbolTable(ctx, src)
       val descendants = descendantNames(ctx.definitions.rootPackage)
       assert(descendants ==
         List(
@@ -39,7 +39,7 @@ object EnterTest extends TestSuite {
     }
     'duplicatePackageDeclaration {
       val src = "package foo; package bar { class Abc }; package bar { class Xyz }"
-      enterToSymbolTable(src, ctx)
+      enterToSymbolTable(ctx, src)
       val descendants = descendantPaths(ctx.definitions.rootPackage)
       val descendantNames = descendants.map(_.map(_.name))
       val barName = "bar".toTermName
@@ -55,7 +55,7 @@ object EnterTest extends TestSuite {
     import scala.collection.JavaConverters._
     'resolveImport {
       val src = "object A { class B }; class X { import A.B; class Y }"
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       val templateCompleters = enter.completers.asScala
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
@@ -67,7 +67,7 @@ object EnterTest extends TestSuite {
     }
     'wildcardImport {
       val src = "object A { class B }; class X { import A._; class Y }"
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       val templateCompleters = enter.completers.asScala
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
@@ -79,7 +79,7 @@ object EnterTest extends TestSuite {
     }
     'multipleImports {
       val src = "object A { class B1; class B2; }; class X { import A.{B1, B2}; class Y }"
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       val templateCompleters = enter.completers.asScala
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
@@ -97,7 +97,7 @@ object EnterTest extends TestSuite {
     }
     'importFromVal {
       val src = "class A(b: B) { import b.C; def c: C }; class B { class C }"
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)(ctx)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -126,7 +126,7 @@ object EnterTest extends TestSuite {
            |class C
            |
         """.stripMargin
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       val templateCompleters = (enter.completers.asScala collect {
         case cp: TemplateMemberListCompleter => cp.clsSym.name.toString -> cp
       }).toMap
@@ -162,7 +162,7 @@ object EnterTest extends TestSuite {
            |  class B1
            |}
         """.stripMargin
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       val templateCompleters = (enter.completers.asScala collect {
         case cp: TemplateMemberListCompleter => cp.clsSym.name.toString -> cp
       }).toMap
@@ -198,7 +198,7 @@ object EnterTest extends TestSuite {
     }
     'resolveMembers {
       val src = "class A extends B { def a: A }; class B { def b: B }"
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = true)(ctx)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -216,7 +216,7 @@ object EnterTest extends TestSuite {
     }
     'completeMemberInfo {
       val src = "class A extends B { def a: A }; class B { def b: B }"
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)(ctx)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -242,7 +242,7 @@ object EnterTest extends TestSuite {
     }
     'memberInfoRefersToImport {
       val src = "class A { def a: A; import B.BB; def b: BB }; object B { class BB }"
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)(ctx)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -269,7 +269,7 @@ object EnterTest extends TestSuite {
     'referToClassTypeParam {
       implicit val context = ctx
       val src = "class A[T, U] { def a: U; def b: T; class AA { def c: T } }"
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -305,7 +305,7 @@ object EnterTest extends TestSuite {
     'referToClassTypeParamInConstructor {
       implicit val context = ctx
       val src = "class A[T](x: T)"
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -324,7 +324,7 @@ object EnterTest extends TestSuite {
     'inheritedReferringToTypeMember {
       implicit val context = ctx
       val src = "class B extends A[C]; class A[T] { val a: T }; class C"
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -348,7 +348,7 @@ object EnterTest extends TestSuite {
           |class C extends B[Y]
           |class X
           |class Y""".stripMargin
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -372,7 +372,7 @@ object EnterTest extends TestSuite {
     'referToDefTypeParam {
       implicit val context = ctx
       val src = "class A { def a[T](x: T): T }"
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -390,7 +390,7 @@ object EnterTest extends TestSuite {
     'classParent {
       implicit val context = ctx
       val src = "class A extends B; class B"
-      val enter = enterToSymbolTable(src, ctx)
+      val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -405,10 +405,10 @@ object EnterTest extends TestSuite {
     }
   }
 
-  private def enterToSymbolTable(src: String, ctx: Context): Enter = {
-    val unit = compilationUnitFromString(src, ctx)
+  private def enterToSymbolTable(ctx: Context, srcs: String*) = {
+    val units = srcs.map(src => compilationUnitFromString(src, ctx))
     val enter = new Enter
-    enter.enterCompilationUnit(unit)(ctx)
+    units.foreach(unit => enter.enterCompilationUnit(unit)(ctx))
     enter
   }
 
