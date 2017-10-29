@@ -71,6 +71,11 @@ class Definitions {
   }
 
   val rootPackage = new PackageSymbol(StdNames.nme.ROOTPKG)
+  val emptyPackage: PackageSymbol = {
+    val emptyPkgSym = PackageSymbol(StdNames.nme.EMPTY_PACKAGE)
+    rootPackage.addChild(emptyPkgSym)
+    emptyPkgSym
+  }
 
   def init()(implicit ctx: Context) = {
     this.ctx = ctx

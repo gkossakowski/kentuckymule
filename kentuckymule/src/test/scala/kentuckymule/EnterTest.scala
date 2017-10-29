@@ -16,7 +16,7 @@ import utest._
 object EnterTest extends TestSuite {
   def initCtx = (new ContextBase).initialCtx
   val tests = this {
-    val ctx = initCtx.fresh
+    implicit val ctx = initCtx.fresh
     'flatPackageDeclaration {
       val src = "package foo.bar; class Abc"
       enterToSymbolTable(ctx, src)
@@ -40,7 +40,7 @@ object EnterTest extends TestSuite {
     'duplicatePackageDeclaration {
       val src = "package foo; package bar { class Abc }; package bar { class Xyz }"
       enterToSymbolTable(ctx, src)
-      val descendants = descendantPaths(ctx.definitions.rootPackage)
+      val descendants = descendantPathsFromRoot()
       val descendantNames = descendants.map(_.map(_.name))
       val barName = "bar".toTermName
       val allBarPkgs = descendants.flatMap(_.filter(_.name == barName)).toSet
@@ -99,7 +99,7 @@ object EnterTest extends TestSuite {
       val src = "class A(b: B) { import b.C; def c: C }; class B { class C }"
       val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)(ctx)
-      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+      val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       locally {
@@ -114,7 +114,6 @@ object EnterTest extends TestSuite {
       }
     }
     'predefAndScalaPackagePrecedence {
-      implicit val context = ctx
       val src =
         """|package scala {
            |  class A
@@ -131,7 +130,7 @@ object EnterTest extends TestSuite {
         case cp: TemplateMemberListCompleter => cp.clsSym.name.toString -> cp
       }).toMap
       enter.processJobQueue(memberListOnly = false)(ctx)
-      val allPaths = descendantPaths(ctx.definitions.rootPackage)
+      val allPaths = descendantPathsFromRoot()
       val classes = allPaths.flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -153,7 +152,6 @@ object EnterTest extends TestSuite {
       }
     }
     'emptyPackageScope {
-      implicit val context = ctx
       val src =
         """|class A
            |class B
@@ -167,7 +165,7 @@ object EnterTest extends TestSuite {
         case cp: TemplateMemberListCompleter => cp.clsSym.name.toString -> cp
       }).toMap
       enter.processJobQueue(memberListOnly = false)(ctx)
-      val allPaths = descendantPaths(ctx.definitions.rootPackage)
+      val allPaths = descendantPathsFromRoot()
       val classes = allPaths.flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -200,7 +198,7 @@ object EnterTest extends TestSuite {
       val src = "class A extends B { def a: A }; class B { def b: B }"
       val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = true)(ctx)
-      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+      val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       locally {
@@ -218,7 +216,7 @@ object EnterTest extends TestSuite {
       val src = "class A extends B { def a: A }; class B { def b: B }"
       val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)(ctx)
-      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+      val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       locally {
@@ -244,7 +242,7 @@ object EnterTest extends TestSuite {
       val src = "class A { def a: A; import B.BB; def b: BB }; object B { class BB }"
       val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)(ctx)
-      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+      val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       val Asym = classes("A".toTypeName)
@@ -267,11 +265,10 @@ object EnterTest extends TestSuite {
       }
     }
     'referToClassTypeParam {
-      implicit val context = ctx
       val src = "class A[T, U] { def a: U; def b: T; class AA { def c: T } }"
       val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)
-      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+      val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       val Asym = classes("A".toTypeName)
@@ -303,11 +300,10 @@ object EnterTest extends TestSuite {
       }
     }
     'referToClassTypeParamInConstructor {
-      implicit val context = ctx
       val src = "class A[T](x: T)"
       val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)
-      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+      val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       val Asym = classes("A".toTypeName)
@@ -322,11 +318,10 @@ object EnterTest extends TestSuite {
       }
     }
     'inheritedReferringToTypeMember {
-      implicit val context = ctx
       val src = "class B extends A[C]; class A[T] { val a: T }; class C"
       val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)
-      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+      val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       val Asym = classes("A".toTypeName)
@@ -341,7 +336,6 @@ object EnterTest extends TestSuite {
       }
     }
     'inheritedReferringToTypeMemberTransitive {
-      implicit val context = ctx
       val src =
         """class B[T] extends A[T,X]
           |class A[T,U] { val a: T; val b: U }
@@ -350,7 +344,7 @@ object EnterTest extends TestSuite {
           |class Y""".stripMargin
       val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)
-      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+      val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       val Asym = classes("A".toTypeName)
@@ -370,11 +364,10 @@ object EnterTest extends TestSuite {
       }
     }
     'referToDefTypeParam {
-      implicit val context = ctx
       val src = "class A { def a[T](x: T): T }"
       val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)
-      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+      val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       val Asym = classes("A".toTypeName)
@@ -388,11 +381,10 @@ object EnterTest extends TestSuite {
       }
     }
     'classParent {
-      implicit val context = ctx
       val src = "class A extends B; class B"
       val enter = enterToSymbolTable(ctx, src)
       enter.processJobQueue(memberListOnly = false)
-      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+      val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       val Asym = classes("A".toTypeName)
@@ -412,7 +404,11 @@ object EnterTest extends TestSuite {
     enter
   }
 
-  private def descendantPaths(s: Symbol): List[List[Symbol]] = {
+  private def descendantPathsFromRoot()(implicit context: Context): List[List[Symbol]] = {
+    descendantPaths(context.definitions.rootPackage)
+  }
+
+  private def descendantPaths(s: Symbol)(implicit context: Context): List[List[Symbol]] = {
     val children = s.childrenIterator.toList
     if (children.isEmpty)
       List(List(s))
@@ -420,11 +416,17 @@ object EnterTest extends TestSuite {
       for {
         child <- children
         path <- descendantPaths(child)
+          // filter out the `rootPackage :: emptyPackage :: Nil` that is created due to
+          // emptyPackage symbol created in Definitions and testing for presence of that
+          // path brings no value
+          // if there're members in the empty package declared, their paths won't be
+          // filtered out
+          if path != List(context.definitions.emptyPackage)
       } yield s :: path
     }
   }
 
-  private def descendantNames(s: Symbol): List[List[Name]] =
+  private def descendantNames(s: Symbol)(implicit context: Context): List[List[Name]] =
     descendantPaths(s).map(_.map(_.name))
 
   private def compilationUnitFromString(contents: String, ctx: Context): CompilationUnit = {
