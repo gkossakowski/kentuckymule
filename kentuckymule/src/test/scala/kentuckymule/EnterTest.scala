@@ -137,8 +137,8 @@ object EnterTest extends TestSuite {
       val objects = allPaths.flatten.collect {
         case modSym: ModuleSymbol => modSym.name -> modSym
       }.toMap
+      val Csym = classes("C".toTypeName)
       locally {
-        val Csym = classes("C".toTypeName)
         val ClookupScope = templateCompleters("C").lookupScope
         val predef = objects("Predef".toTermName)
         val aInPredef = predef.info.lookup("A".toTypeName)
@@ -148,11 +148,11 @@ object EnterTest extends TestSuite {
       locally {
         val predef = objects("Predef".toTermName)
         val predefLookupScope = templateCompleters("Predef$").lookupScope
-        assert(predefLookupScope.lookup("C".toTypeName) == NotFound)
+        assert(predefLookupScope.lookup("C".toTypeName) == LookedupSymbol(Csym))
       }
     }
     'emptyPackageScope {
-      val src =
+      val src1 =
         """|class A
            |class B
            |package foo {
@@ -160,7 +160,12 @@ object EnterTest extends TestSuite {
            |  class B1
            |}
         """.stripMargin
-      val enter = enterToSymbolTable(ctx, src)
+      val src2 =
+        """
+          |package foo
+          |class C
+        """.stripMargin
+      val enter = enterToSymbolTable(ctx, src1, src2)
       val templateCompleters = (enter.completers.asScala collect {
         case cp: TemplateMemberListCompleter => cp.clsSym.name.toString -> cp
       }).toMap
@@ -171,9 +176,11 @@ object EnterTest extends TestSuite {
       }.toMap
       val fooSym = ctx.definitions.rootPackage.info.lookup("foo".toTermName)
       assert(fooSym.isInstanceOf[PackageSymbol])
+      val Asym = classes("A".toTypeName)
+      val Bsym = classes("B".toTypeName)
+      val A1sym = classes("A1".toTypeName)
+      val B1sym = classes("B1".toTypeName)
       locally {
-        val Asym = classes("A".toTypeName)
-        val Bsym = classes("B".toTypeName)
         val AlookupScope = templateCompleters("A").lookupScope
         val BlookupScope = templateCompleters("B").lookupScope
         assert(AlookupScope.lookup("B".toTypeName) == LookedupSymbol(Bsym))
@@ -183,15 +190,21 @@ object EnterTest extends TestSuite {
         assert(AlookupScope.lookup("foo".toTermName) == LookedupSymbol(fooSym))
       }
       locally {
-        val A1sym = classes("A1".toTypeName)
-        val B1sym = classes("B1".toTypeName)
         val A1lookupScope = templateCompleters("A1").lookupScope
         val B1lookupScope = templateCompleters("B1").lookupScope
         assert(A1lookupScope.lookup("B1".toTypeName) == LookedupSymbol(B1sym))
         assert(B1lookupScope.lookup("A1".toTypeName) == LookedupSymbol(A1sym))
-        assert(A1lookupScope.lookup("A".toTypeName) == NotFound)
-        assert(B1lookupScope.lookup("A".toTypeName) == NotFound)
+        assert(A1lookupScope.lookup("A".toTypeName) == LookedupSymbol(Asym))
+        assert(B1lookupScope.lookup("A".toTypeName) == LookedupSymbol(Asym))
         assert(A1lookupScope.lookup("foo".toTermName) == LookedupSymbol(fooSym))
+      }
+      locally {
+        val Csym = classes("C".toTypeName)
+        val ClookupScope = templateCompleters("C").lookupScope
+        assert(ClookupScope.lookup("A1".toTypeName) == LookedupSymbol(A1sym))
+        assert(ClookupScope.lookup("B1".toTypeName) == LookedupSymbol(B1sym))
+        assert(ClookupScope.lookup("A".toTypeName) == NotFound)
+        assert(ClookupScope.lookup("B".toTypeName) == NotFound)
       }
     }
     'resolveMembers {

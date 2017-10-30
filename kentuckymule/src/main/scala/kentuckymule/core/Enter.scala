@@ -170,17 +170,8 @@ class Enter {
     val toplevelScope = new PredefLookupScope(RootPackageLookupScope)
     val importsInCompilationUnit = new ImportsCollector(toplevelScope)
     val compilationUnitScope = new LookupCompilationUnitScope(importsInCompilationUnit.snapshot(), toplevelScope)
-    val normalizedTrees = unit.untpdTree match {
-      case PackageDef(Ident(nme.EMPTY_PACKAGE), stats) =>
-        val (pkgs, objOrClass) = stats.partition(_.isInstanceOf[PackageDef])
-        pkgs :+ PackageDef(Ident(nme.EMPTY_PACKAGE), objOrClass)
-      case other => List(other)
-    }
     val lookupScopeContext = new LookupScopeContext(importsInCompilationUnit, compilationUnitScope)
-    normalizedTrees foreach { tree =>
-      enterTree(tree, context.definitions.rootPackage, lookupScopeContext)
-    }
-
+    enterTree(unit.untpdTree, context.definitions.rootPackage, lookupScopeContext)
   }
 
   class PackageLookupScope(val pkgSym: Symbol, val parent: LookupScope, val imports: ImportsLookupScope) extends LookupScope {
@@ -337,12 +328,84 @@ class Enter {
   }
 
   private def lookupOrCreatePackage(name: Name, owner: Symbol)(implicit ctx: Context): PackageSymbol = {
-    val lookedUp = owner.lookup(name)
+    /**
+      * The line below for `resolvedOwner` is a hack borrowed from scalac and dottyc. It is hard
+      * to understand so it receives a special, long comment. The long comment is cheaper to implement
+      * than a more principled handling of empty packages hence the choice.
+      *
+      * In ac8cdb7e6f3040ba826da4e5479b3d75a7a6fa9e I tried to fix the interaction of
+      * an empty package with other packages. In the commit message, I said:
+      *
+      *    Scala's parser has a weird corner case when both an empty package and
+      *    regular one are involved in the same compilation unit:
+      *
+      *    // A.scala
+      *    class A
+      *    package foo {
+      *      class B
+      *    }
+      *
+      *    is expanded during parsing into:
+      *    // A.scala
+      *    package <empty> {
+      *      class A
+      *      package foo {
+      *        class B
+      *      }
+      *    }
+      *
+      *    However, one would expect the actual ast representation to be:
+      *
+      *    package <empty> {
+      *      class A
+      *    }
+      *    package foo {
+      *      class B
+      *    }
+      *
+      *    I believe `foo` is put into the empty package to preserve the property
+      *    that a compilation unit has just one root ast node. Surprisingly, both
+      *    the scalac and dottyc handle the scoping properly when the asts are
+      *    nested in this weird fashion. For example, in scalac `B` won't see the
+      *    `A` class even if it seems like it should when one looks at the nesting
+      *    structure. I couldn't track down where the special logic that is
+      *    responsible for special casing the empty package and ignoring the nesting
+      *    structure.
+      *
+      * In the comment above, I was wrong. `B` class actually sees the `A` class when both are
+      * declared in the same compilation unit. The `A` class becomes inaccessible to any other
+      * members declared in a `foo` package (or any other package except for the empty package)
+      * when these members are declared in a separate compilation unit. This is expected:
+      * members declared in the same compilation unit are accessible to each other through
+      * reference by a simple identifier. My fix in ac8cdb7e6f3040ba826da4e5479b3d75a7a6fa9e
+      * was wrong based on this wrong analysis.
+      *
+      * The correct analysis is that scoping rules for the compilation unit should be preserved
+      * so simply moving `package foo` declaration out of the empty package declaration is not
+      * a good way to fix the problem that the `package foo` should not have the empty package
+      * as an owner. The best fix would be at parsing time: the parser should create a top-level
+      * ast not (called e.g. CompilationUnit) that would hold `class A` and `package foo`
+      * verbatim as they're declared in source code. And only during entering symbols, the
+      * empty package would be introduced for the `class A` with correct owners.
+      *
+      * Making this a reality would require changing parser's implementation which is hard so
+      * we're borrowing a trick from scalac: whenever we're creating a package, we're checking
+      * whether the owner is an empty package. If so, we're teleporting ourselves to the root
+      * package. This, in effect, undoes the nesting into an empty package done by parser.
+      * But it undoes it only for the owner chain hierarchy. The scoping rules are kept intact
+      * so members in the same compilation unit are visible to each other.
+      *
+      * The same logic in scalac lives in the `createPackageSymbol` method at:
+      *
+      * https://github.com/scala/scala/blob/2.12.x/src/compiler/scala/tools/nsc/typechecker/Namers.scala#L341
+      */
+    val resolvedOwner = if (owner == ctx.definitions.emptyPackage) ctx.definitions.rootPackage else owner
+    val lookedUp = resolvedOwner.lookup(name)
     lookedUp match {
       case pkgSym: PackageSymbol => pkgSym
       case _ =>
         val pkgSym = PackageSymbol(name)
-        owner.addChild(pkgSym)
+        resolvedOwner.addChild(pkgSym)
         pkgSym
     }
   }

@@ -150,6 +150,86 @@ looked up in `Foo` and `Bar`'s completer is forced. Kentucky Mule takes a
 different approach: it traverses trees in one pass and creates symbols for
 `Foo`, `Bar` and `a` eagerly but sets lazy completers.
 
+## Handling of the empty package
+
+The handling of empty packages is suprisingly complicated due to both
+its inherent semantics and, more importantly, to unfortunate decisions
+done in scalac/dottyc parsers. The details are explained below.
+
+The text below is cross-posted as a comment inside of the
+`lookupOrCreatePackage` method implementation.
+
+In ac8cdb7e6f3040ba826da4e5479b3d75a7a6fa9e I tried to fix the interaction of
+an empty package with other packages. In the commit message, I said:
+
+  Scala's parser has a weird corner case when both an empty package and
+  regular one are involved in the same compilation unit:
+
+  ```scala
+  // A.scala
+  class A
+  package foo {
+    class B
+  }
+  ```
+
+  is expanded during parsing into:
+
+  ```scala
+  // A.scala
+  package <empty> {
+    class A
+    package foo {
+      class B
+    }
+  }
+  ```
+
+  However, one would expect the actual ast representation to be:
+
+  ```scala
+  package <empty> {
+    class A
+  }
+  package foo {
+    class B
+  }
+  ```
+
+  I believe `foo` is put into the empty package to preserve the property
+  that a compilation unit has just one root ast node. Surprisingly, both
+  the scalac and dottyc handle the scoping properly when the asts are
+  nested in this weird fashion. For example, in scalac `B` won't see the
+  `A` class even if it seems like it should when one looks at the nesting
+  structure. I couldn't track down where the special logic that is
+  responsible for special casing the empty package and ignoring the nesting
+  structure.
+
+In the comment above, I was wrong. `B` class actually sees the `A` class when both are
+declared in the same compilation unit. The `A` class becomes inaccessible to any other
+members declared in a `foo` package (or any other package except for the empty package)
+when these members are declared in a separate compilation unit. This is expected:
+members declared in the same compilation unit are accessible to each other through
+reference by a simple identifier. My fix in ac8cdb7e6f3040ba826da4e5479b3d75a7a6fa9e
+was wrong based on this wrong analysis.
+
+The correct analysis is that scoping rules for the compilation unit should be preserved
+so simply moving `package foo` declaration out of the empty package declaration is not
+a good way to fix the problem that the `package foo` should not have the empty package
+as an owner. The best fix would be at parsing time: the parser should create a top-level
+ast not (called e.g. CompilationUnit) that would hold `class A` and `package foo`
+verbatim as they're declared in source code. And only during entering symbols, the
+empty package would be introduced for the `class A` with correct owners.
+
+Making this a reality would require changing parser's implementation which is hard so
+we're borrowing a trick from scalac: whenever we're creating a package, we're checking
+whether the owner is an empty package. If so, we're teleporting ourselves to the root
+package. This, in effect, undoes the nesting into an empty package done by parser.
+But it undoes it only for the owner chain hierarchy. The scoping rules are kept intact
+so members in the same compilation unit are visible to each other.
+The same logic in scalac lives in the `createPackageSymbol` method at:
+https://github.com/scala/scala/blob/2.12.x/src/compiler/scala/tools/nsc/typechecker/Namers.scala#L341
+
 ## Performance of entering symbols
 
 Entering symbols in Kentucky Mule is very fast. For the `10k` benchmark we enter
