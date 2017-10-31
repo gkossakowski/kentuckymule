@@ -230,6 +230,26 @@ so members in the same compilation unit are visible to each other.
 The same logic in scalac lives in the `createPackageSymbol` method at:
 https://github.com/scala/scala/blob/2.12.x/src/compiler/scala/tools/nsc/typechecker/Namers.scala#L341
 
+The teleporting implemented in the `createPackageSymbol` is on the hotpath for
+entering symbols. I was curious if an additional owner check had any performance hit.
+The performance numbers are not affected by this change:
+
+```
+36f5f13593dff2364b561197803756a8aadd3af4
+Add lookup in the scala package. (baseline)
+[info] Benchmark                            Mode  Cnt      Score     Error  Units
+[info] BenchmarkScalap.completeMemberSigs  thrpt  120   2129.314 ±  12.082  ops/s
+[info] BenchmarkScalap.enter               thrpt  120  12115.506 ± 103.948  ops/s
+
+vs
+
+3a3ebbce6433f36f680fbbcb81ac947d9908efee
+Another fix of the empty package handlin (the implementation described above)
+[info] Benchmark                            Mode  Cnt      Score     Error  Units
+[info] BenchmarkScalap.completeMemberSigs  thrpt  120   2190.468 ±  11.992  ops/s
+[info] BenchmarkScalap.enter               thrpt  120  12178.356 ± 322.981  ops/s
+```
+
 ## Performance of entering symbols
 
 Entering symbols in Kentucky Mule is very fast. For the `10k` benchmark we enter
