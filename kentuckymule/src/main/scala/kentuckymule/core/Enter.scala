@@ -816,9 +816,18 @@ object Enter {
     // TODO: I ignore a star indicator of a repeated parameter as it's not essential and fairly trivial to deal with
     case PostfixOp(ident, nme.raw.STAR) =>
       resolveTypeTree(ident, parentLookupScope)
-    // TODO: we horribly ignore tuples for now
     case Tuple(trees) =>
-      resolveTypeTree(trees.head, parentLookupScope)
+      var remainingTrees = trees
+      val resolvedTrees = new util.ArrayList[Type]()
+      while (remainingTrees.nonEmpty) {
+        val resolvedTree = resolveTypeTree(remainingTrees.head, parentLookupScope)
+        resolvedTree match {
+          case CompletedType(treeTpe) => resolvedTrees.add(treeTpe)
+          case _ => return resolvedTree
+        }
+        remainingTrees = remainingTrees.tail
+      }
+      CompletedType(TupleType(resolvedTrees.toArray(new Array[Type](resolvedTrees.size))))
     // TODO: we ignore by name argument `=> T` and resolve it as `T`
     case ByNameTypeTree(res) =>
       resolveTypeTree(res, parentLookupScope)
