@@ -84,6 +84,8 @@ class DependenciesExtraction(topLevelOnly: Boolean) {
     case AppliedType(atpe, args) =>
       walkType(atpe, ownerClass)
       for (arg <- args) walkType(arg, ownerClass)
+    case TupleType(types) =>
+      for (arg <- types) walkType(arg, ownerClass)
     case InferredTypeMarker =>
       // nothing to record when a type is declared as inferred
     case WildcardType =>
