@@ -125,6 +125,70 @@ object EnterTest extends TestSuite {
         assert(resultTypeSym == Csym)
       }
     }
+    'importsInDifferentScopes {
+      val src =
+        """
+          |package foo
+          |import A.B
+          |
+          |object A {
+          |  object B {
+          |    class C
+          |  }
+          |  class B
+          |}
+          |class X {
+          |   import B.C
+          |   def c: C
+          |   def b: B
+          |}
+        """.stripMargin
+      val enter = enterToSymbolTable(ctx, src)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Xsym = classes("X".toTypeName)
+      val cDefCompleter = Xsym.lookup("c".toTermName)(ctx).asInstanceOf[DefDefSymbol].completer
+      val bDefCompleter = Xsym.lookup("b".toTermName)(ctx).asInstanceOf[DefDefSymbol].completer
+      enter.processJobQueue(memberListOnly = false)(ctx)
+      val cDeflookupScope = cDefCompleter.lookupScope
+      locally {
+        val ans = cDeflookupScope.lookup("C".toTypeName)(ctx)
+        assert(ans.isInstanceOf[Enter.LookedupSymbol])
+      }
+      val bDeflookupScope = bDefCompleter.lookupScope
+      locally {
+        val ans = bDeflookupScope.lookup("B".toTypeName)(ctx)
+        assert(ans.isInstanceOf[Enter.LookedupSymbol])
+      }
+    }
+    'memberPrecedenceOverImport {
+      val src =
+        """
+          |package foo
+          |
+          |object A {
+          |  class B
+          |}
+          |class X {
+          |   import A.B
+          |   def b: B
+          |   class B
+          |}
+        """.stripMargin
+      val enter = enterToSymbolTable(ctx, src)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Xsym = classes("X".toTypeName)
+      val bInXClassSym = Xsym.lookup("B".toTypeName)
+      val bDefSym = Xsym.lookup("b".toTermName)(ctx).asInstanceOf[DefDefSymbol]
+      enter.processJobQueue(memberListOnly = false)(ctx)
+      locally {
+        val resultType = bDefSym.info.resultType
+        assert(resultType == SymRef(bInXClassSym))
+      }
+    }
     'importRename {
       /*
        * the import tests two things:
