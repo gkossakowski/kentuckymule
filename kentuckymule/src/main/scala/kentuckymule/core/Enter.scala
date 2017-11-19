@@ -42,6 +42,8 @@ class Enter {
 
     override def replaceImports(imports: ImportsLookupScope): LookupScope =
       throw new UnsupportedOperationException("There can't be any imports declared withing class signature")
+
+    override def enclosingClass: LookupAnswer = parentScope.enclosingClass
   }
 
   class LookupClassTemplateScope(classSym: ClassSymbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
@@ -58,9 +60,10 @@ class Enter {
 
     override def replaceImports(imports: ImportsLookupScope): LookupScope =
       new LookupClassTemplateScope(classSym, imports, parentScope)
+    override def enclosingClass: LookupAnswer = LookedupSymbol(classSym)
   }
 
-  class LookupModuleTemplateScope(moduleSym: Symbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
+  class LookupModuleTemplateScope(moduleSym: ModuleSymbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
       val foundSym = moduleSym.lookup(name)
       if (foundSym != NoSymbol)
@@ -75,6 +78,8 @@ class Enter {
     }
     override def replaceImports(imports: ImportsLookupScope): LookupScope =
       new LookupModuleTemplateScope(moduleSym, imports, parentScope)
+
+    override def enclosingClass: LookupAnswer = LookedupSymbol(moduleSym.clsSym)
   }
 
   class LookupDefDefScope(defSym: DefDefSymbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
@@ -93,6 +98,8 @@ class Enter {
 
     override def replaceImports(imports: ImportsLookupScope): LookupScope =
       new LookupDefDefScope(defSym, imports, parentScope)
+
+    override def enclosingClass: LookupAnswer = parentScope.enclosingClass
   }
 
   object RootPackageLookupScope extends LookupScope {
@@ -142,6 +149,8 @@ class Enter {
 
     override def replaceImports(imports: ImportsLookupScope): LookupScope =
       sys.error("unsupported operation")
+
+    override def enclosingClass: LookupAnswer = NotFound
   }
 
   class PredefLookupScope(parentScope: LookupScope) extends LookupScope {
@@ -169,6 +178,8 @@ class Enter {
 
     override def replaceImports(imports: ImportsLookupScope): LookupScope =
       sys.error("unsupported operation")
+
+    override def enclosingClass: LookupAnswer = parentScope.enclosingClass
   }
 
   class LookupCompilationUnitScope(imports: ImportsLookupScope, pkgLookupScope: LookupScope) extends LookupScope {
@@ -182,6 +193,8 @@ class Enter {
 
     override def replaceImports(imports: ImportsLookupScope): LookupScope =
       new LookupCompilationUnitScope(imports, pkgLookupScope)
+
+    override def enclosingClass: LookupAnswer = NotFound
   }
 
   def enterCompilationUnit(unit: CompilationUnit)(implicit context: Context): Unit = {
@@ -223,6 +236,8 @@ class Enter {
 
     override def replaceImports(imports: ImportsLookupScope): LookupScope =
       new PackageLookupScope(pkgSym, parent, imports)
+
+    override def enclosingClass: LookupAnswer = NotFound
   }
 
   private class LookupScopeContext(imports: ImportsCollector, val parentScope: LookupScope) {
@@ -567,6 +582,7 @@ object Enter {
 
   abstract class LookupScope {
     def lookup(name: Name)(implicit context: Context): LookupAnswer
+    def enclosingClass: LookupAnswer
     def replaceImports(imports: ImportsLookupScope): LookupScope
   }
 
@@ -885,6 +901,7 @@ object Enter {
         }
       // TODO: right now we interpret C.super[M] as just C.super (M is ignored)
       case Super(qual, _) => resolveSelectors(qual, parentLookupScope)
+      case This(tpnme.EMPTY) => parentLookupScope.enclosingClass
       case This(thisQual) => parentLookupScope.lookup(thisQual)
       case _ => sys.error(s"Unhandled tree $t at ${t.pos}")
     }
@@ -1009,6 +1026,14 @@ object Enter {
     case Annotated(_, arg) => resolveTypeTree(arg, parentLookupScope)
     // TODO: refinements are simply dropped at the moment
     case RefinedTypeTree(tpt, _) => resolveTypeTree(tpt, parentLookupScope)
+    case This(tpnme.EMPTY) =>
+      val resolvedCls = parentLookupScope.enclosingClass
+      resolvedCls match {
+        case LookedupSymbol(sym) => CompletedType(SymRef(sym))
+        case NotFound =>
+          sys.error(s"Can't resolve This at ${t.pos}")
+        case incomplete: IncompleteDependency => incomplete
+      }
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)
