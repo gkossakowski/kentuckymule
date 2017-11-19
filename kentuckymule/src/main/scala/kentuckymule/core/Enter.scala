@@ -185,7 +185,13 @@ class Enter {
   }
 
   def enterCompilationUnit(unit: CompilationUnit)(implicit context: Context): Unit = {
-    val toplevelScope = new PredefLookupScope(RootPackageLookupScope)
+    val toplevelScope = {
+      // TODO: hack, check for declaration of Predef object
+      if (unit.source.file.name != "Predef.scala")
+        new PredefLookupScope(RootPackageLookupScope)
+      else
+        RootPackageLookupScope
+    }
     val importsInCompilationUnit = new ImportsCollector(toplevelScope)
     val compilationUnitScope = new LookupCompilationUnitScope(importsInCompilationUnit.snapshot(), toplevelScope)
     val lookupScopeContext = new LookupScopeContext(importsInCompilationUnit, compilationUnitScope)
