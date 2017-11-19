@@ -116,6 +116,21 @@ class Enter {
         else
           return LookedupSymbol(sym)
       }
+      locally {
+        val javaPkg = context.definitions.rootPackage.lookup(nme.java)
+        if (javaPkg != NoSymbol) {
+          if (!javaPkg.isComplete)
+            return IncompleteDependency(javaPkg)
+          val javaLangPkg = javaPkg.lookup(nme.lang)
+          if (!javaLangPkg.isComplete)
+            return IncompleteDependency(javaLangPkg)
+          val sym = javaLangPkg.lookup(name)
+          if (sym == NoSymbol)
+            NotFound
+          else
+            return LookedupSymbol(sym)
+        }
+      }
       val sym = context.definitions.rootPackage.lookup(name)
       if (sym != NoSymbol)
         LookedupSymbol(sym)
