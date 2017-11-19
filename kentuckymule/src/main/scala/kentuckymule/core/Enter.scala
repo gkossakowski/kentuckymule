@@ -883,6 +883,9 @@ object Enter {
             } else IncompleteDependency(qualSym)
           case _ => ans
         }
+      // TODO: right now we interpret C.super[M] as just C.super (M is ignored)
+      case Super(qual, _) => resolveSelectors(qual, parentLookupScope)
+      case This(thisQual) => parentLookupScope.lookup(thisQual)
       case _ => sys.error(s"Unhandled tree $t at ${t.pos}")
     }
 
@@ -908,6 +911,10 @@ object Enter {
     // we want to extract the Ident(ParentClass)
     case Apply(Select(New(tp), nme.CONSTRUCTOR), _) =>
       resolveTypeTree(tp, parentLookupScope)
+    // strip down any constructor applications, e.g.
+    // class Foo extends Bar[T]()(t)
+    case Apply(qual, _) =>
+      resolveTypeTree(qual, parentLookupScope)
     case Parens(t2) => resolveTypeTree(t2, parentLookupScope)
     case Function(args, res) =>
       val resolvedFunTypeArgs = new util.ArrayList[Type]()
@@ -931,7 +938,7 @@ object Enter {
         case NotFound => sys.error(s"Can't resolve $funName")
         case x: IncompleteDependency => return x
       }
-      CompletedType(AppliedType(SymRef(functionSym), resolvedFunTypeArgs.toArray(new Array(resolvedFunTypeArgs.size))))
+      CompletedType(AppliedType(SymRef(functionSym), resolvedFunTypeArgs.toArray[Type](new Array(resolvedFunTypeArgs.size))))
     // TODO: I ignore a star indicator of a repeated parameter as it's not essential and fairly trivial to deal with
     case PostfixOp(ident, nme.raw.STAR) =>
       resolveTypeTree(ident, parentLookupScope)
@@ -986,6 +993,19 @@ object Enter {
         CompletedType(SymRef(resolvedSelect))
       else
         NotFound
+    case SingletonTypeTree(ref) =>
+      def symRefAsCompletionResult(sym: Symbol): CompletionResult =
+        if (sym.isComplete) CompletedType(SymRef(sym)) else IncompleteDependency(sym)
+      val result = resolveTypeTree(ref, parentLookupScope)
+      result match {
+        case CompletedType(resolvedPath) => resolvedPath match {
+          case SymRef(cls: ClassSymbol) => symRefAsCompletionResult(cls)
+          case SymRef(mod: ModuleSymbol) => symRefAsCompletionResult(mod.clsSym)
+          case SymRef(valDef: ValDefSymbol) =>
+            if (valDef.isComplete) CompletedType(valDef.info.resultType) else IncompleteDependency(valDef)
+        }
+        case other => other
+      }
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)

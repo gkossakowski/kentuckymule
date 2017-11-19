@@ -7,7 +7,7 @@ import dotc.{CompilationUnit, parsing}
 import kentuckymule.core.Enter
 import kentuckymule.core.Enter.{LookedupSymbol, NotFound, TemplateMemberListCompleter}
 import kentuckymule.core.Symbols._
-import kentuckymule.core.Types.{SymRef, TupleType}
+import kentuckymule.core.Types.{AppliedType, SymRef, TupleType, Type}
 import dotc.core.IOUtils
 import dotc.core.Decorators._
 import dotc.core.Names.Name
@@ -572,6 +572,38 @@ object EnterTest extends TestSuite {
           case _ => false
         })
       }
+    }
+    // checks whether type application buried in a consctuctor call is extracted correctly
+    'constructorCall {
+      val src = "class A; class B[T] extends A[T]()(x)"
+      val enter = enterToSymbolTable(ctx, src)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val Bsym = classes("B".toTypeName)
+      val Tsym = Bsym.typeParams.lookup("T".toTypeName)
+      locally {
+        val Aparents = Bsym.info.parents
+        assert(Aparents.head == AppliedType(SymRef(Asym), Array[Type](SymRef(Tsym))))
+      }
+    }
+    'singletonType {
+      // `foo.type` is resolved to the type of `foo` and we forget about the singleton type
+      val src =
+        """class A {
+          |  val foo: A
+          |  val bar: foo.type
+          |}""".stripMargin
+      val enter = enterToSymbolTable(ctx, src)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val barSym = Asym.info.lookup("bar".toTermName).asInstanceOf[ValDefSymbol]
+      assert(barSym.info.resultType == SymRef(Asym))
     }
   }
 

@@ -12,10 +12,10 @@ object TypeOps {
     m match {
       case d@DefDefSymbol(name) =>
         assert(d.isComplete, d)
-        new InheritedDefDefSymbol(name, substituteTypeArgs(d.info, typeParamsMap, typeArgs))
+        new InheritedDefDefSymbol(name, substituteTypeArgs(d.info, typeParamsMap, typeArgs.toArray))
       case v@ValDefSymbol(name) =>
         assert(v.isComplete, v)
-        new InheritedValDefSymbol(name, substituteTypeArgs(v.info, typeParamsMap, typeArgs))
+        new InheritedValDefSymbol(name, substituteTypeArgs(v.info, typeParamsMap, typeArgs.toArray))
       case other => other
     }
   }

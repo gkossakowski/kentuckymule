@@ -7,6 +7,7 @@ import dotty.tools.sharable
 import kentuckymule.core.Enter.LookedupSymbol
 import kentuckymule.core.Symbols._
 
+import scala.collection.mutable
 import scala.language.implicitConversions
 
 object Types {
@@ -74,7 +75,7 @@ object Types {
     override def lookup(name: Name)(implicit contexts: Context): Symbol = sym.lookup(name)
   }
 
-  final case class AppliedType(tpe: Type, args: Array[Type]) extends Type {
+  final case class AppliedType(tpe: Type, args: mutable.WrappedArray[Type]) extends Type {
     override def typeSymbol: Symbol = tpe.typeSymbol
     override def lookup(name: Name)(implicit contexts: Context): Symbol = tpe.lookup(name)
   }
