@@ -9,7 +9,7 @@ import kentuckymule.core.Symbols.{ClassSymbol, PackageSymbol, StubClassSymbol}
 
 object ScalaLibHelper {
   import dotty.tools.dotc.core.Decorators._
-  def enterStabSymbolsForScalaLib(implicit ctx: Context): Unit = {
+  def enterStabSymbolsForScalaLib(implicit enter: Enter, ctx: Context): Unit = {
     // enter java.io
     val root = ctx.definitions.rootPackage
     val javaPkg = enterStubPackage("java", root)
@@ -39,10 +39,11 @@ object ScalaLibHelper {
     enterStubClasses(scalaPkg, "Any", "AnyRef", "Nothing", "Unit")
   }
 
-  def enterStubPackage(name: String, owner: PackageSymbol)(implicit context: Context): PackageSymbol = {
+  def enterStubPackage(name: String, owner: PackageSymbol)(implicit enter: Enter, context: Context): PackageSymbol = {
     val pkgSym = PackageSymbol(name.toTermName)
     val pkgCompleter = new PackageCompleter(pkgSym)
     pkgSym.completer = pkgCompleter
+    enter.queueCompleter(pkgCompleter, pushToTheEnd = false)
     owner.addChild(pkgSym)
     pkgSym
   }

@@ -107,7 +107,7 @@ object Main {
       unit
     }
     val enter = new Enter
-    ScalaLibHelper.enterStabSymbolsForScalaLib(context)
+    ScalaLibHelper.enterStabSymbolsForScalaLib(enter, context)
     for (compilationUnit <- compilationUnits)
       enter.enterCompilationUnit(compilationUnit)(context)
 

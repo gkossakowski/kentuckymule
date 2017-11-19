@@ -21,10 +21,13 @@ class Enter {
   import Enter._
   import ast.untpd._
 
-  val completers: util.Queue[Completer] = new util.ArrayDeque[Completer]()
+  val completers: util.Deque[Completer] = new util.ArrayDeque[Completer]()
 
-  def queueCompleter(completer: Completer): Unit = {
-    completers.add(completer)
+  def queueCompleter(completer: Completer, pushToTheEnd: Boolean = true): Unit = {
+    if (pushToTheEnd)
+      completers.add(completer)
+    else
+      completers.addFirst(completer)
   }
 
   class ClassSignatureLookupScope(classSym: ClassSymbol, parentScope: LookupScope) extends LookupScope {
@@ -277,12 +280,12 @@ class Enter {
       modOwner.addChild(modSym)
       locally {
         val completer = new TemplateMemberListCompleter(modClsSym, tmpl, lookupScopeContext.parentScope)
-        queueCompleter(completer)
+        queueCompleter(completer, pushToTheEnd = !isPackageObject)
         modClsSym.completer = completer
       }
       locally {
         val completer = new ModuleCompleter(modSym)
-        queueCompleter(completer)
+        queueCompleter(completer, pushToTheEnd = !isPackageObject)
         modSym.completer = completer
       }
       for (stat <- tmpl.body) enterTree(stat, modClsSym, lookupScopeContext)
@@ -430,7 +433,7 @@ class Enter {
         val pkgSym = PackageSymbol(name)
         val pkgCompleter = new PackageCompleter(pkgSym)
         pkgSym.completer = pkgCompleter
-        completers.add(pkgCompleter)
+        queueCompleter(pkgCompleter, pushToTheEnd = false)
         resolvedOwner.addChild(pkgSym)
         pkgSym
     }
