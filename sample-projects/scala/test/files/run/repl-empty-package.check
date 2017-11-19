@@ -1,0 +1,5 @@
+
+scala> println(Bippy.bippy)
+bippy!
+
+scala> :quit

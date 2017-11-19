@@ -1,0 +1,22 @@
+
+scala> object x { def x={} }
+defined object x
+
+scala> import x._
+import x._
+
+scala> x
+       ^
+       error: reference to x is ambiguous;
+       it is imported twice in the same scope by
+       import x._
+       and import x
+
+scala> x
+       ^
+       error: reference to x is ambiguous;
+       it is imported twice in the same scope by
+       import x._
+       and import x
+
+scala> :quit

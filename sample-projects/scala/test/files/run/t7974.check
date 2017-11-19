@@ -1,0 +1,65 @@
+
+  // access flags 0x1
+  public someSymbol1()Lscala/Symbol;
+    INVOKEDYNAMIC apply()Lscala/Symbol; [
+      // handle kind 0x6 : INVOKESTATIC
+      scala/runtime/SymbolLiteral.bootstrap(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;)Ljava/lang/invoke/CallSite;
+      // arguments:
+      "Symbolic1"
+    ]
+    ARETURN
+    MAXSTACK = 1
+    MAXLOCALS = 1
+
+
+  // access flags 0x1
+  public someSymbol2()Lscala/Symbol;
+    INVOKEDYNAMIC apply()Lscala/Symbol; [
+      // handle kind 0x6 : INVOKESTATIC
+      scala/runtime/SymbolLiteral.bootstrap(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;)Ljava/lang/invoke/CallSite;
+      // arguments:
+      "Symbolic2"
+    ]
+    ARETURN
+    MAXSTACK = 1
+    MAXLOCALS = 1
+
+
+  // access flags 0x1
+  public sameSymbol1()Lscala/Symbol;
+    INVOKEDYNAMIC apply()Lscala/Symbol; [
+      // handle kind 0x6 : INVOKESTATIC
+      scala/runtime/SymbolLiteral.bootstrap(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;)Ljava/lang/invoke/CallSite;
+      // arguments:
+      "Symbolic1"
+    ]
+    ARETURN
+    MAXSTACK = 1
+    MAXLOCALS = 1
+
+
+  // access flags 0x1
+  public someSymbol3()Lscala/Symbol;
+    ALOAD 0
+    GETFIELD Symbols.someSymbol3 : Lscala/Symbol;
+    ARETURN
+    MAXSTACK = 1
+    MAXLOCALS = 1
+
+
+  // access flags 0x1
+  public <init>()V
+    ALOAD 0
+    INVOKESPECIAL java/lang/Object.<init> ()V
+    ALOAD 0
+    INVOKEDYNAMIC apply()Lscala/Symbol; [
+      // handle kind 0x6 : INVOKESTATIC
+      scala/runtime/SymbolLiteral.bootstrap(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;)Ljava/lang/invoke/CallSite;
+      // arguments:
+      "Symbolic3"
+    ]
+    PUTFIELD Symbols.someSymbol3 : Lscala/Symbol;
+    RETURN
+    MAXSTACK = 2
+    MAXLOCALS = 1
+

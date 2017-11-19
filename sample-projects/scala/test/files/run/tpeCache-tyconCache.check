@@ -1,0 +1,15 @@
+
+scala> :power
+Power mode enabled. :phase is at typer.
+import scala.tools.nsc._, intp.global._, definitions._
+Try :help or completions for vals._ and power._
+
+scala> 
+
+scala> AnyRefClass.tpe eq AnyRefClass.typeConstructor
+res0: Boolean = true
+
+scala> AnyRefClass.tpe eq AnyRefClass.typeConstructor
+res1: Boolean = true
+
+scala> :quit

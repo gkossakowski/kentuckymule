@@ -1,0 +1,22 @@
+
+scala> :power
+Power mode enabled. :phase is at typer.
+import scala.tools.nsc._, intp.global._, definitions._
+Try :help or completions for vals._ and power._
+
+scala> val s = transformedType(StringClass.toType).asInstanceOf[Type]
+s: $r.intp.global.Type = String
+
+scala> { println(exitingPhase(currentRun.erasurePhase)(ConstantType(Constant(s)))) }
+Class[String](classOf[java.lang.String])
+
+scala> { exitingPhase(currentRun.erasurePhase)(println(ConstantType(Constant(s)))) }
+Class(classOf[java.lang.String])
+
+scala> { ConstantType(Constant(s)); println(exitingPhase(currentRun.erasurePhase)(ConstantType(Constant(s)))); }
+Class[String](classOf[java.lang.String])
+
+scala> { ConstantType(Constant(s)); exitingPhase(currentRun.erasurePhase)(println(ConstantType(Constant(s)))); }
+Class(classOf[java.lang.String])
+
+scala> :quit

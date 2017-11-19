@@ -1,0 +1,13 @@
+
+scala> val y = 55
+y: Int = 55
+
+scala> val x = s"""
+  y = $y
+"""
+x: String =
+"
+  y = 55
+"
+
+scala> :quit

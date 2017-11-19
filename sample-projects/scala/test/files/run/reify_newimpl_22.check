@@ -1,0 +1,23 @@
+
+scala> import scala.reflect.runtime.universe._
+import scala.reflect.runtime.universe._
+
+scala> import scala.tools.reflect.ToolBox
+import scala.tools.reflect.ToolBox
+
+scala> import scala.tools.reflect.Eval
+import scala.tools.reflect.Eval
+
+scala> {
+  val x = 2
+  val code = reify {
+    x
+  }
+  println(code.eval)
+}
+         val code = reify {
+                          ^
+On line 3: free term: Ident(TermName("x")) defined by res0  in <console>:2:7
+2
+
+scala> :quit

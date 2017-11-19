@@ -1,0 +1,15 @@
+[[syntax trees at end of                specialize]] // newSource1.scala
+package <empty> {
+  class Foo extends Object {
+    def <init>(): Foo = {
+      Foo.super.<init>();
+      ()
+    };
+    private[this] val f: String => String = {
+      final <artifact> def $anonfun$f(param: String): String = param;
+      ((param: String) => $anonfun$f(param))
+    };
+    <stable> <accessor> def f(): String => String = Foo.this.f
+  }
+}
+

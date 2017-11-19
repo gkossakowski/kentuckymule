@@ -1,0 +1,6 @@
+t8731.scala:10: warning: could not emit switch for @switch annotated match
+  def g(x: Int) = (x: @annotation.switch) match {
+                       ^
+error: No warnings can be incurred under -Xfatal-warnings.
+one warning found
+one error found

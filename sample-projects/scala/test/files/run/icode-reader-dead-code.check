@@ -1,0 +1,27 @@
+Bytecode for method f
+
+  // access flags 0x11
+  public final f()I
+   L0
+    LINENUMBER 4 L0
+    ICONST_1
+    IRETURN
+   L1
+    LOCALVARIABLE this Lp/A; L0 L1 0
+    MAXSTACK = 1
+    MAXLOCALS = 1
+
+Bytecode for method f
+
+  // access flags 0x11
+  public final f()I
+   L0
+    LINENUMBER 4 L0
+    ICONST_1
+    ATHROW
+    IRETURN
+   L1
+    LOCALVARIABLE this Lp/A; L0 L1 0
+    MAXSTACK = 1
+    MAXLOCALS = 1
+

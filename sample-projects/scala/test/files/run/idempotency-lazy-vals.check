@@ -1,0 +1,15 @@
+6
+{
+  class C extends AnyRef {
+    def <init>(): C = {
+      C.super.<init>();
+      ()
+    };
+    <stable> <accessor> lazy val x: Int = 2;
+    implicit <stable> <accessor> lazy val y: Int = 3
+  };
+  val c: C = new C();
+  import c._;
+  c.x.*(Predef.implicitly[Int](c.y))
+}
+6

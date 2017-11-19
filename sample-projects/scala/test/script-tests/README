@@ -1,0 +1,13 @@
+This is a fresh start for script tests. The fact that windows exists can
+no longer be allowed to stand in the way of testing the wide range of
+functionality which currently goes completely untested. So I'll just be
+putting self-contained script tests in here to run some way that doesn't
+depend on all the platform stars aligning all the time. Feel free to
+join me.
+
+-- extempore, Nov 21 2011
+
+But there's a problem that probably nobody would run such tests so they would become outdated quite quickly.
+And therefore they wouldn't work (and even compile) after some time - like this one existing currently.
+
+-- mpociecha, Oct 9 2014

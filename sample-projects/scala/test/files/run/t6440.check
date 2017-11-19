@@ -1,0 +1,4 @@
+pos: source-newSource1.scala,line-9,offset=109 reference to U is ambiguous;
+it is imported twice in the same scope by
+import pack2._
+and import X._ ERROR

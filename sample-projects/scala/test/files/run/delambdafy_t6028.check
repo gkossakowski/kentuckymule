@@ -1,0 +1,59 @@
+[[syntax trees at end of                lambdalift]] // newSource1.scala
+package <empty> {
+  class T extends Object {
+    <paramaccessor> private[this] val classParam: String = _;
+    def <init>(classParam: String): T = {
+      T.super.<init>();
+      ()
+    };
+    private[this] val field: String = "";
+    <stable> <accessor> def field(): String = T.this.field;
+    def foo(methodParam: String): Function0 = {
+      val methodLocal: String = "";
+      {
+        (() => T.this.$anonfun$foo$1(methodParam, methodLocal))
+      }
+    };
+    def bar(barParam: String): Object = {
+      lazy <artifact> val MethodLocalObject$module: scala.runtime.LazyRef = new scala.runtime.LazyRef();
+      T.this.MethodLocalObject$1(barParam, MethodLocalObject$module)
+    };
+    def tryy(tryyParam: String): Function0 = {
+      var tryyLocal: runtime.ObjectRef = scala.runtime.ObjectRef.create("");
+      {
+        (() => T.this.$anonfun$tryy$1(tryyParam, tryyLocal))
+      }
+    };
+    final <artifact> private[this] def $anonfun$foo$1(methodParam$1: String, methodLocal$1: String): String = T.this.classParam.+(T.this.field()).+(methodParam$1).+(methodLocal$1);
+    abstract trait MethodLocalTrait$1 extends Object {
+      def /*MethodLocalTrait$1*/$init$(barParam$1: String): Unit = {
+        ()
+      };
+      scala.Predef.print(barParam$1);
+      <synthetic> <stable> <artifact> def $outer(): T
+    };
+    object MethodLocalObject$2 extends Object with T#MethodLocalTrait$1 {
+      def <init>($outer: T, barParam$1: String): T#MethodLocalObject$2.type = {
+        MethodLocalObject$2.super.<init>();
+        MethodLocalObject$2.super./*MethodLocalTrait$1*/$init$(barParam$1);
+        ()
+      };
+      <synthetic> <paramaccessor> <artifact> private[this] val $outer: T = _;
+      <synthetic> <stable> <artifact> def $outer(): T = MethodLocalObject$2.this.$outer;
+      <synthetic> <stable> <artifact> def $outer(): T = MethodLocalObject$2.this.$outer
+    };
+    final <artifact> private[this] def MethodLocalObject$lzycompute$1(barParam$1: String, MethodLocalObject$module$1: scala.runtime.LazyRef): T#MethodLocalObject$2.type = MethodLocalObject$module$1.synchronized[T#MethodLocalObject$2.type](if (MethodLocalObject$module$1.initialized())
+      MethodLocalObject$module$1.value().$asInstanceOf[T#MethodLocalObject$2.type]()
+    else
+      MethodLocalObject$module$1.initialize(new T#MethodLocalObject$2.type(T.this, barParam$1)).$asInstanceOf[T#MethodLocalObject$2.type]());
+    final private[this] def MethodLocalObject$1(barParam$1: String, MethodLocalObject$module$1: scala.runtime.LazyRef): T#MethodLocalObject$2.type = if (MethodLocalObject$module$1.initialized())
+      MethodLocalObject$module$1.value().$asInstanceOf[T#MethodLocalObject$2.type]()
+    else
+      T.this.MethodLocalObject$lzycompute$1(barParam$1, MethodLocalObject$module$1);
+    final <artifact> private[this] def $anonfun$tryy$1(tryyParam$1: String, tryyLocal$1: runtime.ObjectRef): Unit = try {
+      tryyLocal$1.elem = tryyParam$1
+    } finally ()
+  }
+}
+
+warning: there was one feature warning; re-run with -feature for details

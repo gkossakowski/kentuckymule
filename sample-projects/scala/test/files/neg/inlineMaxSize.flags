@@ -1,0 +1,1 @@
+-Ydelambdafy:method -opt:l:inline -opt-inline-from:** -opt-warnings -Xfatal-warnings

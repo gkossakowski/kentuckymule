@@ -1,0 +1,36 @@
+# fallback on built-in heuristics
+# this must be first so later entries will override it
+* text=auto
+
+# check out text files with lf, not crlf, on Windows.  (especially
+# important for Scala source files, since """ preserves line endings)
+text eol=lf
+
+# These files are text and should be normalized (convert crlf => lf)
+*.c       eol=lf
+*.check   eol=lf
+*.css     eol=lf
+*.flags   eol=lf
+*.html    eol=lf
+*.java    eol=lf
+*.js      eol=lf
+*.policy  eol=lf
+*.sbt     eol=lf
+*.scala   eol=lf
+*.sh      eol=lf
+*.txt     eol=lf
+*.xml     eol=lf
+
+# Windows-specific files get windows endings
+*.bat     eol=crlf
+*.cmd     eol=crlf
+*-windows.tmpl eol=crlf
+
+# Some binary file types for completeness
+# (binary is a macro for -text -diff)
+*.dll     binary
+*.gif     binary
+*.jpg     binary
+*.png     binary
+*.class   -text diff=class
+*.jar     -text diff=jar

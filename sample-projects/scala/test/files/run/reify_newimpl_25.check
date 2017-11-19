@@ -1,0 +1,13 @@
+
+scala> {
+  import scala.reflect.runtime.universe._
+  val x = "2"
+  val tt = implicitly[TypeTag[x.type]]
+  println(tt)
+}
+         val tt = implicitly[TypeTag[x.type]]
+                            ^
+On line 4: free term: Ident(TermName("x")) defined by res0  in <console>:3:7
+TypeTag[x.type]
+
+scala> :quit

@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/scala/scala.git
+	branch = 2.13.x
+	commit = 7c8e4ac0797872190f67d1738251ded1980d8d77
+	parent = f4b376618039b19dc34b9dd28abe10fc6c4d61fe
+	cmdver = 0.3.1

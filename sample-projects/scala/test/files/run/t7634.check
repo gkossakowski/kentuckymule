@@ -1,0 +1,6 @@
+
+
+scala> .lines.foreach(println)
+shello, world.
+
+scala> :quit
