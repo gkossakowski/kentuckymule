@@ -5,7 +5,7 @@ import java.util
 import dotty.tools.dotc
 import dotc.ast.Trees._
 import dotc.core.Contexts.Context
-import dotc.core.Names.{Name, TypeName}
+import dotc.core.Names.{Name, TermName, TypeName}
 import dotc.{CompilationUnit, ast}
 import dotc.core.Decorators._
 import dotc.core.StdNames._
@@ -539,9 +539,14 @@ object Enter {
   case class CompleterStats(processedJobs: Int, dependencyMisses: Int)
 
   private class ImportCompleter(val importNode: Import) {
-    private class ImportSelectorResolved(val termSym: Symbol, val typeSym: Symbol, val isWildcard: Boolean)
+
+    private class ImportSelectorResolved(val termSym: Symbol, val typeSym: Symbol, renamedTo: Name) {
+      val typeNameRenamed: TypeName = if (renamedTo != null) renamedTo.toTypeName else null
+      val termNameRenamed: TermName = if (renamedTo != null) renamedTo.toTermName else null
+    }
     private var exprSym0: Symbol = _
     private var resolvedSelectors: util.ArrayList[ImportSelectorResolved] = _
+    private var hasFinalWildcard: Boolean = false
     private var isComplete: Boolean = false
     def complete(parentLookupScope: LookupScope)(implicit context: Context): LookupAnswer = {
       val Import(expr, selectors) = importNode
@@ -549,16 +554,29 @@ object Enter {
       val result = mapCompleteAnswer(exprAns) { exprSym =>
         this.exprSym0 = exprSym
         val resolvedSelectors = mapToArrayList(selectors) { selector =>
-          val Ident(name) = selector
+          val (name, renamedTo) = selector match {
+            case Ident(selName) => (selName, selName)
+            case Pair(Ident(selName), Ident(selRenamedTo)) => (selName, selRenamedTo)
+          }
           if (name != nme.WILDCARD) {
             val termSym = lookupMember(exprSym, name)
             val typeSym = lookupMember(exprSym, name.toTypeName)
             if (termSym == NoSymbol && typeSym == NoSymbol)
               return NotFound
-            new ImportSelectorResolved(termSym, typeSym, isWildcard = false)
+            new ImportSelectorResolved(termSym, typeSym, renamedTo)
           } else {
-            new ImportSelectorResolved(null, null, isWildcard = true)
+            // parser guarantees that the wildcard name can only appear at the end of
+            // the selector list and we check for possible null value below
+            // signalling the wildcard selector via a null value is really wonky but
+            // I'm doing it for one reason: I'm paranoid about performance and don't
+            // want to scan the selectors list twice
+            null
           }
+        }
+        val selectorsSize = resolvedSelectors.size()
+        if (selectorsSize > 0 && resolvedSelectors.get(selectorsSize-1) == null) {
+          resolvedSelectors.remove(selectorsSize-1)
+          hasFinalWildcard = true
         }
         this.resolvedSelectors = resolvedSelectors
         exprSym
@@ -569,26 +587,38 @@ object Enter {
     def matches(name: Name)(implicit context: Context): Symbol = {
       assert(isComplete, s"the import node hasn't been completed: $importNode")
       var i = 0
+      var seenNameInSelectors = false
       while (i < resolvedSelectors.size) {
         val selector = resolvedSelectors.get(i)
-        val sym = if (selector.isWildcard) {
-          exprSym0.info.lookup(name)
-        } else {
+        val sym = {
           val termSym = selector.termSym
           val typeSym = selector.typeSym
-          if (name.isTermName && termSym != null && termSym.name == name)
+          // all comparisons below are pointer equality comparisons; the || operator
+          // has short-circuit optimization so this check, while verbose, is actually
+          // really efficient
+          if ((typeSym != null && (typeSym.name eq name)) || (termSym.name eq name)) {
+            seenNameInSelectors = true
+          }
+          if (name.isTermName && termSym != null && (selector.termNameRenamed == name)) {
+            seenNameInSelectors = true
             termSym
-          else if (typeSym != null && typeSym.name == name)
+        } else if (typeSym != null && (selector.typeNameRenamed == name)) {
+            seenNameInSelectors = true
             typeSym
-          else NoSymbol
+          } else NoSymbol
         }
-        // TODO: to support hiding with wildcard renames as in `import foo.bar.{abc => _}`, we would
-        // need to continue scanning selectors and check for this shape of a rename
         if (sym != NoSymbol)
           return sym
         i += 1
       }
-      NoSymbol
+      // if not seen before, consider the final wildcard import
+      // seenNameInSelector check is required by the spec (4.7):
+      //   If a final wildcard is present, all importable members z
+      //   z of p other than x1,…,xn,y1,…,yn
+      //   x1, …, xn, y1,…,yn are also made available under their own unqualified names.
+      if (!seenNameInSelectors && hasFinalWildcard) {
+        exprSym0.info.lookup(name)
+      } else NoSymbol
     }
   }
 

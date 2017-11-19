@@ -495,6 +495,111 @@ lookups in bottom-up order (which is respecting shadowing Scala rules). Having a
 datastructure that lets me traverse efficiently in both directions was a reason
 I picked an Array.
 
+### Import renames and wildcard imports
+
+On Nov 28th, 2017 I implemented support for both import renames and fixed the support
+for wildcard imports.
+
+Let's consider an example:
+
+```scala
+  object A {
+    object B
+  }
+  import A.{B => B1, _}
+```
+
+In addition to fixing lookup for `B1` and `B`: `B1` is now visible and `B` is
+not, my commit also fixed handling of the wildcard import. The subtle
+thing about the wildcard import is that it excludes both `B` and `B1` from
+the list of imported members of `A`. That is, even if `A` has a member `B`,
+it won't be imported under its original name: it's been renamed to `B1`.
+If `A` has a member `B1` it won't be imported either: it's shadowed by `B`
+renamed to `B1`.
+
+This is specced in SLS 4.7:
+
+```
+If a final wildcard is present, all importable members z
+z of p other than x1,…,xn,y1,…,yn
+x1, …, xn, y1,…,yn are also made available under their own unqualified names.
+```
+
+To implement wildcard as specified above, I have to remember if the name
+I'm looking for in a given import clause has appeared in any of its selectors.
+This is done while scanning selectors for a match. If I don't find a match,
+and if the name didn't occur in any of the selectors and import clause has a
+wildcard selector, I perform a member lookup from the stable identifier for
+the import clause.
+
+Interesignly, I found a bug in scalac that allows rename of a wildcard to an
+arbitrary name:
+
+```scala
+scala> object Foo { class A }
+defined object Foo
+
+scala> import Foo.{_ => Bla}
+import Foo._
+
+// A is available because the import is a wildcard one despite the rename!
+scala> new A
+res1: Foo.A = Foo$A@687a0e40
+
+// Bla is not available
+scala> new Bla
+<console>:16: error: not found: type Bla
+       new Bla
+```
+
+Now, sadly, this commit introduces 5% performance regression for very unclear
+reasons. We went from around 2050 ops/s to 1950 ops/s.
+I tried to narrow it down. This simple patch restores most of the
+lost performance (brings us back to 2040 ops/s):
+
+```patch
+diff --git a/kentuckymule/src/main/scala/kentuckymule/core/Enter.scala b/kentuckymule/src/main/scala/kentuckymule/core/Enter.scala
+index ed9e1fb5e1..ee75d3dc45 100644
+--- a/kentuckymule/src/main/scala/kentuckymule/core/Enter.scala
++++ b/kentuckymule/src/main/scala/kentuckymule/core/Enter.scala
+@@ -596,14 +596,14 @@ object Enter {
+           // all comparisons below are pointer equality comparisons; the || operator
+           // has short-circuit optimization so this check, while verbose, is actually
+           // really efficient
+-          if ((typeSym != null && (typeSym.name eq name)) || (termSym.name eq name)) {
++          if ((typeSym != null && (typeSym.name eq name))/* || (termSym.name eq name)*/) {
+             seenNameInSelectors = true
+           }
+           if (name.isTermName && termSym != null && (selector.termNameRenamed == name)) {
+-            seenNameInSelectors = true
++//            seenNameInSelectors = true
+             termSym
+         } else if (typeSym != null && (selector.typeNameRenamed == name)) {
+-            seenNameInSelectors = true
++//            seenNameInSelectors = true
+             typeSym
+           } else NoSymbol
+         }
+@@ -616,7 +616,7 @@ object Enter {
+       //   If a final wildcard is present, all importable members z
+       //   z of p other than x1,…,xn,y1,…,yn
+       //   x1, …, xn, y1,…,yn are also made available under their own unqualified names.
+-      if (!seenNameInSelectors && hasFinalWildcard) {
++      if (/*!seenNameInSelectors &&*/ hasFinalWildcard) {
+         exprSym0.info.lookup(name)
+       } else NoSymbol
+     }
+```
+
+If you look at it closely, you'll see that the change is disabling a couple
+of pointer equality checks and assignments to a local, boolean variable.
+This shouldn't drop the performance of the entire signature completion by
+4%! I haven't been able to understand what's behind this change. I tried using JITWatch
+tool to understand the possible difference of JIT's behavior and maybe look at the
+assembly of the method: it's pretty simple, after all.
+Unfortunately, JITWatch was crashing for me when parsing JIT's logs and I couldn't get
+it to work. I'm just taking a note and moving on feeling slightly defeated.
+
 ## Package objects
 
 Initially, Kentucky Mule didn't support package objects. I felt that they're

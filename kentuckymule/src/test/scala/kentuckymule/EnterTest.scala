@@ -124,6 +124,50 @@ object EnterTest extends TestSuite {
         assert(resultTypeSym == Csym)
       }
     }
+    'importRename {
+      /*
+       * the import tests two things:
+       *   1. whether renames are handled correctly (B is available via B1 name)
+       *   2. whether renamed member is excluded from the list of members imported by `_`
+       */
+      val src =
+        """
+          |object A {
+          |  class B
+          |  class C
+          |}
+          |class X {
+          |  import A.{B => B1, _}
+          |  class Y
+          |}
+        """.stripMargin
+      val enter = enterToSymbolTable(ctx, src)
+      val templateCompleters = enter.completers.asScala
+      val Some(ycompleter) = templateCompleters collectFirst {
+        case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
+      }
+      enter.processJobQueue(memberListOnly = false)(ctx)
+      val ylookupScope = ycompleter.lookupScope
+      val classes = descendantPathsFromRoot().flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Bsym = classes("B".toTypeName)
+      val Csym = classes("C".toTypeName)
+      locally {
+        val ans = ylookupScope.lookup("B1".toTypeName)(ctx)
+        assert(ans == LookedupSymbol(Bsym))
+      }
+      locally {
+        val ans = ylookupScope.lookup("C".toTypeName)(ctx)
+        assert(ans == LookedupSymbol(Csym))
+      }
+      // this checks that B is not available via wildcard import; it was renamed to B1
+      locally {
+        val ans = ylookupScope.lookup("B".toTypeName)(ctx)
+        assert(ans == NotFound)
+      }
+
+    }
     'packageObject {
       val src = "package foo; package object bar { class D }; package bar { class C }"
       val enter = enterToSymbolTable(ctx, src)
