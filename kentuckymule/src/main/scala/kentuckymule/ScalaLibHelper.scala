@@ -18,16 +18,28 @@ object ScalaLibHelper {
 
     // enter java.util
     val javaUtilPkg = enterStubPackage("util", javaPkg)
+    enterStubClasses(javaUtilPkg, "Collection")
 
     // enter java.util.regex
     val javaUtilRegexPkg = enterStubPackage("regex", javaUtilPkg)
     enterStubClasses(javaUtilRegexPkg, "Pattern")
 
+    // enter java.util.concurrent
+    val javaUtilConcurrentPkg = enterStubPackage("concurrent", javaUtilPkg)
+    enterStubClasses(javaUtilConcurrentPkg, "ForkJoinPool", "ForkJoinWorkerThread", "ForkJoinTask", "Callable",
+      "Executor", "ExecutorService", "ThreadFactory", "TimeUnit", "CountDownLatch")
+
+    // enter java.util.concurrent.atomic
+    val javaUtilConcurrentAtomicPkg = enterStubPackage("atomic", javaUtilConcurrentPkg)
+    enterStubClasses(javaUtilConcurrentAtomicPkg, "AtomicInteger")
+
     // enter java.lang
     val javaLangPkg = enterStubPackage("lang", javaPkg)
-    enterStubClasses(javaLangPkg, "String", "CharSequence")
-    val CompletedType(tpe) = javaLangPkg.completeInfo()
-    javaLangPkg.info = tpe
+    enterStubClasses(javaLangPkg, "String", "CharSequence", "Class", "Throwable", "Runnable")
+
+    // enter java.lang.ref
+    val javaLangRefPkg = enterStubPackage("ref", javaLangPkg)
+    enterStubClasses(javaLangRefPkg, "PhantomReference")
 
     // enter java.beans
     val javaBeansPkg = enterStubPackage("beans", javaPkg)
