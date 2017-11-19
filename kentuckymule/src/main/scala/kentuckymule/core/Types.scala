@@ -70,6 +70,11 @@ object Types {
     override def lookup(name: Name)(implicit contexts: Context): Symbol = resultType.lookup(name)
   }
 
+  final case class TypeAliasInfoType(typeDefSymbol: TypeDefSymbol, rhsType: Type) extends Type {
+    override def typeSymbol: Symbol = typeDefSymbol
+    override def lookup(name: Name)(implicit contexts: Context): Symbol = rhsType.lookup(name)
+  }
+
   final case class SymRef(sym: Symbol) extends Type {
     override def typeSymbol: Symbol = sym
     override def lookup(name: Name)(implicit contexts: Context): Symbol = sym.lookup(name)

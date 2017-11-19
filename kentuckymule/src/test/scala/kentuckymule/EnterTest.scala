@@ -7,10 +7,11 @@ import dotc.{CompilationUnit, parsing}
 import kentuckymule.core.Enter
 import kentuckymule.core.Enter.{LookedupSymbol, NotFound, TemplateMemberListCompleter}
 import kentuckymule.core.Symbols._
-import kentuckymule.core.Types.{AppliedType, SymRef, TupleType, Type}
+import kentuckymule.core.Types._
 import dotc.core.IOUtils
 import dotc.core.Decorators._
 import dotc.core.Names.Name
+import dotty.tools.dotc.core.TypeOps.AppliedTypeMemberDerivation
 import utest._
 
 object EnterTest extends TestSuite {
@@ -500,6 +501,95 @@ object EnterTest extends TestSuite {
         val Aparents = Asym.info.parents
         assert(Aparents.size == 1)
         assert(Aparents.head == SymRef(Bsym))
+      }
+    }
+    // tests dealiasing, hopefully I'll find a more direct way of testing dealiasing in the future
+    'typeAliasClassParent {
+      val src =
+        """
+          |class A extends Foo.B
+          |object Foo {
+          |  type B = C
+          |}
+          |class C {
+          |  def c: C
+          |}
+          |""".stripMargin
+      val enter = enterToSymbolTable(ctx, src)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val Csym = classes("C".toTypeName)
+      locally {
+        // if a type alias was resolved correctly, we should find the `c` method that is inherited from the C
+        // class
+        val cDefInA = Asym.info.members.lookup("c".toTermName)
+        assert(cDefInA != NoSymbol)
+        val cResultType = cDefInA.asInstanceOf[DefDefSymbol].info.resultType
+        assert(cResultType == SymRef(Csym))
+      }
+    }
+    'typeAliasParametricClassParent {
+      val src =
+        """
+          |class A extends Foo.B[D]
+          |object Foo {
+          |  type B[T] = C[T]
+          |}
+          |class C[T] {
+          |  def d: T
+          |}
+          |class D
+          |""".stripMargin
+      val enter = enterToSymbolTable(ctx, src)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val Csym = classes("C".toTypeName)
+      val Dsym = classes("D".toTypeName)
+      locally {
+        // if a type alias was resolved correctly, we should find the `c` method that is inherited from the C
+        // class
+        val dDefInA = Asym.info.members.lookup("d".toTermName)
+        assert(dDefInA != NoSymbol)
+        val dResultType = dDefInA.asInstanceOf[DefDefSymbol].info.resultType
+        assert(dResultType == SymRef(Dsym))
+      }
+    }
+    'typeAliasParametric {
+      val src =
+        """|abstract class Base[A, B] {
+           |  val b: B
+           |}
+           |class Foo
+           |class Bar
+           |class A {
+           |  type Flip[X, Y] = Base[Y, X]
+           |  type Result = Flip[Foo, Bar]
+           |}
+        """.stripMargin
+      val enter = enterToSymbolTable(ctx, src)
+      enter.processJobQueue(memberListOnly = false)
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val baseSym = classes("Base".toTypeName)
+      val fooSym = classes("Foo".toTypeName)
+      val bSym = baseSym.lookup("b".toTermName)
+      locally {
+        val resultTypeAlias = Asym.info.members.lookup("Result".toTypeName)
+        val flipSym = Asym.info.members.lookup("Flip".toTypeName).asInstanceOf[TypeDefSymbol]
+        val resultTypeAliasInfo = resultTypeAlias.asInstanceOf[TypeDefSymbol].info.asInstanceOf[TypeAliasInfoType]
+        val typeAliasRhs = resultTypeAliasInfo.rhsType.asInstanceOf[AppliedType]
+        val appliedTypeMemberDerivation = AppliedTypeMemberDerivation.createForDealiasedType(typeAliasRhs).right.get
+        val derivedBInfo = appliedTypeMemberDerivation.deriveInheritedMemberOfAppliedType(bSym).info
+        val bResultType = derivedBInfo.asInstanceOf[ValInfoType].resultType
+        assert(bResultType == SymRef(fooSym))
       }
     }
     'defTupleReturn {

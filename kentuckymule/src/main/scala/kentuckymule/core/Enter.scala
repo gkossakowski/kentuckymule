@@ -11,7 +11,8 @@ import dotc.core.Decorators._
 import dotc.core.StdNames._
 import Symbols._
 import Types._
-import dotc.core.{Decorators, Flags, TypeOps}
+import dotc.core.{Decorators, Flags, Scopes, TypeOps}
+import dotty.tools.dotc.core.TypeOps.AppliedTypeMemberDerivation
 
 /**
   * Creates symbols for declarations and enters them into a symbol table.
@@ -98,6 +99,26 @@ class Enter {
 
     override def replaceImports(imports: ImportsLookupScope): LookupScope =
       new LookupDefDefScope(defSym, imports, parentScope)
+
+    override def enclosingClass: LookupAnswer = parentScope.enclosingClass
+  }
+
+  class LookupTypeDefScope(typeDefSym: TypeDefSymbol, imports: ImportsLookupScope, parentScope: LookupScope) extends LookupScope {
+    override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
+      if (name.isTypeName) {
+        val tParamFoundSym = typeDefSym.typeParams.lookup(name)
+        if (tParamFoundSym != NoSymbol)
+          return LookedupSymbol(tParamFoundSym)
+      }
+      val impFoundSym = imports.lookup(name)
+      impFoundSym match {
+        case _: LookedupSymbol | _: IncompleteDependency => impFoundSym
+        case _ => parentScope.lookup(name)
+      }
+    }
+
+    override def replaceImports(imports: ImportsLookupScope): LookupScope =
+      new LookupTypeDefScope(typeDefSym, imports, parentScope)
 
     override def enclosingClass: LookupAnswer = parentScope.enclosingClass
   }
@@ -280,6 +301,13 @@ class Enter {
     }
 
     def newValDefLookupScope(valDefSymbol: ValDefSymbol): LookupScope = simpleMemberLookupScope()
+    def newTypeAliasLookupScope(typeDefSymbol: TypeDefSymbol): LookupScope = {
+      if (typeDefSymbol.typeParams.size > 0) {
+        new LookupTypeDefScope(typeDefSymbol, imports.snapshot(), parentScope)
+      } else {
+        simpleMemberLookupScope()
+      }
+    }
     def newDefDefLookupScope(defDefSymbol: DefDefSymbol): LookupScope =
       if (defDefSymbol.typeParams.size > 0) {
         new LookupDefDefScope(defDefSymbol, imports.snapshot(), parentScope)
@@ -357,10 +385,26 @@ class Enter {
       queueCompleter(completer)
       classSym.completer = completer
       for (stat <- tmpl.body) enterTree(stat, classSym, lookupScopeContext)
-    // type alias or type member
-    case TypeDef(name, _) =>
-      val typeSymbol = TypeDefSymbol(name, owner)
-      owner.addChild(typeSymbol)
+    // type member (with bounds)
+    case TypeDef(name, _: TypeBoundsTree) =>
+      val typeDefSymbol = TypeDefSymbol(name, owner)
+      // TODO: add support for type members with bounds
+      val completer = new StubTypeDefCompleter(typeDefSymbol)
+      typeDefSymbol.completer = completer
+      queueCompleter(completer)
+      owner.addChild(typeDefSymbol)
+    case td@TypeDef(name, rhs) if !rhs.isEmpty =>
+      val typeDefSymbol = TypeDefSymbol(name, owner)
+      foreachWithIndex(td.tparams) { (tParam, tParamIndex) =>
+        // TODO: setup completers for TypeDef (resolving bounds, etc.)
+        typeDefSymbol.typeParams.enter(TypeParameterSymbol(tParam.name, tParamIndex, owner))
+      }
+      val rhsLookupScope = parentLookupScopeContext.newTypeAliasLookupScope(typeDefSymbol)
+      val completer =
+        new TypeAliasCompleter(typeDefSymbol, td, rhsLookupScope)
+      typeDefSymbol.completer = completer
+      queueCompleter(completer)
+      owner.addChild(typeDefSymbol)
     case t@ValDef(name, _, _) =>
       val valSym = ValDefSymbol(name)
       val completer = new ValDefCompleter(valSym, t, parentLookupScopeContext.newValDefLookupScope(valSym))
@@ -521,6 +565,9 @@ class Enter {
             case IncompleteDependency(sym: PackageSymbol) =>
               queueCompleter(sym.completer)
               queueCompleter(completer)
+            case IncompleteDependency(sym: TypeDefSymbol) =>
+              queueCompleter(sym.completer)
+              queueCompleter(completer)
             case CompletedType(tpe: MethodInfoType) =>
               val defDefSym = completer.sym.asInstanceOf[DefDefSymbol]
               defDefSym.info = tpe
@@ -530,11 +577,16 @@ class Enter {
             case CompletedType(tpe: PackageInfoType) =>
               val pkgSym = completer.sym.asInstanceOf[PackageSymbol]
               pkgSym.info = tpe
+            case CompletedType(tpe: TypeAliasInfoType) =>
+              val typeDefSym = completer.sym.asInstanceOf[TypeDefSymbol]
+              typeDefSym.info = tpe
+            // TODO: remove special treatment of StubTypeDefCompleter once poly type aliases are implemented
+            case CompletedType(NoType) if completer.isInstanceOf[StubTypeDefCompleter] =>
+              val typeDefSym = completer.sym.asInstanceOf[TypeDefSymbol]
+              typeDefSym.info = NoType
             // error cases
             case completed: CompletedType =>
               sys.error(s"Unexpected completed type $completed returned by completer for ${completer.sym}")
-            case incomplete@IncompleteDependency(_: TypeDefSymbol) =>
-              throw new UnsupportedOperationException("TypeDef support is not implemented yet")
             case incomplete@(IncompleteDependency(_: TypeParameterSymbol) | IncompleteDependency(NoSymbol) |
                              IncompleteDependency(_: PackageSymbol)) =>
               sys.error(s"Unexpected incomplete dependency $incomplete")
@@ -783,18 +835,33 @@ object Enter {
       var i = 0
       while (i < resolvedParents.size()) {
         val parentType = resolvedParents.get(i)
-        val parentSym = parentType.typeSymbol.asInstanceOf[ClassSymbol]
-        val parentInfo = if (parentSym.info != null) parentSym.info else
-          return IncompleteDependency(parentSym)
+        val parentClassSym = parentType.typeSymbol match {
+          case clsSym: ClassSymbol =>
+            clsSym
+          // TODO: figure out where dealiasing should happen and whether we should preserve any info
+          // about the use of a type alias; one possibility is to move dealiasing above to the `resolvedParents`
+          // computation
+          case typeDefSym: TypeDefSymbol =>
+            if (!typeDefSym.isComplete)
+              return IncompleteDependency(typeDefSym)
+            val aliasedSymbol = typeDefSym.info.asInstanceOf[TypeAliasInfoType].rhsType.typeSymbol
+            aliasedSymbol match {
+              case clsSym: ClassSymbol => clsSym
+              case _ => sys.error(s"The ${parentType} doesn't dealias to a class type. The dealiased type is ${aliasedSymbol}")
+            }
+        }
+        val parentInfo = if (parentClassSym.info != null) parentClassSym.info else
+          return IncompleteDependency(parentClassSym)
         parentType match {
           case at: AppliedType =>
-            import TypeOps.{TypeParamMap, deriveMemberOfAppliedType}
-            val typeParams = at.typeSymbol.asInstanceOf[ClassSymbol].typeParams
-            val typeParamMap = new TypeParamMap(typeParams)
+            val appliedTypeMemberDerivation = AppliedTypeMemberDerivation.createForDealiasedType(at) match {
+              case Left(incompleteDependency) => return incompleteDependency
+              case Right(derivation) => derivation
+            }
             for (m <- parentInfo.members.iterator) {
               if (!m.isComplete)
                 return IncompleteDependency(m)
-              val derivedInheritedMember = deriveMemberOfAppliedType(m, at, typeParamMap)
+              val derivedInheritedMember = appliedTypeMemberDerivation.deriveInheritedMemberOfAppliedType(m)
               info.members.enter(derivedInheritedMember)
             }
           case other =>
@@ -879,6 +946,39 @@ object Enter {
     } catch {
       case ex: Exception =>
         throw new RuntimeException(s"Error while completing $valDef", ex)
+    }
+    def isCompleted: Boolean = cachedInfo != null
+  }
+
+  abstract class TypeDefCompleter(sym: TypeDefSymbol) extends Completer(sym)
+
+  // TODO: remove this once type members with bounds are implemented
+  class StubTypeDefCompleter(sym: TypeDefSymbol) extends TypeDefCompleter(sym) {
+    private var cachedInfo: Type = _
+    override def isCompleted: Boolean = cachedInfo != null
+    override def complete()(implicit context: Context): CompletionResult = {
+      cachedInfo = NoType
+      CompletedType(cachedInfo)
+    }
+  }
+
+  class TypeAliasCompleter(sym: TypeDefSymbol, typeDef: TypeDef, val lookupScope: LookupScope) extends TypeDefCompleter(sym) {
+    private var cachedInfo: TypeAliasInfoType = _
+    def complete()(implicit context: Context): CompletionResult = try {
+      val rhsType: Type = {
+        val resolvedType = resolveTypeTree(typeDef.rhs, lookupScope)
+        resolvedType match {
+          case CompletedType(tpe) => tpe
+          case res: IncompleteDependency => return res
+          case NotFound => sys.error(s"Couldn't resolve ${typeDef.rhs}")
+        }
+      }
+      val info = TypeAliasInfoType(sym, rhsType)
+      cachedInfo = info
+      CompletedType(info)
+    } catch {
+      case ex: Exception =>
+        throw new RuntimeException(s"Error while completing $typeDef", ex)
     }
     def isCompleted: Boolean = cachedInfo != null
   }

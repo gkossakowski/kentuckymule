@@ -3,7 +3,7 @@ package kentuckymule.core
 import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.core.Names.{Name, TermName, TypeName}
 import dotty.tools.dotc.core.Scopes.{MutableScope, Scope}
-import Types.{ClassInfoType, MethodInfoType, ModuleInfoType, NoType, PackageInfoType, Type, ValInfoType}
+import Types.{ClassInfoType, MethodInfoType, ModuleInfoType, NoType, PackageInfoType, Type, TypeAliasInfoType, ValInfoType}
 import dotty.tools.dotc.core.{Contexts, Scopes}
 import dotty.tools.dotc.core.Decorators._
 import kentuckymule.core.Enter._
@@ -86,8 +86,16 @@ object Symbols {
   }
   final case class TypeDefSymbol(override val name: TypeName, enclosingClass: Symbol) extends TypeSymbol(name) {
     assert(enclosingClass.isInstanceOf[ClassSymbol], enclosingClass)
-    def info: Type = NoType
+    // TODO: turn it back to TypeAliasInfoType once StubTypeDefCompleter is out
+    // right now, info has type `Type` because StubTypeDefCompleter returns NoType as
+    // a result
+    var info: Type = _
+    var completer: TypeDefCompleter = _
+    val typeParams: MutableScope = Scopes.newScope
     override def isComplete: Boolean = info != null
+    def completeInfo()(implicit context: Context): CompletionResult = {
+      completer.complete()
+    }
   }
   final case class TypeParameterSymbol(override val name: TypeName, index: Int, enclosingClass: Symbol) extends TypeSymbol(name) {
     assert(enclosingClass.isInstanceOf[ClassSymbol], enclosingClass)
