@@ -444,64 +444,74 @@ class Enter {
     CompleterStats = {
     var steps = 0
     var missedDeps = 0
-    while (!completers.isEmpty) {
-      steps += 1
-      if (ctx.verbose)
-        println(s"Step $steps/${steps+completers.size-1}")
-      val completer = completers.remove()
-      if (!completer.isCompleted) {
-        val res = completer.complete()
-        if (res.isInstanceOf[IncompleteDependency]) {
-          missedDeps += 1
+    try {
+      while (!completers.isEmpty) {
+        steps += 1
+        if (ctx.verbose)
+          println(s"Step $steps/${steps + completers.size - 1}")
+        val completer = completers.remove()
+        if (ctx.verbose)
+          println(s"Trying to complete $completer")
+        if (!completer.isCompleted) {
+          val res = completer.complete()
+          if (ctx.verbose)
+            println(s"res = $res")
+          if (res.isInstanceOf[IncompleteDependency]) {
+            missedDeps += 1
+          }
+          res match {
+            case CompletedType(tpe: ClassInfoType) =>
+              val classSym = tpe.clsSym
+              classSym.info = tpe
+              if (!memberListOnly)
+                scheduleMembersCompletion(classSym)
+            case CompletedType(tpe: ModuleInfoType) =>
+              val modSym = tpe.modSym
+              modSym.info = tpe
+            case IncompleteDependency(sym: ClassSymbol) =>
+              assert(sym.completer != null, sym.name)
+              queueCompleter(sym.completer)
+              queueCompleter(completer)
+            case IncompleteDependency(sym: ModuleSymbol) =>
+              assert(sym.completer != null, sym.name)
+              queueCompleter(sym.completer)
+              queueCompleter(completer)
+            case IncompleteDependency(sym: ValDefSymbol) =>
+              queueCompleter(sym.completer)
+              queueCompleter(completer)
+            case IncompleteDependency(sym: DefDefSymbol) =>
+              queueCompleter(sym.completer)
+              queueCompleter(completer)
+            case IncompleteDependency(sym: PackageSymbol) =>
+              queueCompleter(sym.completer)
+              queueCompleter(completer)
+            case CompletedType(tpe: MethodInfoType) =>
+              val defDefSym = completer.sym.asInstanceOf[DefDefSymbol]
+              defDefSym.info = tpe
+            case CompletedType(tpe: ValInfoType) =>
+              val valDefSym = completer.sym.asInstanceOf[ValDefSymbol]
+              valDefSym.info = tpe
+            case CompletedType(tpe: PackageInfoType) =>
+              val pkgSym = completer.sym.asInstanceOf[PackageSymbol]
+              pkgSym.info = tpe
+            // error cases
+            case completed: CompletedType =>
+              sys.error(s"Unexpected completed type $completed returned by completer for ${completer.sym}")
+            case incomplete@IncompleteDependency(_: TypeDefSymbol) =>
+              throw new UnsupportedOperationException("TypeDef support is not implemented yet")
+            case incomplete@(IncompleteDependency(_: TypeParameterSymbol) | IncompleteDependency(NoSymbol) |
+                             IncompleteDependency(_: PackageSymbol)) =>
+              sys.error(s"Unexpected incomplete dependency $incomplete")
+            case NotFound =>
+              sys.error(s"The completer for ${completer.sym} finished with a missing dependency")
+          }
         }
-        res match {
-          case CompletedType(tpe: ClassInfoType) =>
-            val classSym = tpe.clsSym
-            classSym.info = tpe
-            if (!memberListOnly)
-              scheduleMembersCompletion(classSym)
-          case CompletedType(tpe: ModuleInfoType) =>
-            val modSym = tpe.modSym
-            modSym.info = tpe
-          case IncompleteDependency(sym: ClassSymbol) =>
-            assert(sym.completer != null, sym.name)
-            queueCompleter(sym.completer)
-            queueCompleter(completer)
-          case IncompleteDependency(sym: ModuleSymbol) =>
-            assert(sym.completer != null, sym.name)
-            queueCompleter(sym.completer)
-            queueCompleter(completer)
-          case IncompleteDependency(sym: ValDefSymbol) =>
-            queueCompleter(sym.completer)
-            queueCompleter(completer)
-          case IncompleteDependency(sym: DefDefSymbol) =>
-            completers.add(sym.completer)
-            completers.add(completer)
-          case IncompleteDependency(sym: PackageSymbol) =>
-            completers.add(sym.completer)
-            completers.add(completer)
-          case CompletedType(tpe: MethodInfoType) =>
-            val defDefSym = completer.sym.asInstanceOf[DefDefSymbol]
-            defDefSym.info = tpe
-          case CompletedType(tpe: ValInfoType) =>
-            val valDefSym = completer.sym.asInstanceOf[ValDefSymbol]
-            valDefSym.info = tpe
-          case CompletedType(tpe: PackageInfoType) =>
-            val pkgSym = completer.sym.asInstanceOf[PackageSymbol]
-            pkgSym.info = tpe
-          // error cases
-          case completed: CompletedType =>
-            sys.error(s"Unexpected completed type $completed returned by completer for ${completer.sym}")
-          case incomplete@IncompleteDependency(_: TypeDefSymbol) =>
-            throw new UnsupportedOperationException("TypeDef support is not implemented yet")
-          case incomplete@(IncompleteDependency(_: TypeParameterSymbol) | IncompleteDependency(NoSymbol) |
-                           IncompleteDependency(_: PackageSymbol)) =>
-            sys.error(s"Unexpected incomplete dependency $incomplete")
-          case NotFound =>
-            sys.error(s"The completer for ${completer.sym} finished with a missing dependency")
-        }
+        listener.thick(completers.size, steps)
       }
-      listener.thick(completers.size, steps)
+    } catch {
+      case ex: Exception =>
+        println(s"steps = $steps, missedDeps = $missedDeps")
+        throw ex
     }
     listener.allComplete()
     CompleterStats(steps, missedDeps)
