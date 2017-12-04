@@ -26,6 +26,8 @@ class DependenciesExtraction(topLevelOnly: Boolean) {
         walkSymbol(clsChild, clsChild)
       case modChild: ModuleSymbol =>
         walkSymbol(modChild, modChild.clsSym)
+      case _ =>
+        sys.error(s"Unexpected child of a package: $child")
     }
   }
 
@@ -72,6 +74,8 @@ class DependenciesExtraction(topLevelOnly: Boolean) {
       case typeDefSymbol: TypeDefSymbol =>
       // TODO: TypeDefSymbol support is not implemented yet: typeDefSymbol.info always returns NoType
         //walkType(typeDefSymbol.info, ownerClass)
+      case NoSymbol | _: PackageSymbol | _: TypeParameterSymbol =>
+        sys.error(s"Unexpected symbol encountered: $symbol")
     }
   }
   private def walkType(tpe: Type, ownerClass: ClassSymbol): Unit = tpe match {
@@ -101,5 +105,7 @@ class DependenciesExtraction(topLevelOnly: Boolean) {
     case clsSym: ClassSymbol => clsSym
     case typeDefSymbol: TypeDefSymbol => typeDefSymbol.enclosingClass.asInstanceOf[ClassSymbol]
     case typeParameterSymbol: TypeParameterSymbol => typeParameterSymbol.enclosingClass.asInstanceOf[ClassSymbol]
+    case _ =>
+      sys.error(s"Unexpected symbol encounatered: $sym")
   }
 }
