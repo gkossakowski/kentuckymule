@@ -1,7 +1,9 @@
 val common: Seq[Setting[_]] = Seq(
   organization := "gkk",
   scalaVersion := "2.12.3",
-  scalacOptions ++= List("-opt:l:inline",  "-opt-inline-from:**", "-Yopt-log-inline", "_", "-opt-warnings")
+  scalacOptions ++= List("-opt:l:inline",  "-opt-inline-from:**"),
+  // uncomment for detailed inliner logs
+  //scalacOptions ++= List("-Yopt-log-inline", "_", "-opt-warnings"),
 )
 
 val kentuckymule = project.
