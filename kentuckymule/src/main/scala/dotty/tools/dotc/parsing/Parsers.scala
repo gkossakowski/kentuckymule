@@ -840,9 +840,9 @@ object Parsers {
             otherArgs(NamedArg(name, typ()), namedTypeArg)
           case firstArg =>
             if (in.token == EQUALS) println(s"??? $firstArg")
-            otherArgs(firstArg, typ)
+            otherArgs(firstArg, () => typ)
         }
-      else commaSeparated(typ)
+      else commaSeparated(() => typ)
     }
 
     /** FunArgType ::=  Type | `=>' Type
@@ -1635,7 +1635,7 @@ object Parsers {
           TypeDef(name, hkparams, bounds).withMods(mods)
         }
       }
-      commaSeparated(typeParam)
+      commaSeparated(() => typeParam())
     }
 
     def typeParamClauseOpt(ownerKind: ParamOwner.Value): List[TypeDef] =
@@ -1706,7 +1706,7 @@ object Parsers {
             implicitOffset = in.skipToken()
             implicitFlag = Implicit
           }
-          commaSeparated(param)
+          commaSeparated(() => param())
         }
       }
       def clauses(): List[List[ValDef]] = {
