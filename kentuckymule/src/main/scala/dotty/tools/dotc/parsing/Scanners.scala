@@ -202,7 +202,10 @@ object Scanners {
       docsPerBlockStack match {
         case (list @ (x :: xs)) :: _ => {
           val c = closest(x, xs)
-          docsPerBlockStack = list.dropWhile(_ != c).tail :: docsPerBlockStack.tail
+          // TODO: the @noinline here is to silence an linliner warning:
+          // [warn] The callee scala/collection/immutable/List::dropWhile(Lscala/Function1;)Lscala/collection/immutable/List; contains the instruction INVOKESPECIAL scala/collection/immutable/List.loop$3 (Lscala/collection/immutable/List;Lscala/Function1;)Lscala/collection/immutable/List;
+          //  [warn] that would cause an IllegalAccessError when inlined into class dotty/tools/dotc/parsing/Scanners$Scanner.
+          docsPerBlockStack = (list.dropWhile(_ != c): @noinline).tail :: docsPerBlockStack.tail
           Some(c)
         }
         case _ => None

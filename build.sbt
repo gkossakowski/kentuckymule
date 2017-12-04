@@ -1,7 +1,7 @@
 val common: Seq[Setting[_]] = Seq(
   organization := "gkk",
   scalaVersion := "2.12.3",
-  scalacOptions ++= List("-opt:l:inline",  "-opt-inline-from:**", "-deprecation", "-feature"),
+  scalacOptions ++= List("-opt:l:inline",  "-opt-inline-from:**", "-opt-warnings", "-deprecation", "-feature"),
   // uncomment for detailed inliner logs
   //scalacOptions ++= List("-Yopt-log-inline", "_", "-opt-warnings"),
 )
