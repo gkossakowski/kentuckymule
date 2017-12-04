@@ -8,6 +8,7 @@ import kentuckymule.core.Types._, Contexts._
 
 /** Some creators for typed trees */
 object tpd extends Trees.Instance[Type] {
+  import scala.language.implicitConversions
   override implicit def modsDeco(mdef: MemberDef)(implicit ctx: Context): ModsDeco = ???
 
   override val cpy: TreeCopier = null
