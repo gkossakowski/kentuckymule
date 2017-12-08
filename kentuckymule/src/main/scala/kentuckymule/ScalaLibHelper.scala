@@ -4,11 +4,12 @@ import java.nio.file.{FileSystems, Files}
 
 import dotty.tools.dotc.core.Contexts.Context
 import kentuckymule.core.Enter
-import kentuckymule.core.Enter.{CompletedType, CompletionResult, PackageCompleter}
-import kentuckymule.core.Symbols.{ClassSymbol, PackageSymbol, StubClassSymbol}
+import kentuckymule.core.Enter.{CompletedType, CompletionResult, IncompleteDependency, PackageCompleter}
+import kentuckymule.core.Symbols.{ClassSymbol, ModuleSymbol, PackageSymbol, StubClassSymbol, StubModuleSymbol, Symbol}
 
 object ScalaLibHelper {
   import dotty.tools.dotc.core.Decorators._
+  import dotty.tools.dotc.core.NameOps._
   def enterStabSymbolsForScalaLib(implicit enter: Enter, ctx: Context): Unit = {
     // enter java.io
     val root = ctx.definitions.rootPackage
@@ -26,8 +27,14 @@ object ScalaLibHelper {
 
     // enter java.util.concurrent
     val javaUtilConcurrentPkg = enterStubPackage("concurrent", javaUtilPkg)
-    enterStubClasses(javaUtilConcurrentPkg, "ForkJoinPool", "ForkJoinWorkerThread", "ForkJoinTask", "Callable",
+    enterStubClasses(javaUtilConcurrentPkg, "ForkJoinWorkerThread", "ForkJoinTask", "Callable",
       "Executor", "ExecutorService", "ThreadFactory", "TimeUnit", "CountDownLatch")
+
+    // enter java.util.concurrent.ForkJoinPool and .ForkJoinWorkerThreadFactory
+    {
+      val forkJoinPoolCls = enterStubObject(javaUtilConcurrentPkg, "ForkJoinPool")
+      enterStubClass(forkJoinPoolCls, "ForkJoinWorkerThreadFactory")
+    }
 
     // enter java.util.concurrent.atomic
     val javaUtilConcurrentAtomicPkg = enterStubPackage("atomic", javaUtilConcurrentPkg)
@@ -68,12 +75,38 @@ object ScalaLibHelper {
     override def isCompleted: Boolean = false
   }
 
+  private class StubModuleCompleter(sym: ModuleSymbol) extends Enter.Completer(sym) {
+    override def complete()(implicit context: Context): CompletionResult = {
+      import kentuckymule.core.Types._
+      val clsInfo = if (sym.clsSym.isComplete)
+          sym.clsSym.info
+        else
+          return IncompleteDependency(sym)
+      Enter.CompletedType(new ModuleInfoType(sym, clsInfo))
+    }
+    override def isCompleted: Boolean = false
+  }
+
   private def enterStubClasses(pkg: PackageSymbol, classNames: String*)(implicit context: Context): Unit = {
     for (className <- classNames) {
-      val cls = new StubClassSymbol(className.toTypeName, pkg)
-      cls.completer = new StubClassCompleter(cls)
-      pkg.addChild(cls)
+      enterStubClass(pkg, className)
     }
+  }
+
+  private def enterStubClass(parent: Symbol, className: String)(implicit context: Context): StubClassSymbol = {
+    val cls = new StubClassSymbol(className.toTypeName, parent)
+    cls.completer = new StubClassCompleter(cls)
+    parent.addChild(cls)
+    cls
+  }
+
+  private def enterStubObject(parent: Symbol, objectName: String)(implicit context: Context): StubModuleSymbol = {
+    val modClsSym = new StubClassSymbol(objectName.toTypeName.moduleClassName, parent)
+    modClsSym.completer = new StubClassCompleter(modClsSym)
+    val modSym = new StubModuleSymbol(objectName.toTermName, modClsSym, parent)
+    modSym.completer = new StubModuleCompleter(modSym)
+    parent.addChild(modSym)
+    modSym
   }
 
   def scalaLibraryFiles(scalaLibDir: String): Array[String] = {

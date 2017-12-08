@@ -60,9 +60,9 @@ object Symbols {
     override def isComplete: Boolean = info != null
   }
   final class StubClassSymbol(name: Name, owner: Symbol) extends ClassSymbol(name, owner)
-  final case class ModuleSymbol(override val name: Name, clsSym: ClassSymbol, owner: Symbol) extends TermSymbol(name) {
+  sealed case class ModuleSymbol(override val name: Name, clsSym: ClassSymbol, owner: Symbol) extends TermSymbol(name) {
     var info: ModuleInfoType = _
-    var completer: ModuleCompleter = _
+    var completer: Completer = _
     def completeInfo()(implicit context: Context): CompletionResult = {
       completer.complete()
     }
@@ -73,6 +73,8 @@ object Symbols {
       clsSym.childrenIterator
     override def isComplete: Boolean = info != null
   }
+  final class StubModuleSymbol(name: Name, clsSym: StubClassSymbol, owner: Symbol) extends
+    ModuleSymbol(name, clsSym, owner)
   sealed case class ValDefSymbol(override val name: TermName) extends TermSymbol(name) {
     var info: ValInfoType = _
     var completer: ValDefCompleter = _
