@@ -38,7 +38,11 @@ object ScalaLibHelper {
 
     // enter java.util.concurrent.atomic
     val javaUtilConcurrentAtomicPkg = enterStubPackage("atomic", javaUtilConcurrentPkg)
-    enterStubClasses(javaUtilConcurrentAtomicPkg, "AtomicInteger")
+    enterStubClasses(javaUtilConcurrentAtomicPkg, "AtomicInteger", "AtomicReference")
+
+    // java.util.concurrent.locks
+    val javaUtilConcurrentLocksPkg = enterStubPackage("locks", javaUtilConcurrentPkg)
+    enterStubClasses(javaUtilConcurrentLocksPkg, "AbstractQueuedSynchronizer")
 
     // enter java.lang
     val javaLangPkg = enterStubPackage("lang", javaPkg)
