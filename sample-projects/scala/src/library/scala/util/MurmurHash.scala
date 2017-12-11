@@ -20,7 +20,8 @@ package util
  *  @since   2.9
  */
 
-import java.lang.Integer.{ rotateLeft => rotl }
+// TODO(gkk): uncomment once Integer members are added
+// import java.lang.Integer.{ rotateLeft => rotl }
 import scala.collection.Iterator
 
 /** A class designed to generate well-distributed non-cryptographic

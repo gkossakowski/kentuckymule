@@ -11,7 +11,8 @@ package scala
 package util
 
 import java.io.{ IOException, PrintWriter }
-import java.util.jar.Attributes.{ Name => AttributeName }
+// TODO(gkk): uncomment once jar package is added (non-essential, though)
+// import java.util.jar.Attributes.{ Name => AttributeName }
 
 /** Loads `library.properties` from the jar. */
 object Properties extends PropertiesTrait {

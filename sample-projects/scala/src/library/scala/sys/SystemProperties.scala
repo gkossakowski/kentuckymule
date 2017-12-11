@@ -11,7 +11,8 @@ package sys
 
 import scala.collection.{ mutable, Iterator }
 import scala.collection.JavaConverters._
-import java.security.AccessControlException
+// TODO(gkk): non-essential
+//import java.security.AccessControlException
 import scala.language.implicitConversions
 
 

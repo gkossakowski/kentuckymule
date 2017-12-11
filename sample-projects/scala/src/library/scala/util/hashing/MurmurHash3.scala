@@ -9,7 +9,8 @@
 package scala
 package util.hashing
 
-import java.lang.Integer.{ rotateLeft => rotl }
+// TODO(gkk): uncomment once Integer members are added
+// import java.lang.Integer.{ rotateLeft => rotl }
 
 private[hashing] class MurmurHash3 {
   /** Mix in a block of data into an intermediate hash value. */

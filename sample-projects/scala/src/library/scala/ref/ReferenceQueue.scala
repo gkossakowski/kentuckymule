@@ -15,7 +15,8 @@ package scala.ref
  */
 class ReferenceQueue[+T <: AnyRef] {
 
-  private[ref] val underlying: java.lang.ref.ReferenceQueue[_ <: T] = new java.lang.ref.ReferenceQueue[T]
+  // TODO: support type bounds and existential types
+  // private[ref] val underlying: java.lang.ref.ReferenceQueue[_ <: T] = new java.lang.ref.ReferenceQueue[T]
   override def toString = underlying.toString
 
   protected def Wrapper(jref: java.lang.ref.Reference[_]): Option[Reference[T]] =

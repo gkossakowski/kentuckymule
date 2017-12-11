@@ -8,7 +8,8 @@
 
 package scala
 
-import java.lang.System.{currentTimeMillis => currentTime}
+// TODO: add stub System class with a `currentTimeMillis` member
+//import java.lang.System.{currentTimeMillis => currentTime}
 import scala.collection.mutable.ListBuffer
 
 /** The `App` trait can be used to quickly turn objects

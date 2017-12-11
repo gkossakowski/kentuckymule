@@ -12,7 +12,8 @@ package scala
 package collection
 package mutable
 
-import java.lang.Integer.{numberOfLeadingZeros, rotateRight}
+// TODO(gkk): figure out what to do with some non-essential imports like one below
+// import java.lang.Integer.{numberOfLeadingZeros, rotateRight}
 import scala.util.hashing.byteswap32
 
 /** This class can be used to construct data structures that are based
