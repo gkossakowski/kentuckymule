@@ -117,7 +117,7 @@ class Enter {
       if (scalaPkg != NoSymbol) {
         if (!scalaPkg.isComplete)
           return IncompleteDependency(scalaPkg)
-        val sym = scalaPkg.lookup(name)
+        val sym = scalaPkg.info.lookup(name)
         if (sym == NoSymbol)
           NotFound
         else
