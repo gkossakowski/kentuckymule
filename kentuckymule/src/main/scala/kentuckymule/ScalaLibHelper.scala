@@ -15,25 +15,41 @@ object ScalaLibHelper {
     val root = ctx.definitions.rootPackage
     val javaPkg = enterStubPackage("java", root)
     val ioPkg = enterStubPackage("io", javaPkg)
-    enterStubClasses(ioPkg, "ByteArrayOutputStream", "OutputStreamWriter", "PrintStream", "IOException", "Writer")
+    enterStubClasses(ioPkg, "ByteArrayOutputStream", "OutputStreamWriter", "PrintStream", "IOException", "Writer",
+    "Serializable", "ObjectOutputStream", "ObjectInputStream", "File", "FileReader", "Reader", "PrintWriter",
+    "FileInputStream", "PrintStream", "Closeable", "InputStream", "PushbackReader", "BufferedReader",
+      "InputStreamReader", "OutputStream")
 
     // enter java.util
     val javaUtilPkg = enterStubPackage("util", javaPkg)
-    enterStubClasses(javaUtilPkg, "Collection")
+    enterStubClasses(javaUtilPkg, "Collection", "NoSuchElementException", "WeakHashMap", "Arrays",
+    "ConcurrentModificationException", "Enumeration", "Dictionary", "Properties", "Comparator", "Iterator", "List",
+    "Set", "Map", "AbstractCollection", "AbstractCollection", "AbstractList", "AbstractSet", "AbstractMap", "Properties",
+    "Random")
+
+    locally {
+      val javaUtilMapObj = enterStubObject(javaUtilPkg, "Map")
+      enterStubClass(javaUtilMapObj, "Entry")
+    }
 
     // enter java.util.regex
     val javaUtilRegexPkg = enterStubPackage("regex", javaUtilPkg)
-    enterStubClasses(javaUtilRegexPkg, "Pattern")
+    enterStubClasses(javaUtilRegexPkg, "Pattern", "Matcher")
 
     // enter java.util.concurrent
     val javaUtilConcurrentPkg = enterStubPackage("concurrent", javaUtilPkg)
     enterStubClasses(javaUtilConcurrentPkg, "ForkJoinWorkerThread", "ForkJoinTask", "Callable",
-      "Executor", "ExecutorService", "ThreadFactory", "TimeUnit", "CountDownLatch")
+      "Executor", "ExecutorService", "ThreadFactory", "TimeUnit", "CountDownLatch", "LinkedTransferQueue",
+      "RecursiveAction", "RecursiveTask", "ThreadLocalRandom", "ExecutionException", "CancellationException",
+      "TimeoutException", "ConcurrentMap")
 
     // enter java.util.concurrent.ForkJoinPool and .ForkJoinWorkerThreadFactory
     {
-      val forkJoinPoolCls = enterStubObject(javaUtilConcurrentPkg, "ForkJoinPool")
-      enterStubClass(forkJoinPoolCls, "ForkJoinWorkerThreadFactory")
+      // enter both ForkJoinClass and ForkJoin module (object)
+      enterStubClass(javaUtilConcurrentPkg, "ForkJoinPool")
+      val forkJoinPoolObj = enterStubObject(javaUtilConcurrentPkg, "ForkJoinPool")
+      enterStubClass(forkJoinPoolObj, "ForkJoinWorkerThreadFactory")
+      enterStubClass(forkJoinPoolObj, "ManagedBlocker")
     }
 
     // enter java.util.concurrent.atomic
@@ -42,24 +58,78 @@ object ScalaLibHelper {
 
     // java.util.concurrent.locks
     val javaUtilConcurrentLocksPkg = enterStubPackage("locks", javaUtilConcurrentPkg)
-    enterStubClasses(javaUtilConcurrentLocksPkg, "AbstractQueuedSynchronizer")
+    enterStubClasses(javaUtilConcurrentLocksPkg, "AbstractQueuedSynchronizer", "ReentrantReadWriteLock")
 
     // enter java.lang
     val javaLangPkg = enterStubPackage("lang", javaPkg)
-    enterStubClasses(javaLangPkg, "String", "CharSequence", "Class", "Throwable", "Runnable")
+    enterStubClasses(javaLangPkg, "String", "CharSequence", "Class", "Throwable", "Runnable", "Double", "Long",
+      "Integer", "Exception", "Error", "RuntimeException", "NullPointerException", "ClassCastException",
+      "IndexOutOfBoundsException", "ArrayIndexOutOfBoundsException", "StringIndexOutOfBoundsException",
+      "UnsupportedOperationException", "IllegalArgumentException", "NumberFormatException", "AbstractMethodError",
+      "InterruptedException", "System", "StringBuilder", "StackOverflowError", "Cloneable", "InheritableThreadLocal",
+      "Object", "ClassLoader", "Character", "Short", "Boolean", "Float", "Comparable", "Thread", "Byte",
+      "Iterable", "Runtime")
 
     // enter java.lang.ref
     val javaLangRefPkg = enterStubPackage("ref", javaLangPkg)
-    enterStubClasses(javaLangRefPkg, "PhantomReference")
+    enterStubClasses(javaLangRefPkg, "PhantomReference", "WeakReference", "SoftReference", "ReferenceQueue",
+      "Reference")
+
+    // enter java.lang.reflect
+    val javaLangReflectPkg = enterStubPackage("reflect", javaLangPkg)
+    enterStubClasses(javaLangReflectPkg, "AccessibleObject", "Method", "Field")
+
+    // enter java.lang.invoke
+    val javaLangInvoke = enterStubPackage("invoke", javaLangPkg)
+    locally {
+      enterStubClasses(javaLangInvoke, "SerializedLambda")
+      val methodHandlesObj = enterStubObject(javaLangInvoke, "MethodHandles")
+      enterStubClass(methodHandlesObj, "Lookup")
+    }
+
 
     // enter java.beans
     val javaBeansPkg = enterStubPackage("beans", javaPkg)
-    enterStubClasses(javaBeansPkg, "Introspector")
+    enterStubClasses(javaBeansPkg, "Introspector", "SimpleBeanInfo")
+
+    // enter java.text
+    val javaTextPkg = enterStubPackage("text", javaPkg)
+    enterStubClasses(javaTextPkg, "MessageFormat")
+
+    // enter java.net
+    val javaNetPkg = enterStubPackage("net", javaPkg)
+    enterStubClasses(javaNetPkg, "URI", "URL")
+
+    // enter java.nio
+    val javaNioPkg = enterStubPackage("nio", javaPkg)
+
+    // enter java.nio.charset
+    val javaNioCharsetPkg = enterStubPackage("charset", javaNioPkg)
+    enterStubClasses(javaNioCharsetPkg, "Charset", "CharsetDecoder", "CharsetEncoder", "CharacterCodingException",
+      "CodingErrorAction")
+
+    // enter java.math
+    val javaMathPkg = enterStubPackage("math", javaPkg)
+    enterStubClasses(javaMathPkg, "MathContext", "BigDecimal", "RoundingMode", "BigInteger")
 
     // enter scala
     val scalaPkg = enterStubPackage("scala", root)
 
-    enterStubClasses(scalaPkg, "Any", "AnyRef", "Nothing", "Unit")
+    enterStubClasses(scalaPkg, "Any", "AnyRef", "Nothing", "Unit", "Null")
+
+    // enter scala.runtime
+    val scalaRuntimePkg = enterStubPackage("runtime", scalaPkg)
+    enterStubClasses(scalaRuntimePkg, "BoxedUnit")
+
+    // enter scala.math
+    val scalaMathPkg = enterStubPackage("math", scalaPkg)
+    enterStubClasses(scalaMathPkg, "ScalaNumber")
+
+    // enter scala.collection.concurrent
+    val scalaCollectionPkg = enterStubPackage("collection", scalaPkg)
+    val scalaConcurrentPkg = enterStubPackage("concurrent", scalaCollectionPkg)
+    enterStubClasses(scalaConcurrentPkg, "BasicNode", "INodeBase", "MainNode", "CNodeBase", "Gen")
+    enterStubObject(scalaConcurrentPkg, "INodeBase")
   }
 
   def enterStubPackage(name: String, owner: PackageSymbol)(implicit enter: Enter, context: Context): PackageSymbol = {
