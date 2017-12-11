@@ -104,7 +104,7 @@ self =>
  * `map` cannot do its work and maintain a pointer into the original indexed sequence.
  */
 object IndexedSeqView {
-  type Coll = TraversableView[_, C] forSome {type C <: Traversable[_]}
+  type Coll = TraversableView[_, _ <: Traversable[_]]
   implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, SeqView[A, Seq[_]]] =
     new CanBuildFrom[Coll, A, SeqView[A, Seq[_]]] {
       def apply(from: Coll) = new NoBuilder
