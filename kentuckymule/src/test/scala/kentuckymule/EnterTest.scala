@@ -5,7 +5,7 @@ import dotc.core.Contexts.{Context, ContextBase}
 import dotc.core.StdNames
 import dotc.{CompilationUnit, parsing}
 import kentuckymule.core.Enter
-import kentuckymule.core.Enter.TemplateMemberListCompleter
+import kentuckymule.core.TemplateMemberListCompleter
 import kentuckymule.core.{LookedupSymbol, NotFound}
 import kentuckymule.core.Symbols._
 import kentuckymule.core.Types._

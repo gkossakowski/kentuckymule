@@ -5,8 +5,9 @@ import java.nio.file.{FileSystems, Files}
 import dotty.tools.dotc.core.Contexts.Context
 import kentuckymule.core.Enter
 import kentuckymule.core.{CompletedType, CompletionResult, IncompleteDependency}
-import kentuckymule.core.Enter.PackageCompleter
+import kentuckymule.core.PackageCompleter
 import kentuckymule.core.Symbols.{ClassSymbol, ModuleSymbol, PackageSymbol, StubClassSymbol, StubModuleSymbol, Symbol}
+import kentuckymule.core.Completer
 
 object ScalaLibHelper {
   import dotty.tools.dotc.core.Decorators._
@@ -142,7 +143,7 @@ object ScalaLibHelper {
     pkgSym
   }
 
-  private class StubClassCompleter(sym: ClassSymbol) extends Enter.Completer(sym) {
+  private class StubClassCompleter(sym: ClassSymbol) extends Completer(sym) {
     override def complete()(implicit context: Context): CompletionResult = {
       import kentuckymule.core.Types._
       CompletedType(new ClassInfoType(sym, Nil))
@@ -150,7 +151,7 @@ object ScalaLibHelper {
     override def isCompleted: Boolean = false
   }
 
-  private class StubModuleCompleter(sym: ModuleSymbol) extends Enter.Completer(sym) {
+  private class StubModuleCompleter(sym: ModuleSymbol) extends Completer(sym) {
     override def complete()(implicit context: Context): CompletionResult = {
       import kentuckymule.core.Types._
       val clsInfo = if (sym.clsSym.isComplete)
