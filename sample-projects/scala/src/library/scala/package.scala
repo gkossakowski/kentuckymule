@@ -75,7 +75,8 @@ package object scala {
   val StringBuilder = scala.collection.mutable.StringBuilder
 
   type Range = scala.collection.immutable.Range
-  val Range = scala.collection.immutable.Range
+  // TODO: can we do something about not being forced to hand-annotate these?
+  val Range: scala.collection.immutable.Range.type = scala.collection.immutable.Range
 
   // Numeric types which were moved into scala.math.*
 
