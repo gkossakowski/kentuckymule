@@ -1006,6 +1006,9 @@ object Enter {
         }
         case other => other
       }
+    case Annotated(_, arg) => resolveTypeTree(arg, parentLookupScope)
+    // TODO: refinements are simply dropped at the moment
+    case RefinedTypeTree(tpt, _) => resolveTypeTree(tpt, parentLookupScope)
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)
