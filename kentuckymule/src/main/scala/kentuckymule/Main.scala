@@ -4,8 +4,8 @@ import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
 import kentuckymule.core.Symbols.{ClassSymbol, Symbol}
 import dotty.tools.dotc.util.{NoSource, SourceFile}
 import dotty.tools.dotc.{CompilationUnit, parsing}
-import kentuckymule.core.Enter.CompleterStats
-import kentuckymule.core.{DependenciesExtraction, Enter}
+import kentuckymule.core.CompletersQueue.{CompleterStats, JobQueueProgressListener, NopJobQueueProgressListener}
+import kentuckymule.core.{CompletersQueue, DependenciesExtraction, Enter}
 
 import scala.reflect.io.PlainFile
 
@@ -55,7 +55,7 @@ object Main {
     val totalSize = countSymbols(ctx)
   }
 
-  def processScalap(implicit context: Context): Enter.CompleterStats = {
+  def processScalap(implicit context: Context): CompleterStats = {
     import java.nio.file.Paths
     println("Calculating outline types for scalap sources...")
     val projectDir = Paths.get(".").toAbsolutePath.toString
@@ -66,13 +66,14 @@ object Main {
       unit.untpdTree = parser.parse()
       unit
     }
-    val enter = new Enter
-    ScalapHelper.enterStabSymbolsForScalap(enter)(context)
+    val completersQueue = new CompletersQueue
+    val enter = new Enter(completersQueue)
+    ScalapHelper.enterStabSymbolsForScalap(completersQueue, enter)(context)
     for (compilationUnit <- compilationUnits)
       enter.enterCompilationUnit(compilationUnit)(context)
 
-    val progressListener = if (context.verbose) Enter.NopJobQueueProgressListener else new ProgressBarListener
-    val jobsNumber = enter.processJobQueue(memberListOnly = false, progressListener)(context)
+    val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
+    val jobsNumber = completersQueue.processJobQueue(memberListOnly = false, progressListener)(context)
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()
     import scala.collection.JavaConverters._
@@ -95,7 +96,7 @@ object Main {
     jobsNumber
   }
 
-  def processScalaLib(implicit context: Context): Enter.CompleterStats = {
+  def processScalaLib(implicit context: Context): CompleterStats = {
     import java.nio.file.Paths
     println("Calculating outline types for scala library sources...")
     val scalaLibDir = Paths.get("./sample-projects/scala/src/library").toAbsolutePath.toString
@@ -106,13 +107,14 @@ object Main {
       unit.untpdTree = parser.parse()
       unit
     }
-    val enter = new Enter
-    ScalaLibHelper.enterStabSymbolsForScalaLib(enter, context)
+    val completersQueue = new CompletersQueue
+    val enter = new Enter(completersQueue)
+    ScalaLibHelper.enterStabSymbolsForScalaLib(completersQueue, enter, context)
     for (compilationUnit <- compilationUnits)
       enter.enterCompilationUnit(compilationUnit)(context)
 
-    val progressListener = if (context.verbose) Enter.NopJobQueueProgressListener else new ProgressBarListener
-    val jobsNumber = enter.processJobQueue(memberListOnly = false, progressListener)(context)
+    val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
+    val jobsNumber = completersQueue.processJobQueue(memberListOnly = false, progressListener)(context)
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()
     import scala.collection.JavaConverters._
@@ -135,7 +137,7 @@ object Main {
     jobsNumber
   }
 
-  class ProgressBarListener extends Enter.JobQueueProgressListener {
+  class ProgressBarListener extends JobQueueProgressListener {
     val progressBar = new ProgressBar(1)
     override def thick(queueSize: Int, completed: Int): Unit = {
       progressBar.total = queueSize + completed

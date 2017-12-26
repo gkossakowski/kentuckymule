@@ -18,19 +18,10 @@ import CollectionUtils._
 /**
   * Creates symbols for declarations and enters them into a symbol table.
   */
-class Enter {
+class Enter(completersQueue: CompletersQueue) {
 
   import Enter._
   import ast.untpd._
-
-  val completers: util.Deque[Completer] = new util.ArrayDeque[Completer]()
-
-  def queueCompleter(completer: Completer, pushToTheEnd: Boolean = true): Unit = {
-    if (pushToTheEnd)
-      completers.add(completer)
-    else
-      completers.addFirst(completer)
-  }
 
   class ClassSignatureLookupScope(classSym: ClassSymbol, parentScope: LookupScope) extends LookupScope {
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
@@ -362,12 +353,12 @@ class Enter {
       modOwner.addChild(modSym)
       locally {
         val completer = new TemplateMemberListCompleter(modClsSym, tmpl, lookupScopeContext.parentScope)
-        queueCompleter(completer, pushToTheEnd = !isPackageObject)
+        completersQueue.queueCompleter(completer, pushToTheEnd = !isPackageObject)
         modClsSym.completer = completer
       }
       locally {
         val completer = new ModuleCompleter(modSym)
-        queueCompleter(completer, pushToTheEnd = !isPackageObject)
+        completersQueue.queueCompleter(completer, pushToTheEnd = !isPackageObject)
         modSym.completer = completer
       }
       for (stat <- tmpl.body) enterTree(stat, modClsSym, lookupScopeContext)
@@ -400,7 +391,7 @@ class Enter {
 
       val lookupScopeContext = classSignatureLookupScopeContext.pushClassLookupScope(classSym)
       val completer = new TemplateMemberListCompleter(classSym, tmpl, lookupScopeContext.parentScope)
-      queueCompleter(completer)
+      completersQueue.queueCompleter(completer)
       classSym.completer = completer
       for (stat <- tmpl.body) enterTree(stat, classSym, lookupScopeContext)
     // type member (with bounds)
@@ -409,7 +400,7 @@ class Enter {
       // TODO: add support for type members with bounds
       val completer = new StubTypeDefCompleter(typeDefSymbol)
       typeDefSymbol.completer = completer
-      queueCompleter(completer)
+      completersQueue.queueCompleter(completer)
       owner.addChild(typeDefSymbol)
     case td@TypeDef(name, rhs) if !rhs.isEmpty =>
       val typeDefSymbol = TypeDefSymbol(name, owner)
@@ -421,7 +412,7 @@ class Enter {
       val completer =
         new TypeAliasCompleter(typeDefSymbol, td, rhsLookupScope)
       typeDefSymbol.completer = completer
-      queueCompleter(completer)
+      completersQueue.queueCompleter(completer)
       owner.addChild(typeDefSymbol)
     case t@ValDef(name, _, _) =>
       val valSym = ValDefSymbol(name)
@@ -531,108 +522,9 @@ class Enter {
         val pkgSym = PackageSymbol(name)
         val pkgCompleter = new PackageCompleter(pkgSym)
         pkgSym.completer = pkgCompleter
-        queueCompleter(pkgCompleter, pushToTheEnd = false)
+        completersQueue.queueCompleter(pkgCompleter, pushToTheEnd = false)
         resolvedOwner.addChild(pkgSym)
         pkgSym
-    }
-  }
-
-  def processJobQueue(memberListOnly: Boolean,
-                      listener: JobQueueProgressListener = NopJobQueueProgressListener)(implicit ctx: Context):
-    CompleterStats = {
-    var steps = 0
-    var missedDeps = 0
-    try {
-      while (!completers.isEmpty) {
-        steps += 1
-        if (ctx.verbose)
-          println(s"Step $steps/${steps + completers.size - 1}")
-        val completer = completers.remove()
-        if (ctx.verbose)
-          println(s"Trying to complete $completer")
-        if (!completer.isCompleted) {
-          val res = completer.complete()
-          if (ctx.verbose)
-            println(s"res = $res")
-          if (res.isInstanceOf[IncompleteDependency]) {
-            missedDeps += 1
-          }
-          res match {
-            case CompletedType(tpe: ClassInfoType) =>
-              val classSym = tpe.clsSym
-              classSym.info = tpe
-              if (!memberListOnly)
-                scheduleMembersCompletion(classSym)
-            case CompletedType(tpe: ModuleInfoType) =>
-              val modSym = tpe.modSym
-              modSym.info = tpe
-            case IncompleteDependency(sym: ClassSymbol) =>
-              assert(sym.completer != null, sym.name)
-              queueCompleter(sym.completer)
-              queueCompleter(completer)
-            case IncompleteDependency(sym: ModuleSymbol) =>
-              assert(sym.completer != null, sym.name)
-              queueCompleter(sym.completer)
-              queueCompleter(completer)
-            case IncompleteDependency(sym: ValDefSymbol) =>
-              queueCompleter(sym.completer)
-              queueCompleter(completer)
-            case IncompleteDependency(sym: DefDefSymbol) =>
-              queueCompleter(sym.completer)
-              queueCompleter(completer)
-            case IncompleteDependency(sym: PackageSymbol) =>
-              queueCompleter(sym.completer)
-              queueCompleter(completer)
-            case IncompleteDependency(sym: TypeDefSymbol) =>
-              queueCompleter(sym.completer)
-              queueCompleter(completer)
-            case CompletedType(tpe: MethodInfoType) =>
-              val defDefSym = completer.sym.asInstanceOf[DefDefSymbol]
-              defDefSym.info = tpe
-            case CompletedType(tpe: ValInfoType) =>
-              val valDefSym = completer.sym.asInstanceOf[ValDefSymbol]
-              valDefSym.info = tpe
-            case CompletedType(tpe: PackageInfoType) =>
-              val pkgSym = completer.sym.asInstanceOf[PackageSymbol]
-              pkgSym.info = tpe
-            case CompletedType(tpe: TypeAliasInfoType) =>
-              val typeDefSym = completer.sym.asInstanceOf[TypeDefSymbol]
-              typeDefSym.info = tpe
-            // TODO: remove special treatment of StubTypeDefCompleter once poly type aliases are implemented
-            case CompletedType(NoType) if completer.isInstanceOf[StubTypeDefCompleter] =>
-              val typeDefSym = completer.sym.asInstanceOf[TypeDefSymbol]
-              typeDefSym.info = NoType
-            // error cases
-            case completed: CompletedType =>
-              sys.error(s"Unexpected completed type $completed returned by completer for ${completer.sym}")
-            case incomplete@(IncompleteDependency(_: TypeParameterSymbol) | IncompleteDependency(NoSymbol) |
-                             IncompleteDependency(_: PackageSymbol)) =>
-              sys.error(s"Unexpected incomplete dependency $incomplete")
-            case NotFound =>
-              sys.error(s"The completer for ${completer.sym} finished with a missing dependency")
-          }
-        }
-        listener.thick(completers.size, steps)
-      }
-    } catch {
-      case ex: Exception =>
-        println(s"steps = $steps, missedDeps = $missedDeps")
-        throw ex
-    }
-    listener.allComplete()
-    CompleterStats(steps, missedDeps)
-  }
-
-  private def scheduleMembersCompletion(sym: ClassSymbol)(implicit ctx: Context): Unit = {
-    sym.decls.toList foreach {
-      case defSym: DefDefSymbol => queueCompleter(defSym.completer)
-      case valSym: ValDefSymbol => queueCompleter(valSym.completer)
-      case _: ClassSymbol | _: ModuleSymbol =>
-      case decl@(_: TypeDefSymbol) =>
-        if (ctx.verbose)
-          println(s"Ignoring type def $decl in ${sym.name}")
-      case decl@(_: TypeParameterSymbol | _: PackageSymbol | NoSymbol) =>
-        sys.error(s"Unexpected class declaration: $decl")
     }
   }
 
@@ -646,8 +538,6 @@ object Enter {
     def enclosingClass: LookupAnswer
     def addImports(imports: ImportsLookup): LookupScope
   }
-
-  case class CompleterStats(processedJobs: Int, dependencyMisses: Int)
 
   private class ImportCompleter(val importNode: Import) {
 
@@ -803,15 +693,6 @@ object Enter {
       }
       NotFound
     }
-  }
-
-  trait JobQueueProgressListener {
-    def thick(queueSize: Int, completed: Int): Unit
-    def allComplete(): Unit
-  }
-  object NopJobQueueProgressListener extends JobQueueProgressListener {
-    override def thick(queueSize: Int, completed: Int): Unit = ()
-    override def allComplete(): Unit = ()
   }
 
   @inline final private def mapCompleteAnswer(ans: LookupAnswer)(f: Symbol => Symbol): LookupAnswer = {

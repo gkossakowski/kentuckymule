@@ -3,16 +3,13 @@ package kentuckymule
 import java.nio.file.{FileSystems, Files}
 
 import dotty.tools.dotc.core.Contexts.Context
-import kentuckymule.core.Enter
-import kentuckymule.core.{CompletedType, CompletionResult, IncompleteDependency}
-import kentuckymule.core.PackageCompleter
+import kentuckymule.core._
 import kentuckymule.core.Symbols.{ClassSymbol, ModuleSymbol, PackageSymbol, StubClassSymbol, StubModuleSymbol, Symbol}
-import kentuckymule.core.Completer
 
 object ScalaLibHelper {
   import dotty.tools.dotc.core.Decorators._
   import dotty.tools.dotc.core.NameOps._
-  def enterStabSymbolsForScalaLib(implicit enter: Enter, ctx: Context): Unit = {
+  def enterStabSymbolsForScalaLib(implicit completersQueue: CompletersQueue, enter: Enter, ctx: Context): Unit = {
     // enter java.io
     val root = ctx.definitions.rootPackage
     val javaPkg = enterStubPackage("java", root)
@@ -134,11 +131,12 @@ object ScalaLibHelper {
     enterStubObject(scalaConcurrentPkg, "INodeBase")
   }
 
-  def enterStubPackage(name: String, owner: PackageSymbol)(implicit enter: Enter, context: Context): PackageSymbol = {
+  def enterStubPackage(name: String, owner: PackageSymbol)(implicit completersQueue: CompletersQueue,
+                                                           enter: Enter, context: Context): PackageSymbol = {
     val pkgSym = PackageSymbol(name.toTermName)
     val pkgCompleter = new PackageCompleter(pkgSym)
     pkgSym.completer = pkgCompleter
-    enter.queueCompleter(pkgCompleter, pushToTheEnd = false)
+    completersQueue.queueCompleter(pkgCompleter, pushToTheEnd = false)
     owner.addChild(pkgSym)
     pkgSym
   }
