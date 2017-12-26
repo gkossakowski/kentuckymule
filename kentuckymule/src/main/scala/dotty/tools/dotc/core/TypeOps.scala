@@ -2,7 +2,7 @@ package dotty.tools.dotc.core
 
 import java.util
 
-import kentuckymule.core.Enter.{CompletionResult, IncompleteDependency}
+import kentuckymule.core.IncompleteDependency
 import kentuckymule.core.Symbols._
 import kentuckymule.core.Types._
 

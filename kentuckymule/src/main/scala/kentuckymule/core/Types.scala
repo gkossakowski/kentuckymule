@@ -4,7 +4,6 @@ import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.core.Names.Name
 import dotty.tools.dotc.core.Scopes._
 import dotty.tools.sharable
-import kentuckymule.core.Enter.LookedupSymbol
 import kentuckymule.core.Symbols._
 
 import scala.collection.mutable

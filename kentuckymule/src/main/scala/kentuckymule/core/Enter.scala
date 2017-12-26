@@ -640,15 +640,6 @@ class Enter {
 object Enter {
   import ast.untpd._
 
-  sealed trait LookupAnswer
-  case class LookedupSymbol(sym: Symbol) extends LookupAnswer
-  case object NotFound extends LookupAnswer with CompletionResult
-
-  sealed trait CompletionResult
-  case class CompletedType(tpe: Type) extends CompletionResult
-
-  case class IncompleteDependency(sym: Symbol) extends LookupAnswer with CompletionResult
-
   abstract class LookupScope {
     def lookup(name: Name)(implicit context: Context): LookupAnswer
     def enclosingClass: LookupAnswer

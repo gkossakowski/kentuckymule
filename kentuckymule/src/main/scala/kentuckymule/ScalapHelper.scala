@@ -3,9 +3,9 @@ package kentuckymule
 import java.nio.file.{FileSystems, Files}
 
 import dotty.tools.dotc.core.Contexts.Context
-import kentuckymule.core.Enter
+import kentuckymule.core.{CompletedType, CompletionResult, Enter}
 import kentuckymule.core.Symbols.{ClassSymbol, PackageSymbol, StubClassSymbol, Symbol}
-import Enter.{CompletionResult, PackageCompleter}
+import kentuckymule.core.Enter.PackageCompleter
 
 object ScalapHelper {
   import dotty.tools.dotc.core.Decorators._
@@ -111,7 +111,7 @@ object ScalapHelper {
   private class StubClassCompleter(sym: ClassSymbol) extends Enter.Completer(sym) {
     override def complete()(implicit context: Context): CompletionResult = {
       import kentuckymule.core.Types._
-      Enter.CompletedType(new ClassInfoType(sym, Nil))
+      CompletedType(new ClassInfoType(sym, Nil))
     }
     override def isCompleted: Boolean = false
   }

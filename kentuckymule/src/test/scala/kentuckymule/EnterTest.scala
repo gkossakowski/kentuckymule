@@ -5,7 +5,8 @@ import dotc.core.Contexts.{Context, ContextBase}
 import dotc.core.StdNames
 import dotc.{CompilationUnit, parsing}
 import kentuckymule.core.Enter
-import kentuckymule.core.Enter.{LookedupSymbol, NotFound, TemplateMemberListCompleter}
+import kentuckymule.core.Enter.TemplateMemberListCompleter
+import kentuckymule.core.{LookedupSymbol, NotFound}
 import kentuckymule.core.Symbols._
 import kentuckymule.core.Types._
 import dotc.core.IOUtils
@@ -75,7 +76,7 @@ object EnterTest extends TestSuite {
       enter.processJobQueue(memberListOnly = false)(ctx)
       val ylookupScope = ycompleter.lookupScope
       val ans = ylookupScope.lookup("B".toTypeName)(ctx)
-      assert(ans.isInstanceOf[Enter.LookedupSymbol])
+      assert(ans.isInstanceOf[LookedupSymbol])
     }
     'wildcardImport {
       val src = "object A { class B }; class X { import A._; class Y }"
@@ -87,7 +88,7 @@ object EnterTest extends TestSuite {
       enter.processJobQueue(memberListOnly = false)(ctx)
       val ylookupScope = ycompleter.lookupScope
       val ans = ylookupScope.lookup("B".toTypeName)(ctx)
-      assert(ans.isInstanceOf[Enter.LookedupSymbol])
+      assert(ans.isInstanceOf[LookedupSymbol])
     }
     'multipleImports {
       val src = "object A { class B1; class B2; }; class X { import A.{B1, B2}; class Y }"
@@ -100,11 +101,11 @@ object EnterTest extends TestSuite {
       val ylookupScope = ycompleter.lookupScope
       locally {
         val ans = ylookupScope.lookup("B1".toTypeName)(ctx)
-        assert(ans.isInstanceOf[Enter.LookedupSymbol])
+        assert(ans.isInstanceOf[LookedupSymbol])
       }
       locally {
         val ans = ylookupScope.lookup("B2".toTypeName)(ctx)
-        assert(ans.isInstanceOf[Enter.LookedupSymbol])
+        assert(ans.isInstanceOf[LookedupSymbol])
       }
     }
     'importFromVal {
@@ -154,12 +155,12 @@ object EnterTest extends TestSuite {
       val cDeflookupScope = cDefCompleter.lookupScope
       locally {
         val ans = cDeflookupScope.lookup("C".toTypeName)(ctx)
-        assert(ans.isInstanceOf[Enter.LookedupSymbol])
+        assert(ans.isInstanceOf[LookedupSymbol])
       }
       val bDeflookupScope = bDefCompleter.lookupScope
       locally {
         val ans = bDeflookupScope.lookup("B".toTypeName)(ctx)
-        assert(ans.isInstanceOf[Enter.LookedupSymbol])
+        assert(ans.isInstanceOf[LookedupSymbol])
       }
     }
     'memberPrecedenceOverImport {
@@ -251,7 +252,7 @@ object EnterTest extends TestSuite {
       enter.processJobQueue(memberListOnly = false)(ctx)
       val dLookupScope = dCompleter.lookupScope
       val ans = dLookupScope.lookup("C".toTypeName)(ctx)
-      assert(ans.isInstanceOf[Enter.LookedupSymbol])
+      assert(ans.isInstanceOf[LookedupSymbol])
     }
     'packageObjectInEmptyPackage {
       val src = "package object bar { class D }; package bar { class C }"
@@ -270,7 +271,7 @@ object EnterTest extends TestSuite {
       enter.processJobQueue(memberListOnly = false)(ctx)
       val dLookupScope = dCompleter.lookupScope
       val ans = dLookupScope.lookup("C".toTypeName)(ctx)
-      assert(ans.isInstanceOf[Enter.LookedupSymbol])
+      assert(ans.isInstanceOf[LookedupSymbol])
     }
     'predefAndScalaPackagePrecedence {
       val src =
