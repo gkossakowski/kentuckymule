@@ -35,6 +35,8 @@ object BigDecimal {
   object RoundingMode extends Enumeration {
     // Annoying boilerplate to ensure consistency with java.math.RoundingMode
     import java.math.{RoundingMode => RM}
+    // TODO(gkk): Value should be defined in Enumeration but it's a stub class at the moment
+    type Value
     type RoundingMode = Value
     val UP          = Value(RM.UP.ordinal)
     val DOWN        = Value(RM.DOWN.ordinal)
