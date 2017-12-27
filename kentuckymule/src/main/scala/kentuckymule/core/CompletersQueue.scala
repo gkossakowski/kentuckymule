@@ -4,19 +4,38 @@ import java.util
 
 import dotty.tools.dotc.core.Contexts.Context
 import kentuckymule.core.Symbols._
-import kentuckymule.core.Types.{ClassInfoType, MethodInfoType, ModuleInfoType, NoType, PackageInfoType, TypeAliasInfoType, ValInfoType}
+import kentuckymule.core.Types.{ClassInfoType, MethodInfoType, ModuleInfoType, NoType, PackageInfoType, TypeAliasInfoType, ValInfoType, Type}
 import CompletersQueue._
+
+import scala.collection.JavaConverters._
 
 class CompletersQueue {
 
-  val completers: util.Deque[Completer] = new util.ArrayDeque[Completer]()
+  def completers: Seq[Completer] = completionJobs.iterator().asScala.map(_.completer).toSeq
+
+  val completionJobs: util.Deque[CompletionJob] = new util.ArrayDeque[CompletionJob]()
+
+  class CompletionJob(val completer: Completer) {
+    assert(completer != null)
+  }
 
   def queueCompleter(completer: Completer, pushToTheEnd: Boolean = true): Unit = {
+    val completionJob = new CompletionJob(completer)
     if (pushToTheEnd)
-      completers.add(completer)
+      completionJobs.add(completionJob)
     else
-      completers.addFirst(completer)
+      completionJobs.addFirst(completionJob)
   }
+
+  def queueIncompleteDependencyJobs(attemptedCompletionJob: CompletionJob,
+                                    completionResult: IncompleteDependency): Unit = {
+    val incompleteSymbol = completionResult.sym
+    val completionJob = new CompletionJob(completer = incompleteSymbol.completer)
+    completionJobs.add(completionJob)
+    completionJobs.add(attemptedCompletionJob)
+  }
+
+  private val typeAssigner = Symbols.TypeAssigner
 
   def processJobQueue(memberListOnly: Boolean,
                       listener: JobQueueProgressListener = NopJobQueueProgressListener)(implicit ctx: Context):
@@ -24,76 +43,42 @@ class CompletersQueue {
     var steps = 0
     var missedDeps = 0
     try {
-      while (!completers.isEmpty) {
+      while (!completionJobs.isEmpty) {
         steps += 1
         if (ctx.verbose)
-          println(s"Step $steps/${steps + completers.size - 1}")
-        val completer = completers.remove()
+          println(s"Step $steps/${steps + completionJobs.size - 1}")
+        val completionJob = completionJobs.remove()
+        val completer = completionJob.completer
         if (ctx.verbose)
           println(s"Trying to complete $completer")
         if (!completer.isCompleted) {
           val res = completer.complete()
           if (ctx.verbose)
             println(s"res = $res")
-          if (res.isInstanceOf[IncompleteDependency]) {
-            missedDeps += 1
-          }
           res match {
             case CompletedType(tpe: ClassInfoType) =>
               val classSym = tpe.clsSym
               classSym.info = tpe
               if (!memberListOnly)
                 scheduleMembersCompletion(classSym)
-            case CompletedType(tpe: ModuleInfoType) =>
-              val modSym = tpe.modSym
-              modSym.info = tpe
-            case IncompleteDependency(sym: ClassSymbol) =>
-              assert(sym.completer != null, sym.name)
-              queueCompleter(sym.completer)
-              queueCompleter(completer)
-            case IncompleteDependency(sym: ModuleSymbol) =>
-              assert(sym.completer != null, sym.name)
-              queueCompleter(sym.completer)
-              queueCompleter(completer)
-            case IncompleteDependency(sym: ValDefSymbol) =>
-              queueCompleter(sym.completer)
-              queueCompleter(completer)
-            case IncompleteDependency(sym: DefDefSymbol) =>
-              queueCompleter(sym.completer)
-              queueCompleter(completer)
-            case IncompleteDependency(sym: PackageSymbol) =>
-              queueCompleter(sym.completer)
-              queueCompleter(completer)
-            case IncompleteDependency(sym: TypeDefSymbol) =>
-              queueCompleter(sym.completer)
-              queueCompleter(completer)
-            case CompletedType(tpe: MethodInfoType) =>
-              val defDefSym = completer.sym.asInstanceOf[DefDefSymbol]
-              defDefSym.info = tpe
-            case CompletedType(tpe: ValInfoType) =>
-              val valDefSym = completer.sym.asInstanceOf[ValDefSymbol]
-              valDefSym.info = tpe
-            case CompletedType(tpe: PackageInfoType) =>
-              val pkgSym = completer.sym.asInstanceOf[PackageSymbol]
-              pkgSym.info = tpe
-            case CompletedType(tpe: TypeAliasInfoType) =>
-              val typeDefSym = completer.sym.asInstanceOf[TypeDefSymbol]
-              typeDefSym.info = tpe
             // TODO: remove special treatment of StubTypeDefCompleter once poly type aliases are implemented
             case CompletedType(NoType) if completer.isInstanceOf[StubTypeDefCompleter] =>
               val typeDefSym = completer.sym.asInstanceOf[TypeDefSymbol]
               typeDefSym.info = NoType
+            case CompletedType(tpe: Type) =>
+              typeAssigner(completer.sym, tpe)
             // error cases
-            case completed: CompletedType =>
-              sys.error(s"Unexpected completed type $completed returned by completer for ${completer.sym}")
             case incomplete@(IncompleteDependency(_: TypeParameterSymbol) | IncompleteDependency(NoSymbol) |
                              IncompleteDependency(_: PackageSymbol)) =>
               sys.error(s"Unexpected incomplete dependency $incomplete")
+            case completionResult: IncompleteDependency =>
+              missedDeps += 1
+              queueIncompleteDependencyJobs(completionJob, completionResult)
             case NotFound =>
               sys.error(s"The completer for ${completer.sym} finished with a missing dependency")
           }
         }
-        listener.thick(completers.size, steps)
+        listener.thick(completionJobs.size, steps)
       }
     } catch {
       case ex: Exception =>

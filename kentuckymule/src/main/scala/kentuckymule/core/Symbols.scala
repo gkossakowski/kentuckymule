@@ -32,6 +32,33 @@ object Symbols {
 
     def isComplete: Boolean
     def decls: Scope = scope
+
+    def completer: Completer
+  }
+
+  // TODO: the global pattern match on symbols + casts is very ugly but it's done for performance reasons
+  // I tried to make TypeAssigner a Type => Unit function returned by Symbol
+  // each subclass of symbol would return its own assigner and thanks to virtual dispatch +
+  // path-dependent types, we can get rid of casts. However, this cost me 45ops/s (2.5% performance slow down)
+  object TypeAssigner extends ((Symbol, Type) => Unit) {
+    override def apply(symbol: Symbol, tpe: Type): Unit = {
+      symbol match {
+        case sym: PackageSymbol =>
+          sym.info = tpe
+        case sym: ClassSymbol =>
+          sym.info = tpe.asInstanceOf[ClassInfoType]
+        case sym: ModuleSymbol =>
+          sym.info = tpe.asInstanceOf[ModuleInfoType]
+        case sym: ValDefSymbol =>
+          sym.info = tpe.asInstanceOf[ValInfoType]
+        case sym: TypeDefSymbol =>
+          sym.info = tpe
+        case sym: DefDefSymbol =>
+          sym.info = tpe.asInstanceOf[MethodInfoType]
+        case sym =>
+          sys.error(s"Invalid symbol $sym")
+      }
+    }
   }
   abstract sealed class TermSymbol(name: Name) extends Symbol(name)
   abstract sealed class TypeSymbol(name: Name) extends Symbol(name)
@@ -101,6 +128,7 @@ object Symbols {
     assert(enclosingClass.isInstanceOf[ClassSymbol], enclosingClass)
     def info: Type = NoType
     override def isComplete: Boolean = info != null
+    override def completer: Completer = throw new UnsupportedOperationException("type parameters do not have type completers")
   }
   sealed case class DefDefSymbol(override val name: TermName) extends TermSymbol(name) {
     var info: MethodInfoType = _
@@ -125,5 +153,6 @@ object Symbols {
   object NoSymbol extends Symbol("<none>".toTermName) {
     def info: Type = NoType
     def isComplete: Boolean = true
+    override def completer: Completer = throw new UnsupportedOperationException("NoSymbol doesn't have type completer")
   }
 }

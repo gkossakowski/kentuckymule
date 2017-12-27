@@ -67,7 +67,7 @@ object EnterTest extends TestSuite {
     'resolveImport {
       val src = "object A { class B }; class X { import A.B; class Y }"
       val (completersQueue, enter) = enterToSymbolTable(ctx, src)
-      val templateCompleters = completersQueue.completers.asScala
+      val templateCompleters = completersQueue.completers
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
       }
@@ -79,7 +79,7 @@ object EnterTest extends TestSuite {
     'wildcardImport {
       val src = "object A { class B }; class X { import A._; class Y }"
       val (completersQueue, enter) = enterToSymbolTable(ctx, src)
-      val templateCompleters = completersQueue.completers.asScala
+      val templateCompleters = completersQueue.completers
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
       }
@@ -91,7 +91,7 @@ object EnterTest extends TestSuite {
     'multipleImports {
       val src = "object A { class B1; class B2; }; class X { import A.{B1, B2}; class Y }"
       val (completersQueue, enter) = enterToSymbolTable(ctx, src)
-      val templateCompleters = completersQueue.completers.asScala
+      val templateCompleters = completersQueue.completers
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
       }
@@ -206,7 +206,7 @@ object EnterTest extends TestSuite {
           |}
         """.stripMargin
       val (completersQueue, enter) = enterToSymbolTable(ctx, src)
-      val templateCompleters = completersQueue.completers.asScala
+      val templateCompleters = completersQueue.completers
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
       }
@@ -235,7 +235,7 @@ object EnterTest extends TestSuite {
     'packageObject {
       val src = "package foo; package object bar { class D }; package bar { class C }"
       val (completersQueue, enter) = enterToSymbolTable(ctx, src)
-      val templateCompleters = completersQueue.completers.asScala
+      val templateCompleters = completersQueue.completers
       val Some(dCompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "D".toTypeName => cp
       }
@@ -255,7 +255,7 @@ object EnterTest extends TestSuite {
     'packageObjectInEmptyPackage {
       val src = "package object bar { class D }; package bar { class C }"
       val (completersQueue, enter) = enterToSymbolTable(ctx, src)
-      val templateCompleters = completersQueue.completers.asScala
+      val templateCompleters = completersQueue.completers
       val Some(dCompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "D".toTypeName => cp
       }
@@ -284,7 +284,7 @@ object EnterTest extends TestSuite {
            |
         """.stripMargin
       val (completersQueue, enter) = enterToSymbolTable(ctx, src)
-      val templateCompleters = (completersQueue.completers.asScala collect {
+      val templateCompleters = (completersQueue.completers collect {
         case cp: TemplateMemberListCompleter => cp.clsSym.name.toString -> cp
       }).toMap
       completersQueue.processJobQueue(memberListOnly = false)(ctx)
@@ -324,7 +324,7 @@ object EnterTest extends TestSuite {
           |class C
         """.stripMargin
       val (completersQueue, enter) = enterToSymbolTable(ctx, src1, src2)
-      val templateCompleters = (completersQueue.completers.asScala collect {
+      val templateCompleters = (completersQueue.completers collect {
         case cp: TemplateMemberListCompleter => cp.clsSym.name.toString -> cp
       }).toMap
       completersQueue.processJobQueue(memberListOnly = false)(ctx)
