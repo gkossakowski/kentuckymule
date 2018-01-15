@@ -17,10 +17,14 @@ class JobQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy
 
   def queueCompleter(completer: Completer, pushToTheEnd: Boolean = true): Unit = {
     val completionJob = CompletionJob.createOrFetch(completer)
+    queueJob(completionJob, pushToTheEnd)
+  }
+
+  def queueJob(queueJob: QueueJob, pushToTheEnd: Boolean = true): Unit = {
     if (pushToTheEnd)
-      completionJobs.add(completionJob)
+      completionJobs.add(queueJob)
     else
-      completionJobs.addFirst(completionJob)
+      completionJobs.addFirst(queueJob)
   }
 
   def processJobQueue(memberListOnly: Boolean,
