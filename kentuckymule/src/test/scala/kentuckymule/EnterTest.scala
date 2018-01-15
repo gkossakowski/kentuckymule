@@ -11,6 +11,7 @@ import dotc.core.IOUtils
 import dotc.core.Decorators._
 import dotc.core.Names.Name
 import dotty.tools.dotc.core.TypeOps.AppliedTypeMemberDerivation
+import kentuckymule.queue.CompletersQueue
 import utest._
 
 object EnterTest extends TestSuite {

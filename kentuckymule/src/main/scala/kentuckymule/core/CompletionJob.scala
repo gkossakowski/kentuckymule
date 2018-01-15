@@ -5,6 +5,7 @@ import java.util
 import dotty.tools.dotc.core.Contexts.Context
 import kentuckymule.core.Symbols._
 import kentuckymule.core.Types.{ClassInfoType, NoType, Type}
+import kentuckymule.queue._
 
 object CompletionJob {
   val emptySpawnedJobs: util.ArrayList[QueueJob] = new util.ArrayList[QueueJob]()

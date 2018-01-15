@@ -7,7 +7,8 @@ import dotty.tools.dotc.{CompilationUnit, parsing}
 import dotty.tools.dotc.util.{NoSource, SourceFile}
 import kentuckymule.core.Symbols.ClassSymbol
 import kentuckymule.{ScalapHelper, TarjanSCC}
-import kentuckymule.core.{CompletersQueue, DependenciesExtraction, Enter}
+import kentuckymule.core.{DependenciesExtraction, Enter}
+import kentuckymule.queue.CompletersQueue
 import org.openjdk.jmh.annotations._
 
 import scala.reflect.io.PlainFile

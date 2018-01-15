@@ -1,9 +1,10 @@
-package kentuckymule.core
+package kentuckymule.queue
 
 import java.util
 
 import dotty.tools.dotc.core.Contexts.Context
-import CompletersQueue._
+import kentuckymule.core._
+import kentuckymule.queue.CompletersQueue._
 
 import scala.collection.JavaConverters._
 

@@ -5,6 +5,7 @@ import java.nio.file.{FileSystems, Files}
 import dotty.tools.dotc.core.Contexts.Context
 import kentuckymule.core._
 import kentuckymule.core.Symbols.{ClassSymbol, ModuleSymbol, PackageSymbol, StubClassSymbol, StubModuleSymbol, Symbol}
+import kentuckymule.queue.CompletersQueue
 
 object ScalaLibHelper {
   import dotty.tools.dotc.core.Decorators._

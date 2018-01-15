@@ -4,8 +4,9 @@ import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
 import kentuckymule.core.Symbols.{ClassSymbol, Symbol}
 import dotty.tools.dotc.util.{NoSource, SourceFile}
 import dotty.tools.dotc.{CompilationUnit, parsing}
-import kentuckymule.core.CompletersQueue.{CompleterStats, JobQueueProgressListener, NopJobQueueProgressListener}
-import kentuckymule.core.{CompletersQueue, DependenciesExtraction, Enter}
+import kentuckymule.core.{DependenciesExtraction, Enter}
+import kentuckymule.queue.CompletersQueue
+import kentuckymule.queue.CompletersQueue.{CompleterStats, JobQueueProgressListener, NopJobQueueProgressListener}
 
 import scala.reflect.io.PlainFile
 

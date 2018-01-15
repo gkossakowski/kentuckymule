@@ -14,6 +14,7 @@ import Types._
 import dotc.core.{Decorators, Flags, Scopes, TypeOps}
 import dotty.tools.dotc.core.TypeOps.AppliedTypeMemberDerivation
 import CollectionUtils._
+import kentuckymule.queue.CompletersQueue
 
 /**
   * Creates symbols for declarations and enters them into a symbol table.
