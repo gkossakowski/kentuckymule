@@ -8,7 +8,7 @@ import dotty.tools.dotc.util.{NoSource, SourceFile}
 import kentuckymule.core.Symbols.ClassSymbol
 import kentuckymule.{ScalapHelper, TarjanSCC}
 import kentuckymule.core.{DependenciesExtraction, Enter}
-import kentuckymule.queue.CompletersQueue
+import kentuckymule.queue.JobQueue
 import org.openjdk.jmh.annotations._
 
 import scala.reflect.io.PlainFile
@@ -46,14 +46,14 @@ object BenchmarkScalap {
     var enter: Enter = _
     @Setup(Level.Trial)
     def enterAndCompleteSymbols(bs: BenchmarkState, pts: ParsedTreeState): Unit = {
-      val completersQueue = new CompletersQueue
-      enter = new Enter(completersQueue)
+      val jobQueue = new JobQueue
+      enter = new Enter(jobQueue)
       val context = bs.context
       context.definitions.rootPackage.clear()
-      ScalapHelper.enterStabSymbolsForScalap(completersQueue, enter)(context)
+      ScalapHelper.enterStabSymbolsForScalap(jobQueue, enter)(context)
       for (compilationUnit <- pts.compilationUnits)
         enter.enterCompilationUnit(compilationUnit)(context)
-      completersQueue.processJobQueue(memberListOnly = false)(context)
+      jobQueue.processJobQueue(memberListOnly = false)(context)
     }
   }
 
@@ -77,8 +77,8 @@ class BenchmarkScalap {
   def enter(bs: BenchmarkState, pts: ParsedTreeState): Unit = {
     val context = bs.context
     context.definitions.rootPackage.clear()
-    val completersQueue = new CompletersQueue
-    val enter = new Enter(completersQueue)
+    val jobQueue = new JobQueue
+    val enter = new Enter(jobQueue)
     var i = 0
     while (i < pts.compilationUnits.length) {
       enter.enterCompilationUnit(pts.compilationUnits(i))(context)
@@ -93,15 +93,15 @@ class BenchmarkScalap {
   def completeMemberSigs(bs: BenchmarkState, pts: ParsedTreeState): Int = {
     val context = bs.context
     context.definitions.rootPackage.clear()
-    val completersQueue = new CompletersQueue
-    val enter = new Enter(completersQueue)
-    ScalapHelper.enterStabSymbolsForScalap(completersQueue, enter)(context)
+    val jobQueue = new JobQueue
+    val enter = new Enter(jobQueue)
+    ScalapHelper.enterStabSymbolsForScalap(jobQueue, enter)(context)
     var i = 0
     while (i < pts.compilationUnits.length) {
       enter.enterCompilationUnit(pts.compilationUnits(i))(context)
       i += 1
     }
-    completersQueue.processJobQueue(memberListOnly = false)(context).processedJobs
+    jobQueue.processJobQueue(memberListOnly = false)(context).processedJobs
   }
 
   @Benchmark
@@ -141,15 +141,15 @@ class BenchmarkScalap {
       }
 
     context.definitions.rootPackage.clear()
-    val completersQueue = new CompletersQueue
-    val enter = new Enter(completersQueue)
-    ScalapHelper.enterStabSymbolsForScalap(completersQueue, enter)(context)
+    val jobQueue = new JobQueue
+    val enter = new Enter(jobQueue)
+    ScalapHelper.enterStabSymbolsForScalap(jobQueue, enter)(context)
     var i = 0
     while (i < compilationUnits.length) {
       enter.enterCompilationUnit(compilationUnits(i))(context)
       i += 1
     }
-    completersQueue.processJobQueue(memberListOnly = false)(context).processedJobs
+    jobQueue.processJobQueue(memberListOnly = false)(context).processedJobs
   }
   @Benchmark
   @Warmup(iterations = 20)

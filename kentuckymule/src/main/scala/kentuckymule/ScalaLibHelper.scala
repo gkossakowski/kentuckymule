@@ -5,12 +5,12 @@ import java.nio.file.{FileSystems, Files}
 import dotty.tools.dotc.core.Contexts.Context
 import kentuckymule.core._
 import kentuckymule.core.Symbols.{ClassSymbol, ModuleSymbol, PackageSymbol, StubClassSymbol, StubModuleSymbol, Symbol}
-import kentuckymule.queue.CompletersQueue
+import kentuckymule.queue.JobQueue
 
 object ScalaLibHelper {
   import dotty.tools.dotc.core.Decorators._
   import dotty.tools.dotc.core.NameOps._
-  def enterStabSymbolsForScalaLib(implicit completersQueue: CompletersQueue, enter: Enter, ctx: Context): Unit = {
+  def enterStabSymbolsForScalaLib(implicit jobQueue: JobQueue, enter: Enter, ctx: Context): Unit = {
     // enter java.io
     val root = ctx.definitions.rootPackage
     val javaPkg = enterStubPackage("java", root)
@@ -132,12 +132,12 @@ object ScalaLibHelper {
     enterStubObject(scalaConcurrentPkg, "INodeBase")
   }
 
-  def enterStubPackage(name: String, owner: PackageSymbol)(implicit completersQueue: CompletersQueue,
+  def enterStubPackage(name: String, owner: PackageSymbol)(implicit jobQueue: JobQueue,
                                                            enter: Enter, context: Context): PackageSymbol = {
     val pkgSym = PackageSymbol(name.toTermName)
     val pkgCompleter = new PackageCompleter(pkgSym)
     pkgSym.completer = pkgCompleter
-    completersQueue.queueCompleter(pkgCompleter, pushToTheEnd = false)
+    jobQueue.queueCompleter(pkgCompleter, pushToTheEnd = false)
     owner.addChild(pkgSym)
     pkgSym
   }

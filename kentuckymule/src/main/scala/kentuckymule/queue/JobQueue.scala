@@ -4,11 +4,12 @@ import java.util
 
 import dotty.tools.dotc.core.Contexts.Context
 import kentuckymule.core._
-import kentuckymule.queue.CompletersQueue._
+import kentuckymule.queue.JobQueue._
+import kentuckymule.queue.QueueJob.{CompleteResult, IncompleteResult}
 
 import scala.collection.JavaConverters._
 
-class CompletersQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy) {
+class JobQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy) {
 
   def completers: Seq[Completer] = completionJobs.iterator().asScala.map(x => x.asInstanceOf[CompletionJob].completer).toSeq
 
@@ -102,7 +103,7 @@ class CompletersQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueS
 
 }
 
-object CompletersQueue {
+object JobQueue {
   case class CompleterStats(processedJobs: Int, dependencyMisses: Int)
 
   trait JobQueueProgressListener {

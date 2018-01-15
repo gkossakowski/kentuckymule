@@ -5,12 +5,12 @@ import java.nio.file.{FileSystems, Files}
 import dotty.tools.dotc.core.Contexts.Context
 import kentuckymule.core._
 import kentuckymule.core.Symbols.{ClassSymbol, PackageSymbol, StubClassSymbol, Symbol}
-import kentuckymule.queue.CompletersQueue
+import kentuckymule.queue.JobQueue
 
 object ScalapHelper {
   import dotty.tools.dotc.core.Decorators._
-  def enterStabSymbolsForScalap(completersQueue: CompletersQueue, enter: Enter)(implicit ctx: Context): Unit = {
-    implicit val completersQueueImplicitly = completersQueue
+  def enterStabSymbolsForScalap(jobQueue: JobQueue, enter: Enter)(implicit ctx: Context): Unit = {
+    implicit val jobQueueImplicitly = jobQueue
     implicit val enterImplicitly = enter
     // enter java.io
     val root = ctx.definitions.rootPackage
@@ -99,12 +99,12 @@ object ScalapHelper {
     enterStubClasses(languagePkg, "implicitConversions", "postfixOps")
   }
 
-  def enterStubPackage(name: String, owner: PackageSymbol)(implicit completersQueue: CompletersQueue,
+  def enterStubPackage(name: String, owner: PackageSymbol)(implicit jobQueue: JobQueue,
                                                            enter: Enter, context: Context): PackageSymbol = {
     val pkgSym = PackageSymbol(name.toTermName)
     val pkgCompleter = new PackageCompleter(pkgSym)
     pkgSym.completer = pkgCompleter
-    completersQueue.queueCompleter(pkgCompleter)
+    jobQueue.queueCompleter(pkgCompleter)
     owner.addChild(pkgSym)
 
     pkgSym

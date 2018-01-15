@@ -5,8 +5,8 @@ import kentuckymule.core.Symbols.{ClassSymbol, Symbol}
 import dotty.tools.dotc.util.{NoSource, SourceFile}
 import dotty.tools.dotc.{CompilationUnit, parsing}
 import kentuckymule.core.{DependenciesExtraction, Enter}
-import kentuckymule.queue.CompletersQueue
-import kentuckymule.queue.CompletersQueue.{CompleterStats, JobQueueProgressListener, NopJobQueueProgressListener}
+import kentuckymule.queue.JobQueue
+import kentuckymule.queue.JobQueue.{CompleterStats, JobQueueProgressListener, NopJobQueueProgressListener}
 
 import scala.reflect.io.PlainFile
 
@@ -67,14 +67,14 @@ object Main {
       unit.untpdTree = parser.parse()
       unit
     }
-    val completersQueue = new CompletersQueue
-    val enter = new Enter(completersQueue)
-    ScalapHelper.enterStabSymbolsForScalap(completersQueue, enter)(context)
+    val jobQueue = new JobQueue
+    val enter = new Enter(jobQueue)
+    ScalapHelper.enterStabSymbolsForScalap(jobQueue, enter)(context)
     for (compilationUnit <- compilationUnits)
       enter.enterCompilationUnit(compilationUnit)(context)
 
     val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
-    val jobsNumber = completersQueue.processJobQueue(memberListOnly = false, progressListener)(context)
+    val jobsNumber = jobQueue.processJobQueue(memberListOnly = false, progressListener)(context)
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()
     import scala.collection.JavaConverters._
@@ -108,14 +108,14 @@ object Main {
       unit.untpdTree = parser.parse()
       unit
     }
-    val completersQueue = new CompletersQueue
-    val enter = new Enter(completersQueue)
-    ScalaLibHelper.enterStabSymbolsForScalaLib(completersQueue, enter, context)
+    val jobQueue = new JobQueue
+    val enter = new Enter(jobQueue)
+    ScalaLibHelper.enterStabSymbolsForScalaLib(jobQueue, enter, context)
     for (compilationUnit <- compilationUnits)
       enter.enterCompilationUnit(compilationUnit)(context)
 
     val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
-    val jobsNumber = completersQueue.processJobQueue(memberListOnly = false, progressListener)(context)
+    val jobsNumber = jobQueue.processJobQueue(memberListOnly = false, progressListener)(context)
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()
     import scala.collection.JavaConverters._

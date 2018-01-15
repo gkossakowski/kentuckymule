@@ -14,12 +14,12 @@ import Types._
 import dotc.core.{Decorators, Flags, Scopes, TypeOps}
 import dotty.tools.dotc.core.TypeOps.AppliedTypeMemberDerivation
 import CollectionUtils._
-import kentuckymule.queue.CompletersQueue
+import kentuckymule.queue.JobQueue
 
 /**
   * Creates symbols for declarations and enters them into a symbol table.
   */
-class Enter(completersQueue: CompletersQueue) {
+class Enter(jobQueue: JobQueue) {
 
   import Enter._
   import ast.untpd._
@@ -354,12 +354,12 @@ class Enter(completersQueue: CompletersQueue) {
       modOwner.addChild(modSym)
       locally {
         val completer = new TemplateMemberListCompleter(modClsSym, tmpl, lookupScopeContext.parentScope)
-        completersQueue.queueCompleter(completer, pushToTheEnd = !isPackageObject)
+        jobQueue.queueCompleter(completer, pushToTheEnd = !isPackageObject)
         modClsSym.completer = completer
       }
       locally {
         val completer = new ModuleCompleter(modSym)
-        completersQueue.queueCompleter(completer, pushToTheEnd = !isPackageObject)
+        jobQueue.queueCompleter(completer, pushToTheEnd = !isPackageObject)
         modSym.completer = completer
       }
       for (stat <- tmpl.body) enterTree(stat, modClsSym, lookupScopeContext)
@@ -392,7 +392,7 @@ class Enter(completersQueue: CompletersQueue) {
 
       val lookupScopeContext = classSignatureLookupScopeContext.pushClassLookupScope(classSym)
       val completer = new TemplateMemberListCompleter(classSym, tmpl, lookupScopeContext.parentScope)
-      completersQueue.queueCompleter(completer)
+      jobQueue.queueCompleter(completer)
       classSym.completer = completer
       for (stat <- tmpl.body) enterTree(stat, classSym, lookupScopeContext)
     // type member (with bounds)
@@ -401,7 +401,7 @@ class Enter(completersQueue: CompletersQueue) {
       // TODO: add support for type members with bounds
       val completer = new StubTypeDefCompleter(typeDefSymbol)
       typeDefSymbol.completer = completer
-      completersQueue.queueCompleter(completer)
+      jobQueue.queueCompleter(completer)
       owner.addChild(typeDefSymbol)
     case td@TypeDef(name, rhs) if !rhs.isEmpty =>
       val typeDefSymbol = TypeDefSymbol(name, owner)
@@ -413,7 +413,7 @@ class Enter(completersQueue: CompletersQueue) {
       val completer =
         new TypeAliasCompleter(typeDefSymbol, td, rhsLookupScope)
       typeDefSymbol.completer = completer
-      completersQueue.queueCompleter(completer)
+      jobQueue.queueCompleter(completer)
       owner.addChild(typeDefSymbol)
     case t@ValDef(name, _, _) =>
       val valSym = ValDefSymbol(name)
@@ -523,7 +523,7 @@ class Enter(completersQueue: CompletersQueue) {
         val pkgSym = PackageSymbol(name)
         val pkgCompleter = new PackageCompleter(pkgSym)
         pkgSym.completer = pkgCompleter
-        completersQueue.queueCompleter(pkgCompleter, pushToTheEnd = false)
+        jobQueue.queueCompleter(pkgCompleter, pushToTheEnd = false)
         resolvedOwner.addChild(pkgSym)
         pkgSym
     }

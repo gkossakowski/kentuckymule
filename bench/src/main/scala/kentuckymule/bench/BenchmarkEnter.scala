@@ -4,7 +4,7 @@ import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
 import dotty.tools.dotc.{CompilationUnit, parsing}
 import dotty.tools.dotc.util.{NoSource, SourceFile}
 import kentuckymule.core.Enter
-import kentuckymule.queue.CompletersQueue
+import kentuckymule.queue.JobQueue
 import org.openjdk.jmh.annotations._
 
 import scala.reflect.io.PlainFile
@@ -38,8 +38,8 @@ object BenchmarkEnter {
     var enter: Enter = _
     @Setup(Level.Trial)
     def enterSymbols(bs: BenchmarkState, pts: ParsedTreeState): Unit = {
-      val completersQueue = new CompletersQueue
-      enter = new Enter(completersQueue)
+      val jobQueue = new JobQueue
+      enter = new Enter(jobQueue)
       val context = bs.context
       context.definitions.rootPackage.clear()
       enter.enterCompilationUnit(pts.compilationUnit)(context)
@@ -66,8 +66,8 @@ class BenchmarkEnter {
   def enter(bs: BenchmarkState, pts: ParsedTreeState): Unit = {
     val context = bs.context
     context.definitions.rootPackage.clear()
-    val completersQueue = new CompletersQueue
-    val enter = new Enter(completersQueue)
+    val jobQueue = new JobQueue
+    val enter = new Enter(jobQueue)
     enter.enterCompilationUnit(pts.compilationUnit)(context)
   }
 
@@ -78,10 +78,10 @@ class BenchmarkEnter {
   def completeMemberList(bs: BenchmarkState, pts: ParsedTreeState): Int = {
     val context = bs.context
     context.definitions.rootPackage.clear()
-    val completersQueue = new CompletersQueue
-    val enter = new Enter(completersQueue)
+    val jobQueue = new JobQueue
+    val enter = new Enter(jobQueue)
     enter.enterCompilationUnit(pts.compilationUnit)(context)
-    completersQueue.processJobQueue(memberListOnly = true)(context).processedJobs
+    jobQueue.processJobQueue(memberListOnly = true)(context).processedJobs
   }
 
   @Benchmark
@@ -91,9 +91,9 @@ class BenchmarkEnter {
   def completeMemberSigs(bs: BenchmarkState, pts: ParsedTreeState): Int = {
     val context = bs.context
     context.definitions.rootPackage.clear()
-    val completersQueue = new CompletersQueue
-    val enter = new Enter(completersQueue)
+    val jobQueue = new JobQueue
+    val enter = new Enter(jobQueue)
     enter.enterCompilationUnit(pts.compilationUnit)(context)
-    completersQueue.processJobQueue(memberListOnly = false)(context).processedJobs
+    jobQueue.processJobQueue(memberListOnly = false)(context).processedJobs
   }
 }
