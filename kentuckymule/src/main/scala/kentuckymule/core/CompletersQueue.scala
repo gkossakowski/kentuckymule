@@ -59,8 +59,14 @@ class CompletersQueue {
             case CompletedType(tpe: ClassInfoType) =>
               val classSym = tpe.clsSym
               classSym.info = tpe
-              if (!memberListOnly)
-                scheduleMembersCompletion(classSym)
+              if (!memberListOnly) {
+                val spawnedJobs = spawnMembersCompletionJobs(classSym)
+                var i = 0
+                while (i < spawnedJobs.size) {
+                  completionJobs.addLast(spawnedJobs.get(i))
+                  i = i + 1
+                }
+              }
             // TODO: remove special treatment of StubTypeDefCompleter once poly type aliases are implemented
             case CompletedType(NoType) if completer.isInstanceOf[StubTypeDefCompleter] =>
               val typeDefSym = completer.sym.asInstanceOf[TypeDefSymbol]
@@ -89,10 +95,11 @@ class CompletersQueue {
     CompleterStats(steps, missedDeps)
   }
 
-  private def scheduleMembersCompletion(sym: ClassSymbol)(implicit ctx: Context): Unit = {
+  private def spawnMembersCompletionJobs(sym: ClassSymbol)(implicit ctx: Context): util.ArrayList[CompletionJob] = {
+    val jobs = new util.ArrayList[CompletionJob](sym.decls.size)
     sym.decls.toList foreach {
-      case defSym: DefDefSymbol => queueCompleter(defSym.completer)
-      case valSym: ValDefSymbol => queueCompleter(valSym.completer)
+      case defSym: DefDefSymbol => jobs.add(new CompletionJob(defSym.completer))
+      case valSym: ValDefSymbol => jobs.add(new CompletionJob(valSym.completer))
       case _: ClassSymbol | _: ModuleSymbol =>
       case decl@(_: TypeDefSymbol) =>
         if (ctx.verbose)
@@ -100,6 +107,7 @@ class CompletersQueue {
       case decl@(_: TypeParameterSymbol | _: PackageSymbol | NoSymbol) =>
         sys.error(s"Unexpected class declaration: $decl")
     }
+    jobs
   }
 
 }
