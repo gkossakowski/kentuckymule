@@ -39,12 +39,8 @@ class CompletersQueue(queueStrategy: QueueStrategy = RolloverQeueueStrategy) {
           if (ctx.verbose)
             println(s"res = $res")
           res match {
-            case CompleteResult(spawnedJobs) =>
-              var i = 0
-              while (i < spawnedJobs.size) {
-                completionJobs.addLast(spawnedJobs.get(i))
-                i = i + 1
-              }
+            case cr: CompleteResult =>
+              completeJob(completionJob, cr)
             case IncompleteResult(blockingJob) =>
               missedDeps += 1
               queueIncompleteDependencyJobs(attemptedCompletionJob = completionJob, blockingJob = blockingJob)
@@ -67,7 +63,31 @@ class CompletersQueue(queueStrategy: QueueStrategy = RolloverQeueueStrategy) {
       case RolloverQeueueStrategy =>
         completionJobs.add(blockingJob)
         completionJobs.add(attemptedCompletionJob)
-      case CollectingPendingJobsQueueStrategy => sys.error("unsupported queue strategy")
+      case CollectingPendingJobsQueueStrategy =>
+        if (blockingJob.queueStore.pendingCompleters == null)
+          blockingJob.queueStore.pendingCompleters = new util.ArrayList[CompletionJob]()
+        blockingJob.queueStore.pendingCompleters.add(attemptedCompletionJob)
+        completionJobs.add(blockingJob)
+    }
+  }
+
+  private def completeJob(attemptedCompletionJob: CompletionJob, completeResult: CompleteResult): Unit = {
+    appendAllJobs(completeResult.spawnedJobs)
+    queueStrategy match {
+      case RolloverQeueueStrategy => ()
+      case CollectingPendingJobsQueueStrategy =>
+        val pendingCompleters = attemptedCompletionJob.queueStore.pendingCompleters
+        if (pendingCompleters != null) {
+          appendAllJobs(pendingCompleters)
+        }
+    }
+  }
+
+  private def appendAllJobs(xs: util.ArrayList[CompletionJob]): Unit = {
+    var i = 0
+    while (i < xs.size) {
+      completionJobs.addLast(xs.get(i))
+      i = i + 1
     }
   }
 
@@ -85,7 +105,7 @@ object CompletersQueue {
     override def allComplete(): Unit = ()
   }
 
-  sealed class QueueStrategy
+  sealed trait QueueStrategy
   case object RolloverQeueueStrategy extends QueueStrategy
   case object CollectingPendingJobsQueueStrategy extends QueueStrategy
 }
