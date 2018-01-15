@@ -15,50 +15,6 @@ class CompletersQueue {
 
   private val completionJobs: util.Deque[CompletionJob] = new util.ArrayDeque[CompletionJob]()
 
-  private object CompletionJob {
-    val emptySpawnedJobs: util.ArrayList[CompletionJob] = new util.ArrayList[CompletionJob]()
-  }
-  private class CompletionJob(val completer: Completer) {
-    assert(completer != null)
-
-    def complete(memberListOnly: Boolean)(implicit ctx: Context): JobResult = {
-      val completerResult = completer.complete()
-      completerResult match {
-        case CompletedType(tpe: ClassInfoType) =>
-          val classSym = tpe.clsSym
-          classSym.info = tpe
-          val spawnedJobs = if (!memberListOnly) {
-            spawnMembersCompletionJobs(classSym)
-          } else CompletionJob.emptySpawnedJobs
-          CompleteResult(spawnedJobs)
-        // TODO: remove special treatment of StubTypeDefCompleter once poly type aliases are implemented
-        case CompletedType(NoType) if completer.isInstanceOf[StubTypeDefCompleter] =>
-          val typeDefSym = completer.sym.asInstanceOf[TypeDefSymbol]
-          typeDefSym.info = NoType
-          CompleteResult(CompletionJob.emptySpawnedJobs)
-        case CompletedType(tpe: Type) =>
-          typeAssigner(completer.sym, tpe)
-          CompleteResult(CompletionJob.emptySpawnedJobs)
-        // error cases
-        case incomplete@(IncompleteDependency(_: TypeParameterSymbol) | IncompleteDependency(NoSymbol) |
-                         IncompleteDependency(_: PackageSymbol)) =>
-          sys.error(s"Unexpected incomplete dependency $incomplete")
-        case completionResult: IncompleteDependency =>
-          IncompleteResult(new CompletionJob(completionResult.sym.completer))
-        case NotFound =>
-          sys.error(s"The completer for ${completer.sym} finished with a missing dependency")
-      }
-    }
-
-    def isCompleted: Boolean = completer.isCompleted
-
-    override def toString = s"CompletionJob($completer)"
-  }
-  private sealed abstract class JobResult
-  private case class CompleteResult(spawnedJobs: util.ArrayList[CompletionJob]) extends JobResult
-  private case class IncompleteResult(blockingJob: CompletionJob) extends JobResult
-
-
   def queueCompleter(completer: Completer, pushToTheEnd: Boolean = true): Unit = {
     val completionJob = new CompletionJob(completer)
     if (pushToTheEnd)
@@ -66,14 +22,6 @@ class CompletersQueue {
     else
       completionJobs.addFirst(completionJob)
   }
-
-  def queueIncompleteDependencyJobs(attemptedCompletionJob: CompletionJob,
-                                    blockingJob: CompletionJob): Unit = {
-    completionJobs.add(blockingJob)
-    completionJobs.add(attemptedCompletionJob)
-  }
-
-  private val typeAssigner = Symbols.TypeAssigner
 
   def processJobQueue(memberListOnly: Boolean,
                       listener: JobQueueProgressListener = NopJobQueueProgressListener)(implicit ctx: Context):
@@ -115,19 +63,10 @@ class CompletersQueue {
     CompleterStats(steps, missedDeps)
   }
 
-  private def spawnMembersCompletionJobs(sym: ClassSymbol)(implicit ctx: Context): util.ArrayList[CompletionJob] = {
-    val jobs = new util.ArrayList[CompletionJob](sym.decls.size)
-    sym.decls.toList foreach {
-      case defSym: DefDefSymbol => jobs.add(new CompletionJob(defSym.completer))
-      case valSym: ValDefSymbol => jobs.add(new CompletionJob(valSym.completer))
-      case _: ClassSymbol | _: ModuleSymbol =>
-      case decl@(_: TypeDefSymbol) =>
-        if (ctx.verbose)
-          println(s"Ignoring type def $decl in ${sym.name}")
-      case decl@(_: TypeParameterSymbol | _: PackageSymbol | NoSymbol) =>
-        sys.error(s"Unexpected class declaration: $decl")
-    }
-    jobs
+  private def queueIncompleteDependencyJobs(attemptedCompletionJob: CompletionJob,
+                                            blockingJob: CompletionJob): Unit = {
+    completionJobs.add(blockingJob)
+    completionJobs.add(attemptedCompletionJob)
   }
 
 }
@@ -144,3 +83,64 @@ object CompletersQueue {
     override def allComplete(): Unit = ()
   }
 }
+
+private object CompletionJob {
+  val emptySpawnedJobs: util.ArrayList[CompletionJob] = new util.ArrayList[CompletionJob]()
+  private val typeAssigner = Symbols.TypeAssigner
+}
+private class CompletionJob(val completer: Completer) {
+  import CompletionJob.{emptySpawnedJobs, typeAssigner}
+  assert(completer != null)
+
+  def complete(memberListOnly: Boolean)(implicit ctx: Context): JobResult = {
+    val completerResult = completer.complete()
+    completerResult match {
+      case CompletedType(tpe: ClassInfoType) =>
+        val classSym = tpe.clsSym
+        classSym.info = tpe
+        val spawnedJobs = if (!memberListOnly) {
+          spawnMembersCompletionJobs(classSym)
+        } else emptySpawnedJobs
+        CompleteResult(spawnedJobs)
+      // TODO: remove special treatment of StubTypeDefCompleter once poly type aliases are implemented
+      case CompletedType(NoType) if completer.isInstanceOf[StubTypeDefCompleter] =>
+        val typeDefSym = completer.sym.asInstanceOf[TypeDefSymbol]
+        typeDefSym.info = NoType
+        CompleteResult(emptySpawnedJobs)
+      case CompletedType(tpe: Type) =>
+        typeAssigner(completer.sym, tpe)
+        CompleteResult(emptySpawnedJobs)
+      // error cases
+      case incomplete@(IncompleteDependency(_: TypeParameterSymbol) | IncompleteDependency(NoSymbol) |
+                       IncompleteDependency(_: PackageSymbol)) =>
+        sys.error(s"Unexpected incomplete dependency $incomplete")
+      case completionResult: IncompleteDependency =>
+        IncompleteResult(new CompletionJob(completionResult.sym.completer))
+      case NotFound =>
+        sys.error(s"The completer for ${completer.sym} finished with a missing dependency")
+    }
+  }
+
+  def isCompleted: Boolean = completer.isCompleted
+
+  override def toString = s"CompletionJob($completer)"
+
+  private def spawnMembersCompletionJobs(sym: ClassSymbol)(implicit ctx: Context): util.ArrayList[CompletionJob] = {
+    val jobs = new util.ArrayList[CompletionJob](sym.decls.size)
+    sym.decls.toList foreach {
+      case defSym: DefDefSymbol => jobs.add(new CompletionJob(defSym.completer))
+      case valSym: ValDefSymbol => jobs.add(new CompletionJob(valSym.completer))
+      case _: ClassSymbol | _: ModuleSymbol =>
+      case decl@(_: TypeDefSymbol) =>
+        if (ctx.verbose)
+          println(s"Ignoring type def $decl in ${sym.name}")
+      case decl@(_: TypeParameterSymbol | _: PackageSymbol | NoSymbol) =>
+        sys.error(s"Unexpected class declaration: $decl")
+    }
+    jobs
+  }
+}
+
+private sealed abstract class JobResult
+private case class CompleteResult(spawnedJobs: util.ArrayList[CompletionJob]) extends JobResult
+private case class IncompleteResult(blockingJob: CompletionJob) extends JobResult
