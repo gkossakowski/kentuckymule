@@ -71,6 +71,14 @@ class CompletersQueue {
 
 }
 
+/**
+  * A stub for a store associated with a single queue job. In the future we can store here
+  * a job continuation or a whole stack of jobs that are blocked on a given job.
+  */
+private final class QueueJobStore {
+
+}
+
 object CompletersQueue {
   case class CompleterStats(processedJobs: Int, dependencyMisses: Int)
 
@@ -88,7 +96,8 @@ private object CompletionJob {
   val emptySpawnedJobs: util.ArrayList[CompletionJob] = new util.ArrayList[CompletionJob]()
   private val typeAssigner = Symbols.TypeAssigner
 }
-private class CompletionJob(val completer: Completer) {
+
+private class CompletionJob(val completer: Completer, val queueStore: QueueJobStore = new QueueJobStore) {
   import CompletionJob.{emptySpawnedJobs, typeAssigner}
   assert(completer != null)
 
