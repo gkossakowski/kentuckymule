@@ -7,14 +7,14 @@ import CompletersQueue._
 
 import scala.collection.JavaConverters._
 
-class CompletersQueue(queueStrategy: QueueStrategy = RolloverQeueueStrategy) {
+class CompletersQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy) {
 
   def completers: Seq[Completer] = completionJobs.iterator().asScala.map(_.completer).toSeq
 
   private val completionJobs: util.Deque[CompletionJob] = new util.ArrayDeque[CompletionJob]()
 
   def queueCompleter(completer: Completer, pushToTheEnd: Boolean = true): Unit = {
-    val completionJob = new CompletionJob(completer)
+    val completionJob = CompletionJob.createOrFetch(completer)
     if (pushToTheEnd)
       completionJobs.add(completionJob)
     else
@@ -45,6 +45,8 @@ class CompletersQueue(queueStrategy: QueueStrategy = RolloverQeueueStrategy) {
               missedDeps += 1
               queueIncompleteDependencyJobs(attemptedCompletionJob = completionJob, blockingJob = blockingJob)
           }
+        } else {
+          postComplete(completionJob)
         }
         listener.thick(completionJobs.size, steps)
       }
@@ -64,21 +66,26 @@ class CompletersQueue(queueStrategy: QueueStrategy = RolloverQeueueStrategy) {
         completionJobs.add(blockingJob)
         completionJobs.add(attemptedCompletionJob)
       case CollectingPendingJobsQueueStrategy =>
-        if (blockingJob.queueStore.pendingCompleters == null)
-          blockingJob.queueStore.pendingCompleters = new util.ArrayList[CompletionJob]()
-        blockingJob.queueStore.pendingCompleters.add(attemptedCompletionJob)
+        if (blockingJob.queueStore.pendingJobs == null)
+          blockingJob.queueStore.pendingJobs = new util.ArrayList[CompletionJob]()
+        blockingJob.queueStore.pendingJobs.add(attemptedCompletionJob)
         completionJobs.add(blockingJob)
     }
   }
 
   private def completeJob(attemptedCompletionJob: CompletionJob, completeResult: CompleteResult): Unit = {
     appendAllJobs(completeResult.spawnedJobs)
+    postComplete(attemptedCompletionJob)
+  }
+
+  private def postComplete(completionJob: CompletionJob): Unit = {
     queueStrategy match {
       case RolloverQeueueStrategy => ()
       case CollectingPendingJobsQueueStrategy =>
-        val pendingCompleters = attemptedCompletionJob.queueStore.pendingCompleters
-        if (pendingCompleters != null) {
-          appendAllJobs(pendingCompleters)
+        val pendingJobs = completionJob.queueStore.pendingJobs
+        if (pendingJobs != null) {
+          appendAllJobs(pendingJobs)
+          pendingJobs.clear()
         }
     }
   }
@@ -86,7 +93,8 @@ class CompletersQueue(queueStrategy: QueueStrategy = RolloverQeueueStrategy) {
   private def appendAllJobs(xs: util.ArrayList[CompletionJob]): Unit = {
     var i = 0
     while (i < xs.size) {
-      completionJobs.addLast(xs.get(i))
+      val job = xs.get(i)
+      completionJobs.addLast(job)
       i = i + 1
     }
   }

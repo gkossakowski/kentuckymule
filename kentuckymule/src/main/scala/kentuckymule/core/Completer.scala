@@ -14,6 +14,7 @@ import ResolveType.resolveTypeTree
 abstract class Completer(val sym: Symbol) {
   def complete()(implicit context: Context): CompletionResult
   def isCompleted: Boolean
+  var completionJob: CompletionJob = _
   override def toString: String = s"${this.getClass.getName}: $sym"
 }
 
