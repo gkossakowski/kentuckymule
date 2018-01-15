@@ -7,7 +7,7 @@ import CompletersQueue._
 
 import scala.collection.JavaConverters._
 
-class CompletersQueue {
+class CompletersQueue(queueStrategy: QueueStrategy = RolloverQeueueStrategy) {
 
   def completers: Seq[Completer] = completionJobs.iterator().asScala.map(_.completer).toSeq
 
@@ -63,8 +63,12 @@ class CompletersQueue {
 
   private def queueIncompleteDependencyJobs(attemptedCompletionJob: CompletionJob,
                                             blockingJob: CompletionJob): Unit = {
-    completionJobs.add(blockingJob)
-    completionJobs.add(attemptedCompletionJob)
+    queueStrategy match {
+      case RolloverQeueueStrategy =>
+        completionJobs.add(blockingJob)
+        completionJobs.add(attemptedCompletionJob)
+      case CollectingPendingJobsQueueStrategy => sys.error("unsupported queue strategy")
+    }
   }
 
 }
@@ -80,4 +84,8 @@ object CompletersQueue {
     override def thick(queueSize: Int, completed: Int): Unit = ()
     override def allComplete(): Unit = ()
   }
+
+  sealed class QueueStrategy
+  case object RolloverQeueueStrategy extends QueueStrategy
+  case object CollectingPendingJobsQueueStrategy extends QueueStrategy
 }

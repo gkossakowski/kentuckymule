@@ -69,7 +69,7 @@ private class CompletionJob(val completer: Completer, val queueStore: QueueJobSt
   * a job continuation or a whole stack of jobs that are blocked on a given job.
   */
 private final class QueueJobStore {
-
+  var pendingCompleters: java.util.ArrayList[CompletionJob] = _
 }
 
 private sealed abstract class JobResult
