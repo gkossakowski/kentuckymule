@@ -6,4 +6,5 @@ package kentuckymule.queue
   */
 final class QueueJobStore {
   var pendingJobs: java.util.ArrayList[QueueJob] = _
+  var queued: Boolean = false
 }
