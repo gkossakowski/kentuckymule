@@ -16,6 +16,11 @@ class JobQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy
   private val completionJobs: util.Deque[QueueJob] = new util.ArrayDeque[QueueJob]()
 
   private var pendingJobsCount: Int = 0
+  // jobs that were once pending and are either still pending or completed
+  // I don't use Set here along with proper bookkeeping that would remove
+  // completed jobs for performance reasons;
+  // appending to an ArrayList is super quick and pretty much free
+  private val possiblyPendingJobs: util.List[QueueJob] = new util.ArrayList[QueueJob]()
 
   def queueCompleter(completer: Completer, pushToTheEnd: Boolean = true): Unit = {
     val completionJob = CompletionJob.createOrFetch(completer)
@@ -65,7 +70,8 @@ class JobQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy
         throw ex
     }
     if (pendingJobsCount > 0) {
-      throw new JobDependencyCycleException()
+      val cycle = jobsFindCycle(possiblyPendingJobs)
+      throw new JobDependencyCycleException(cycle)
     }
     listener.allComplete()
     CompleterStats(steps, missedDeps)
@@ -99,6 +105,7 @@ class JobQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy
       queueJob.queueStore.pendingJobs = new util.ArrayList[QueueJob]()
     queueJob.queueStore.pendingJobs.add(pendingJob)
     pendingJobsCount += 1
+    possiblyPendingJobs.add(pendingJob)
   }
 
   private def flushPendingJobs(queueJob: QueueJob): Unit = {
@@ -150,6 +157,57 @@ object JobQueue {
   case object RolloverQeueueStrategy extends QueueStrategy
   case object CollectingPendingJobsQueueStrategy extends QueueStrategy
 
-  // TODO: add the collection of jobs in the cycle
-  class JobDependencyCycleException() extends Exception
+  class JobDependencyCycleException(val foundCycle: Seq[QueueJob]) extends Exception
+
+  /**
+    * Find dependency cycle amongst jobs passed as an argument. It reconstructs dependencies by
+    * rerunning jobs and collecting IncompleteResult(blockingJob) into a hash map. This method
+    * ignores already completed jobs.
+    *
+    * This method is very expensive and is intended to be used only for the final error reporting.
+    * For that reason, it's implemented in a style that doesn't optimize for performance (except for
+    * obvious O-style choices). In particular, it uses Scala collections that I found to be slower
+    * than Java collections.
+    *
+    * The returned sequence is one of the found cycles. The order of elements in the sequence follows
+    * the dependencies but they can be returned in arbitrary rotation.
+    */
+  //noinspection ReferenceMustBePrefixed
+  private def jobsFindCycle(jobs: util.List[QueueJob])(implicit ctx: Context): Seq[QueueJob] = {
+    import scala.collection.mutable.{Map, Set, Buffer}
+    val deps: Map[QueueJob, QueueJob] = Map.empty[QueueJob, QueueJob]
+    val pendingJobs: Set[QueueJob] = Set.empty[QueueJob]
+    jobs.asScala foreach { job =>
+      if (!job.isCompleted) {
+        pendingJobs.add(job)
+        // TODO: make memberListOnly a property of a queue and of a job
+        val jobResult = job.complete(memberListOnly = false)
+        jobResult match {
+          case IncompleteResult(blockingJob) =>
+            deps.put(job, blockingJob)
+          case unexpectedCompleteResult: CompleteResult =>
+            throw new IllegalArgumentException(
+              s"""
+                 |One of the submitted jobs has completed during `complete` operation.
+                 |All jobs are expected to be either already complete or blocked on another job.
+                 |job = $job
+                 |unexpectedCompleteResult = $unexpectedCompleteResult
+                 |""".stripMargin)
+        }
+      }
+    }
+    def walk(job: QueueJob): Seq[QueueJob] = {
+      val visited: Set[QueueJob] = Set.empty
+      val visitedBuf: Buffer[QueueJob] = Buffer.empty
+      var current: QueueJob = job
+      while (!visited.contains(current)) {
+        visited.add(current)
+        visitedBuf.append(current)
+        current = deps.getOrElse(current,
+          throw new IllegalArgumentException(s"Failed to find cycle for job = $job"))
+      }
+      visitedBuf
+    }
+    walk(pendingJobs.head)
+  }
 }

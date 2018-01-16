@@ -68,7 +68,7 @@ object JobQueueTest extends TestSuite {
       jobQueue.queueJob(testJob2)
       jobQueue.queueJob(testJob1)
       jobQueue.queueJob(testJob3)
-      intercept[JobDependencyCycleException] {
+      val cycleException = intercept[JobDependencyCycleException] {
         jobQueue.processJobQueue(memberListOnly = false)
       }
 
@@ -78,6 +78,10 @@ object JobQueueTest extends TestSuite {
       assert(!testJob1.isCompleted)
       assert(!testJob2.isCompleted)
       assert(!testJob3.isCompleted)
+
+      val expectedCycleSet = Set(testJob1, testJob2, testJob3)
+      val actualCycleSet = cycleException.foundCycle.toSet
+      assert(expectedCycleSet == actualCycleSet)
     }
   }
 
