@@ -9,6 +9,7 @@ import kentuckymule.core.Symbols.ClassSymbol
 import kentuckymule.{ScalapHelper, TarjanSCC}
 import kentuckymule.core.{DependenciesExtraction, Enter}
 import kentuckymule.queue.JobQueue
+import kentuckymule.queue.JobQueue.CompleterStats
 import org.openjdk.jmh.annotations._
 
 import scala.reflect.io.PlainFile
@@ -101,7 +102,8 @@ class BenchmarkScalap {
       enter.enterCompilationUnit(pts.compilationUnits(i))(context)
       i += 1
     }
-    jobQueue.processJobQueue(memberListOnly = false)(context).processedJobs
+    val CompleterStats(processedJobs, _) = jobQueue.processJobQueue(memberListOnly = false)(context)
+    processedJobs
   }
 
   @Benchmark
@@ -149,7 +151,8 @@ class BenchmarkScalap {
       enter.enterCompilationUnit(compilationUnits(i))(context)
       i += 1
     }
-    jobQueue.processJobQueue(memberListOnly = false)(context).processedJobs
+    val CompleterStats(processedJobs, _) = jobQueue.processJobQueue(memberListOnly = false)(context)
+    processedJobs
   }
   @Benchmark
   @Warmup(iterations = 20)

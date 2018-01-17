@@ -5,6 +5,7 @@ import dotty.tools.dotc.{CompilationUnit, parsing}
 import dotty.tools.dotc.util.{NoSource, SourceFile}
 import kentuckymule.core.Enter
 import kentuckymule.queue.JobQueue
+import kentuckymule.queue.JobQueue.CompleterStats
 import org.openjdk.jmh.annotations._
 
 import scala.reflect.io.PlainFile
@@ -81,7 +82,8 @@ class BenchmarkEnter {
     val jobQueue = new JobQueue
     val enter = new Enter(jobQueue)
     enter.enterCompilationUnit(pts.compilationUnit)(context)
-    jobQueue.processJobQueue(memberListOnly = true)(context).processedJobs
+    val CompleterStats(processedJobs, _) = jobQueue.processJobQueue(memberListOnly = true)(context)
+    processedJobs
   }
 
   @Benchmark
@@ -94,6 +96,7 @@ class BenchmarkEnter {
     val jobQueue = new JobQueue
     val enter = new Enter(jobQueue)
     enter.enterCompilationUnit(pts.compilationUnit)(context)
-    jobQueue.processJobQueue(memberListOnly = false)(context).processedJobs
+    val CompleterStats(processedJobs, _) = jobQueue.processJobQueue(memberListOnly = false)(context)
+    processedJobs
   }
 }

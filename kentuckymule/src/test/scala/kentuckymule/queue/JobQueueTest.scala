@@ -4,7 +4,7 @@ import java.util
 
 import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.core.Contexts.ContextBase
-import kentuckymule.queue.JobQueue.{CollectingPendingJobsQueueStrategy, JobDependencyCycleException}
+import kentuckymule.queue.JobQueue.{CollectingPendingJobsQueueStrategy, CompleterStats, JobDependencyCycle}
 import kentuckymule.queue.QueueJob.{CompleteResult, IncompleteResult}
 import utest._
 
@@ -20,11 +20,11 @@ object JobQueueTest extends TestSuite {
       val testJob2 = new TestJob()
       jobQueue.queueJob(testJob1)
       jobQueue.queueJob(testJob2)
-      val stats = jobQueue.processJobQueue(memberListOnly = false)
+      val CompleterStats(processedJobs, dependencyMisses) = jobQueue.processJobQueue(memberListOnly = false)
       assert(testJob1.isCompleted)
       assert(testJob2.isCompleted)
-      assert(stats.processedJobs == 2)
-      assert(stats.dependencyMisses == 0)
+      assert(processedJobs == 2)
+      assert(dependencyMisses == 0)
     }
     'spawnedJobsAreProcessed {
       val jobQueue = new JobQueue()
@@ -34,13 +34,13 @@ object JobQueueTest extends TestSuite {
       val testJob2 = new TestJob(spawnedJobs = spawnedJob2 :: Nil)
       jobQueue.queueJob(testJob1)
       jobQueue.queueJob(testJob2)
-      val stats = jobQueue.processJobQueue(memberListOnly = false)
+      val CompleterStats(processedJobs, dependencyMisses) = jobQueue.processJobQueue(memberListOnly = false)
       assert(testJob1.isCompleted)
       assert(testJob2.isCompleted)
       assume(spawnedJob1.isCompleted)
       assume(spawnedJob2.isCompleted)
-      assert(stats.processedJobs == 4)
-      assert(stats.dependencyMisses == 0)
+      assert(processedJobs == 4)
+      assert(dependencyMisses == 0)
     }
     'depsAreBlocking {
       val jobQueue = new JobQueue()
@@ -48,15 +48,15 @@ object JobQueueTest extends TestSuite {
       val testJob2 = new TestJob(deps = testJob1 :: Nil)
       jobQueue.queueJob(testJob2)
       jobQueue.queueJob(testJob1)
-      val stats = jobQueue.processJobQueue(memberListOnly = false)
+      val CompleterStats(processedJobs, dependencyMisses) = jobQueue.processJobQueue(memberListOnly = false)
       assert(testJob1.isCompleted)
       assert(testJob2.isCompleted)
       // four jobs are processed because the sequence is:
       // 2 (blocked on 1) => add 2 to 1.pending
       // 1 => release pending (2)
       // 2
-      assert(stats.processedJobs == 3)
-      assert(stats.dependencyMisses == 1)
+      assert(processedJobs == 3)
+      assert(dependencyMisses == 1)
     }
     'detectCycle {
       val jobQueue = new JobQueue(queueStrategy = CollectingPendingJobsQueueStrategy)
@@ -68,9 +68,7 @@ object JobQueueTest extends TestSuite {
       jobQueue.queueJob(testJob2)
       jobQueue.queueJob(testJob1)
       jobQueue.queueJob(testJob3)
-      val cycleException = intercept[JobDependencyCycleException] {
-        jobQueue.processJobQueue(memberListOnly = false)
-      }
+      val JobDependencyCycle(foundCycle) = jobQueue.processJobQueue(memberListOnly = false)
 
       assert(testJob4.isCompleted)
 
@@ -80,7 +78,7 @@ object JobQueueTest extends TestSuite {
       assert(!testJob3.isCompleted)
 
       val expectedCycleSet = Set(testJob1, testJob2, testJob3)
-      val actualCycleSet = cycleException.foundCycle.toSet
+      val actualCycleSet = foundCycle.toSet
       assert(expectedCycleSet == actualCycleSet)
     }
   }

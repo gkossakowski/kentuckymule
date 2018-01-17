@@ -37,7 +37,7 @@ class JobQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy
 
   def processJobQueue(memberListOnly: Boolean,
                       listener: JobQueueProgressListener = NopJobQueueProgressListener)(implicit ctx: Context):
-  CompleterStats = {
+  JobQueueResult = {
     var steps = 0
     var missedDeps = 0
     try {
@@ -71,10 +71,11 @@ class JobQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy
     }
     if (pendingJobsCount > 0) {
       val cycle = jobsFindCycle(possiblyPendingJobs)
-      throw new JobDependencyCycleException(cycle)
+      JobDependencyCycle(cycle)
+    } else {
+      listener.allComplete()
+      CompleterStats(steps, missedDeps)
     }
-    listener.allComplete()
-    CompleterStats(steps, missedDeps)
   }
 
   private def queueIncompleteDependencyJobs(attemptedJob: QueueJob,
@@ -142,7 +143,9 @@ class JobQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy
 }
 
 object JobQueue {
-  case class CompleterStats(processedJobs: Int, dependencyMisses: Int)
+  sealed trait JobQueueResult
+  case class CompleterStats(processedJobs: Int, dependencyMisses: Int) extends JobQueueResult
+  case class JobDependencyCycle(foundCycle: Seq[QueueJob]) extends JobQueueResult
 
   trait JobQueueProgressListener {
     def thick(queueSize: Int, completed: Int): Unit
@@ -156,8 +159,6 @@ object JobQueue {
   sealed trait QueueStrategy
   case object RolloverQeueueStrategy extends QueueStrategy
   case object CollectingPendingJobsQueueStrategy extends QueueStrategy
-
-  class JobDependencyCycleException(val foundCycle: Seq[QueueJob]) extends Exception
 
   /**
     * Find dependency cycle amongst jobs passed as an argument. It reconstructs dependencies by

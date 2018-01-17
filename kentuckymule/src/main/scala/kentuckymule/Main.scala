@@ -6,7 +6,7 @@ import dotty.tools.dotc.util.{NoSource, SourceFile}
 import dotty.tools.dotc.{CompilationUnit, parsing}
 import kentuckymule.core.{DependenciesExtraction, Enter}
 import kentuckymule.queue.JobQueue
-import kentuckymule.queue.JobQueue.{CompleterStats, JobQueueProgressListener, NopJobQueueProgressListener}
+import kentuckymule.queue.JobQueue.{CompleterStats, JobQueueProgressListener, JobQueueResult, NopJobQueueProgressListener}
 
 import scala.reflect.io.PlainFile
 
@@ -56,7 +56,7 @@ object Main {
     val totalSize = countSymbols(ctx)
   }
 
-  def processScalap(implicit context: Context): CompleterStats = {
+  def processScalap(implicit context: Context): JobQueueResult = {
     import java.nio.file.Paths
     println("Calculating outline types for scalap sources...")
     val projectDir = Paths.get(".").toAbsolutePath.toString
@@ -74,7 +74,7 @@ object Main {
       enter.enterCompilationUnit(compilationUnit)(context)
 
     val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
-    val jobsNumber = jobQueue.processJobQueue(memberListOnly = false, progressListener)(context)
+    val jobQueueResult = jobQueue.processJobQueue(memberListOnly = false, progressListener)(context)
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()
     import scala.collection.JavaConverters._
@@ -94,10 +94,10 @@ object Main {
         println()
     }
 
-    jobsNumber
+    jobQueueResult
   }
 
-  def processScalaLib(implicit context: Context): CompleterStats = {
+  def processScalaLib(implicit context: Context): JobQueueResult = {
     import java.nio.file.Paths
     println("Calculating outline types for scala library sources...")
     val scalaLibDir = Paths.get("./sample-projects/scala/src/library").toAbsolutePath.toString
@@ -115,7 +115,7 @@ object Main {
       enter.enterCompilationUnit(compilationUnit)(context)
 
     val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
-    val jobsNumber = jobQueue.processJobQueue(memberListOnly = false, progressListener)(context)
+    val jobQueueResult = jobQueue.processJobQueue(memberListOnly = false, progressListener)(context)
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()
     import scala.collection.JavaConverters._
@@ -135,7 +135,7 @@ object Main {
         println()
     }
 
-    jobsNumber
+    jobQueueResult
   }
 
   class ProgressBarListener extends JobQueueProgressListener {
