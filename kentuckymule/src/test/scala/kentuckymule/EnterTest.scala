@@ -9,9 +9,10 @@ import kentuckymule.core.Symbols._
 import kentuckymule.core.Types._
 import dotc.core.IOUtils
 import dotc.core.Decorators._
-import dotc.core.Names.Name
+import dotc.core.Names.{Name, TypeName}
 import dotty.tools.dotc.core.TypeOps.AppliedTypeMemberDerivation
-import kentuckymule.queue.JobQueue
+import kentuckymule.queue.{JobQueue, QueueJob}
+import kentuckymule.queue.JobQueue.JobDependencyCycle
 import utest._
 
 object EnterTest extends TestSuite {
@@ -598,6 +599,28 @@ val enter = enterToSymbolTable(ctx, jobQueue)(src)
         assert(Aparents.size == 1)
         assert(Aparents.head == SymRef(Bsym))
       }
+    }
+    'cyclicTypeParents {
+      val src =
+        """
+          |class A extends B
+          |class B extends C
+          |class C extends A
+          |class D extends C""".stripMargin
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      val JobDependencyCycle(foundCycle) = jobQueue.processJobQueue()
+      assert(foundCycle.length == 3)
+      val symbolsInCycle = foundCycle collect {
+        case cj: CompletionJob => cj.completer.sym
+      }
+      val classNamesInCycle = symbolsInCycle.map(_.name).toSet
+      // note: D is not part of the cycle. It's blocked on a cycle (so it's type can't be completed)
+      // but it's not returned in the JobDependencyCycle. This is by design. We want the minimal chain
+      // of problematic dependencies to be returned to make the error messages small, focused and easily
+      // actionable
+      val expectedClassNames = Set("A", "B", "C").map(_.toTypeName)
+      assert(classNamesInCycle == expectedClassNames)
     }
     // tests dealiasing, hopefully I'll find a more direct way of testing dealiasing in the future
     'typeAliasClassParent {
