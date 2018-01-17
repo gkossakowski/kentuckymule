@@ -9,7 +9,7 @@ import kentuckymule.queue.QueueJob.{CompleteResult, IncompleteResult}
 
 import scala.collection.JavaConverters._
 
-class JobQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy) {
+class JobQueue(memberListOnly: Boolean = false, queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy) {
 
   def completers: Seq[Completer] = completionJobs.iterator().asScala.map(x => x.asInstanceOf[CompletionJob].completer).toSeq
 
@@ -35,8 +35,7 @@ class JobQueue(queueStrategy: QueueStrategy = CollectingPendingJobsQueueStrategy
     queueJob.queueStore.queued = true
   }
 
-  def processJobQueue(memberListOnly: Boolean,
-                      listener: JobQueueProgressListener = NopJobQueueProgressListener)(implicit ctx: Context):
+  def processJobQueue(listener: JobQueueProgressListener = NopJobQueueProgressListener)(implicit ctx: Context):
   JobQueueResult = {
     var steps = 0
     var missedDeps = 0

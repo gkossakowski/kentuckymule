@@ -79,10 +79,10 @@ class BenchmarkEnter {
   def completeMemberList(bs: BenchmarkState, pts: ParsedTreeState): Int = {
     val context = bs.context
     context.definitions.rootPackage.clear()
-    val jobQueue = new JobQueue
+    val jobQueue = new JobQueue(memberListOnly = true)
     val enter = new Enter(jobQueue)
     enter.enterCompilationUnit(pts.compilationUnit)(context)
-    val CompleterStats(processedJobs, _) = jobQueue.processJobQueue(memberListOnly = true)(context)
+    val CompleterStats(processedJobs, _) = jobQueue.processJobQueue()(context)
     processedJobs
   }
 
@@ -93,10 +93,10 @@ class BenchmarkEnter {
   def completeMemberSigs(bs: BenchmarkState, pts: ParsedTreeState): Int = {
     val context = bs.context
     context.definitions.rootPackage.clear()
-    val jobQueue = new JobQueue
+    val jobQueue = new JobQueue(memberListOnly = false)
     val enter = new Enter(jobQueue)
     enter.enterCompilationUnit(pts.compilationUnit)(context)
-    val CompleterStats(processedJobs, _) = jobQueue.processJobQueue(memberListOnly = false)(context)
+    val CompleterStats(processedJobs, _) = jobQueue.processJobQueue()(context)
     processedJobs
   }
 }

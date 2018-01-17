@@ -67,14 +67,14 @@ object Main {
       unit.untpdTree = parser.parse()
       unit
     }
-    val jobQueue = new JobQueue
+    val jobQueue = new JobQueue(memberListOnly = false)
     val enter = new Enter(jobQueue)
     ScalapHelper.enterStabSymbolsForScalap(jobQueue, enter)(context)
     for (compilationUnit <- compilationUnits)
       enter.enterCompilationUnit(compilationUnit)(context)
 
     val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
-    val jobQueueResult = jobQueue.processJobQueue(memberListOnly = false, progressListener)(context)
+    val jobQueueResult = jobQueue.processJobQueue(progressListener)(context)
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()
     import scala.collection.JavaConverters._
@@ -108,14 +108,14 @@ object Main {
       unit.untpdTree = parser.parse()
       unit
     }
-    val jobQueue = new JobQueue
+    val jobQueue = new JobQueue(memberListOnly = false)
     val enter = new Enter(jobQueue)
     ScalaLibHelper.enterStabSymbolsForScalaLib(jobQueue, enter, context)
     for (compilationUnit <- compilationUnits)
       enter.enterCompilationUnit(compilationUnit)(context)
 
     val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
-    val jobQueueResult = jobQueue.processJobQueue(memberListOnly = false, progressListener)(context)
+    val jobQueueResult = jobQueue.processJobQueue(progressListener)(context)
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()
     import scala.collection.JavaConverters._

@@ -20,7 +20,7 @@ object JobQueueTest extends TestSuite {
       val testJob2 = new TestJob()
       jobQueue.queueJob(testJob1)
       jobQueue.queueJob(testJob2)
-      val CompleterStats(processedJobs, dependencyMisses) = jobQueue.processJobQueue(memberListOnly = false)
+      val CompleterStats(processedJobs, dependencyMisses) = jobQueue.processJobQueue()
       assert(testJob1.isCompleted)
       assert(testJob2.isCompleted)
       assert(processedJobs == 2)
@@ -34,7 +34,7 @@ object JobQueueTest extends TestSuite {
       val testJob2 = new TestJob(spawnedJobs = spawnedJob2 :: Nil)
       jobQueue.queueJob(testJob1)
       jobQueue.queueJob(testJob2)
-      val CompleterStats(processedJobs, dependencyMisses) = jobQueue.processJobQueue(memberListOnly = false)
+      val CompleterStats(processedJobs, dependencyMisses) = jobQueue.processJobQueue()
       assert(testJob1.isCompleted)
       assert(testJob2.isCompleted)
       assume(spawnedJob1.isCompleted)
@@ -48,7 +48,7 @@ object JobQueueTest extends TestSuite {
       val testJob2 = new TestJob(deps = testJob1 :: Nil)
       jobQueue.queueJob(testJob2)
       jobQueue.queueJob(testJob1)
-      val CompleterStats(processedJobs, dependencyMisses) = jobQueue.processJobQueue(memberListOnly = false)
+      val CompleterStats(processedJobs, dependencyMisses) = jobQueue.processJobQueue()
       assert(testJob1.isCompleted)
       assert(testJob2.isCompleted)
       // four jobs are processed because the sequence is:
@@ -68,7 +68,7 @@ object JobQueueTest extends TestSuite {
       jobQueue.queueJob(testJob2)
       jobQueue.queueJob(testJob1)
       jobQueue.queueJob(testJob3)
-      val JobDependencyCycle(foundCycle) = jobQueue.processJobQueue(memberListOnly = false)
+      val JobDependencyCycle(foundCycle) = jobQueue.processJobQueue()
 
       assert(testJob4.isCompleted)
 

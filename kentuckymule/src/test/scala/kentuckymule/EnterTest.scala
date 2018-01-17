@@ -20,7 +20,8 @@ object EnterTest extends TestSuite {
     implicit val ctx = initCtx.fresh
     'flatPackageDeclaration {
       val src = "package foo.bar; class Abc"
-      enterToSymbolTable(ctx, src)
+      val jobQueue = new JobQueue
+      enterToSymbolTable(ctx, jobQueue)(src)
       val descendants = descendantNames(ctx.definitions.rootPackage)
       assert(descendants ==
         List(
@@ -30,7 +31,8 @@ object EnterTest extends TestSuite {
     }
     'nestedPackageDeclaration {
       val src = "package foo; package bar; class Abc"
-      enterToSymbolTable(ctx, src)
+      val jobQueue = new JobQueue
+      enterToSymbolTable(ctx, jobQueue)(src)
       val descendants = descendantNames(ctx.definitions.rootPackage)
       assert(descendants ==
         List(
@@ -40,7 +42,8 @@ object EnterTest extends TestSuite {
     }
     'duplicatePackageDeclaration {
       val src = "package foo; package bar { class Abc }; package bar { class Xyz }"
-      enterToSymbolTable(ctx, src)
+      val jobQueue = new JobQueue
+      enterToSymbolTable(ctx, jobQueue)(src)
       val descendants = descendantPathsFromRoot()
       val descendantNames = descendants.map(_.map(_.name))
       val barName = "bar".toTermName
@@ -55,8 +58,11 @@ object EnterTest extends TestSuite {
     }
     'constructorMultipleParamList {
       val src = "class Foo(val x: Foo)(val y: Foo)"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()(ctx)
+
       val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -67,36 +73,39 @@ object EnterTest extends TestSuite {
     import scala.collection.JavaConverters._
     'resolveImport {
       val src = "object A { class B }; class X { import A.B; class Y }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
       val templateCompleters = jobQueue.completers
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
       }
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      jobQueue.processJobQueue()(ctx)
       val ylookupScope = ycompleter.lookupScope
       val ans = ylookupScope.lookup("B".toTypeName)(ctx)
       assert(ans.isInstanceOf[LookedupSymbol])
     }
     'wildcardImport {
       val src = "object A { class B }; class X { import A._; class Y }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
       val templateCompleters = jobQueue.completers
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
       }
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      jobQueue.processJobQueue()(ctx)
       val ylookupScope = ycompleter.lookupScope
       val ans = ylookupScope.lookup("B".toTypeName)(ctx)
       assert(ans.isInstanceOf[LookedupSymbol])
     }
     'multipleImports {
       val src = "object A { class B1; class B2; }; class X { import A.{B1, B2}; class Y }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
       val templateCompleters = jobQueue.completers
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
       }
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      jobQueue.processJobQueue()(ctx)
       val ylookupScope = ycompleter.lookupScope
       locally {
         val ans = ylookupScope.lookup("B1".toTypeName)(ctx)
@@ -109,8 +118,11 @@ object EnterTest extends TestSuite {
     }
     'importFromVal {
       val src = "class A(b: B) { import b.C; def c: C }; class B { class C }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()(ctx)
+
       val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -143,14 +155,15 @@ object EnterTest extends TestSuite {
           |   def b: B
           |}
         """.stripMargin
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       val Xsym = classes("X".toTypeName)
       val cDefCompleter = Xsym.lookup("c".toTermName)(ctx).asInstanceOf[DefDefSymbol].completer
       val bDefCompleter = Xsym.lookup("b".toTermName)(ctx).asInstanceOf[DefDefSymbol].completer
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      jobQueue.processJobQueue()(ctx)
       val cDeflookupScope = cDefCompleter.lookupScope
       locally {
         val ans = cDeflookupScope.lookup("C".toTypeName)(ctx)
@@ -176,14 +189,15 @@ object EnterTest extends TestSuite {
           |   class B
           |}
         """.stripMargin
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       val Xsym = classes("X".toTypeName)
       val bInXClassSym = Xsym.lookup("B".toTypeName)
       val bDefSym = Xsym.lookup("b".toTermName)(ctx).asInstanceOf[DefDefSymbol]
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      jobQueue.processJobQueue()(ctx)
       locally {
         val resultType = bDefSym.info.resultType
         assert(resultType == SymRef(bInXClassSym))
@@ -206,12 +220,13 @@ object EnterTest extends TestSuite {
           |  class Y
           |}
         """.stripMargin
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
       val templateCompleters = jobQueue.completers
       val Some(ycompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "Y".toTypeName => cp
       }
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      jobQueue.processJobQueue()(ctx)
       val ylookupScope = ycompleter.lookupScope
       val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -235,7 +250,8 @@ object EnterTest extends TestSuite {
     }
     'packageObject {
       val src = "package foo; package object bar { class D }; package bar { class C }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
       val templateCompleters = jobQueue.completers
       val Some(dCompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "D".toTypeName => cp
@@ -248,14 +264,15 @@ object EnterTest extends TestSuite {
           List(StdNames.nme.ROOTPKG, "foo".toTermName, "bar".toTermName, "C".toTypeName)
         )
       )
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      jobQueue.processJobQueue()(ctx)
       val dLookupScope = dCompleter.lookupScope
       val ans = dLookupScope.lookup("C".toTypeName)(ctx)
       assert(ans.isInstanceOf[LookedupSymbol])
     }
     'packageObjectInEmptyPackage {
       val src = "package object bar { class D }; package bar { class C }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
       val templateCompleters = jobQueue.completers
       val Some(dCompleter) = templateCompleters collectFirst {
         case cp: TemplateMemberListCompleter if cp.clsSym.name == "D".toTypeName => cp
@@ -267,7 +284,7 @@ object EnterTest extends TestSuite {
           List(StdNames.nme.ROOTPKG, "bar".toTermName, "C".toTypeName)
         )
       )
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      jobQueue.processJobQueue()(ctx)
       val dLookupScope = dCompleter.lookupScope
       val ans = dLookupScope.lookup("C".toTypeName)(ctx)
       assert(ans.isInstanceOf[LookedupSymbol])
@@ -284,11 +301,12 @@ object EnterTest extends TestSuite {
            |class C
            |
         """.stripMargin
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
       val templateCompleters = (jobQueue.completers collect {
         case cp: TemplateMemberListCompleter => cp.clsSym.name.toString -> cp
       }).toMap
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      jobQueue.processJobQueue()(ctx)
       val allPaths = descendantPathsFromRoot()
       val classes = allPaths.flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -324,11 +342,12 @@ object EnterTest extends TestSuite {
           |package foo
           |class C
         """.stripMargin
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src1, src2)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src1, src2)
       val templateCompleters = (jobQueue.completers collect {
         case cp: TemplateMemberListCompleter => cp.clsSym.name.toString -> cp
       }).toMap
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      jobQueue.processJobQueue()(ctx)
       val allPaths = descendantPathsFromRoot()
       val classes = allPaths.flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
@@ -368,8 +387,9 @@ object EnterTest extends TestSuite {
     }
     'resolveMembers {
       val src = "class A extends B { def a: A }; class B { def b: B }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = true)(ctx)
+      val jobQueue = new JobQueue(memberListOnly = true)
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()(ctx)
       val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -386,8 +406,11 @@ object EnterTest extends TestSuite {
     }
     'completeMemberInfo {
       val src = "class A extends B { def a: A }; class B { def b: B }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      
+val jobQueue = new JobQueue
+val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()(ctx)
+
       val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -412,8 +435,11 @@ object EnterTest extends TestSuite {
     }
     'memberInfoRefersToImport {
       val src = "class A { def a: A; import B.BB; def b: BB }; object B { class BB }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)(ctx)
+      
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()(ctx)
+
       val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -438,8 +464,9 @@ object EnterTest extends TestSuite {
     }
     'referToClassTypeParam {
       val src = "class A[T, U] { def a: U; def b: T; class AA { def c: T } }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -473,8 +500,9 @@ object EnterTest extends TestSuite {
     }
     'referToClassTypeParamInConstructor {
       val src = "class A[T](x: T)"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -491,8 +519,9 @@ object EnterTest extends TestSuite {
     }
     'inheritedReferringToTypeMember {
       val src = "class B extends A[C]; class A[T] { val a: T }; class C"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -514,8 +543,9 @@ object EnterTest extends TestSuite {
           |class C extends B[Y]
           |class X
           |class Y""".stripMargin
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -537,8 +567,9 @@ object EnterTest extends TestSuite {
     }
     'referToDefTypeParam {
       val src = "class A { def a[T](x: T): T }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -554,8 +585,9 @@ object EnterTest extends TestSuite {
     }
     'classParent {
       val src = "class A extends B; class B"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPathsFromRoot().flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -579,8 +611,9 @@ object EnterTest extends TestSuite {
           |  def c: C
           |}
           |""".stripMargin
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -607,8 +640,9 @@ object EnterTest extends TestSuite {
           |}
           |class D
           |""".stripMargin
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -636,8 +670,9 @@ object EnterTest extends TestSuite {
            |  type Result = Flip[Foo, Bar]
            |}
         """.stripMargin
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -658,8 +693,9 @@ object EnterTest extends TestSuite {
     }
     'defTupleReturn {
       val src = "class A { def a[T,U](x: T): (T, U) }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -679,8 +715,9 @@ object EnterTest extends TestSuite {
     }
     'parameterTuple {
       val src = "class A[T](x: (T, T)) { def y(t: (T, A)): A[T] }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -712,8 +749,9 @@ object EnterTest extends TestSuite {
 
     'valTuple {
       val src = "class A { val tup: (A, A) }"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -730,8 +768,9 @@ object EnterTest extends TestSuite {
     // checks whether type application buried in a consctuctor call is extracted correctly
     'constructorCall {
       val src = "class A; class B[T] extends A[T]()(x)"
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -750,8 +789,9 @@ object EnterTest extends TestSuite {
           |  val foo: A
           |  val bar: foo.type
           |}""".stripMargin
-      val (jobQueue, enter) = enterToSymbolTable(ctx, src)
-      jobQueue.processJobQueue(memberListOnly = false)
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
@@ -761,12 +801,11 @@ object EnterTest extends TestSuite {
     }
   }
 
-  private def enterToSymbolTable(ctx: Context, srcs: String*): (JobQueue, Enter) = {
+  private def enterToSymbolTable(ctx: Context, jobQueue: JobQueue)(srcs: String*): Enter = {
     val units = srcs.map(src => compilationUnitFromString(src, ctx))
-    val jobQueue = new JobQueue
     val enter = new Enter(jobQueue)
     units.foreach(unit => enter.enterCompilationUnit(unit)(ctx))
-    (jobQueue, enter)
+    enter
   }
 
   private def descendantPathsFromRoot()(implicit context: Context): List[List[Symbol]] = {

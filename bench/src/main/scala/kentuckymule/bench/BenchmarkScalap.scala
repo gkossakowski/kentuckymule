@@ -47,14 +47,14 @@ object BenchmarkScalap {
     var enter: Enter = _
     @Setup(Level.Trial)
     def enterAndCompleteSymbols(bs: BenchmarkState, pts: ParsedTreeState): Unit = {
-      val jobQueue = new JobQueue
+      val jobQueue = new JobQueue(memberListOnly = false)
       enter = new Enter(jobQueue)
       val context = bs.context
       context.definitions.rootPackage.clear()
       ScalapHelper.enterStabSymbolsForScalap(jobQueue, enter)(context)
       for (compilationUnit <- pts.compilationUnits)
         enter.enterCompilationUnit(compilationUnit)(context)
-      jobQueue.processJobQueue(memberListOnly = false)(context)
+      jobQueue.processJobQueue()(context)
     }
   }
 
@@ -94,7 +94,7 @@ class BenchmarkScalap {
   def completeMemberSigs(bs: BenchmarkState, pts: ParsedTreeState): Int = {
     val context = bs.context
     context.definitions.rootPackage.clear()
-    val jobQueue = new JobQueue
+    val jobQueue = new JobQueue(memberListOnly = false)
     val enter = new Enter(jobQueue)
     ScalapHelper.enterStabSymbolsForScalap(jobQueue, enter)(context)
     var i = 0
@@ -102,7 +102,7 @@ class BenchmarkScalap {
       enter.enterCompilationUnit(pts.compilationUnits(i))(context)
       i += 1
     }
-    val CompleterStats(processedJobs, _) = jobQueue.processJobQueue(memberListOnly = false)(context)
+    val CompleterStats(processedJobs, _) = jobQueue.processJobQueue()(context)
     processedJobs
   }
 
@@ -143,7 +143,7 @@ class BenchmarkScalap {
       }
 
     context.definitions.rootPackage.clear()
-    val jobQueue = new JobQueue
+    val jobQueue = new JobQueue(memberListOnly = false)
     val enter = new Enter(jobQueue)
     ScalapHelper.enterStabSymbolsForScalap(jobQueue, enter)(context)
     var i = 0
@@ -151,7 +151,7 @@ class BenchmarkScalap {
       enter.enterCompilationUnit(compilationUnits(i))(context)
       i += 1
     }
-    val CompleterStats(processedJobs, _) = jobQueue.processJobQueue(memberListOnly = false)(context)
+    val CompleterStats(processedJobs, _) = jobQueue.processJobQueue()(context)
     processedJobs
   }
   @Benchmark
