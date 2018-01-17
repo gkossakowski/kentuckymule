@@ -196,18 +196,29 @@ object JobQueue {
         }
       }
     }
-    def walk(job: QueueJob): Seq[QueueJob] = {
+    // walk the `deps` graph, starting from a passed `job` and return the first encountered
+    // element that is known to be a part of a loop
+    def findLoopElement(job: QueueJob): QueueJob = {
       val visited: Set[QueueJob] = Set.empty
-      val visitedBuf: Buffer[QueueJob] = Buffer.empty
       var current: QueueJob = job
       while (!visited.contains(current)) {
         visited.add(current)
-        visitedBuf.append(current)
         current = deps.getOrElse(current,
           throw new IllegalArgumentException(s"Failed to find cycle for job = $job"))
       }
+      current
+    }
+    def collectLoopElements(loopJob: QueueJob): Seq[QueueJob] = {
+      val visitedBuf: Buffer[QueueJob] = Buffer.empty
+      var current: QueueJob = loopJob
+      do {
+        visitedBuf.append(current)
+        current = deps.getOrElse(current,
+          throw new IllegalArgumentException(s"Failed to find cycle for job = $loopJob"))
+      } while (current != loopJob)
       visitedBuf
     }
-    walk(pendingJobs.head)
+    val loopJob = findLoopElement(pendingJobs.head)
+    collectLoopElements(loopJob)
   }
 }
