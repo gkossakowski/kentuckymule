@@ -92,6 +92,11 @@ class DependenciesExtraction(topLevelOnly: Boolean) {
       for (arg <- types) walkType(arg, ownerClass)
     case InferredTypeMarker =>
       // nothing to record when a type is declared as inferred
+    case TypeBounds(lo, hi) =>
+      walkType(lo, ownerClass)
+      walkType(hi, ownerClass)
+    case NoType =>
+      // nothing to record when NoType is used (e.g. as a type bound)
     case WildcardType =>
       // TODO: wildcard types should carry their bounds and they should be walked here
     case _ => sys.error(s"Unhandled type $tpe")

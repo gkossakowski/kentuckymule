@@ -97,6 +97,11 @@ object Types {
     override def lookup(name: Name)(implicit contexts: Context): LookupAnswer = NotFound
   }
 
+  final case class TypeBounds(lo: Type, hi: Type) extends TypeType {
+    override def typeSymbol: Symbol = hi.typeSymbol
+    override def lookup(name: Name)(implicit contexts: Context): LookupAnswer = hi.lookup(name)
+  }
+
   case object InferredTypeMarker extends Type {
     override def typeSymbol: Symbol = NoSymbol
     override def lookup(name: Name)(implicit contexts: Context): LookupAnswer = NotFound

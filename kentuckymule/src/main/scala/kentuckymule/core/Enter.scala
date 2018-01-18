@@ -442,14 +442,6 @@ class Enter(jobQueue: JobQueue) {
       classSym.completer = completer
       val lookupScopeContext = classSignatureLookupScopeContext.pushClassLookupScope(classSym)
       for (stat <- tmpl.body) enterTree(stat, classSym, lookupScopeContext)
-    // type member (with bounds)
-    case TypeDef(name, _: TypeBoundsTree) =>
-      val typeDefSymbol = TypeDefSymbol(name, owner)
-      // TODO: add support for type members with bounds
-      val completer = new StubTypeDefCompleter(typeDefSymbol)
-      typeDefSymbol.completer = completer
-      jobQueue.queueCompleter(completer)
-      owner.addChild(typeDefSymbol)
     case td@TypeDef(name, rhs) if !rhs.isEmpty =>
       val typeDefSymbol = TypeDefSymbol(name, owner)
       foreachWithIndex(td.tparams) { (tParam, tParamIndex) =>
@@ -458,7 +450,7 @@ class Enter(jobQueue: JobQueue) {
       }
       val rhsLookupScope = parentLookupScopeContext.newTypeAliasLookupScope(typeDefSymbol)
       val completer =
-        new TypeAliasCompleter(typeDefSymbol, td, rhsLookupScope)
+        new TypeDefCompleter(typeDefSymbol, td, rhsLookupScope)
       typeDefSymbol.completer = completer
       jobQueue.queueCompleter(completer)
       owner.addChild(typeDefSymbol)

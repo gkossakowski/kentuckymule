@@ -9,7 +9,7 @@ import dotty.tools.dotc.core.Names.{TypeName, Name}
 import dotty.tools.dotc.core.StdNames.{nme, tpnme}
 import kentuckymule.core.Enter.{LookupScope, functionNamesByArity}
 import kentuckymule.core.Symbols.{ClassSymbol, ModuleSymbol, NoSymbol, Symbol, ValDefSymbol}
-import kentuckymule.core.Types.{AppliedType, SymRef, TupleType, Type, WildcardType}
+import kentuckymule.core.Types._
 
 object ResolveType {
 
@@ -160,6 +160,16 @@ object ResolveType {
       resolveTypeTree(left, parentLookupScope)
     case TypeBoundsTree(EmptyTree, EmptyTree) =>
       CompletedType(WildcardType)
+    case TypeBoundsTree(lo, hi) =>
+      val resolvedLo = resolveTypeTree(lo, parentLookupScope) match {
+        case CompletedType(tpe) => tpe
+        case other => return other
+      }
+      val resolvedHi = resolveTypeTree(hi, parentLookupScope) match {
+        case CompletedType(tpe) => tpe
+        case other => return other
+      }
+      CompletedType(TypeBounds(resolvedLo, resolvedHi))
     case InfixOp(left, op, right) =>
       val resolvedLeftType = resolveTypeTree(left, parentLookupScope) match {
         case CompletedType(tpe) => tpe
@@ -214,6 +224,7 @@ object ResolveType {
           sys.error(s"Can't resolve This at ${t.pos}")
         case incomplete: IncompleteDependency => incomplete
       }
+    case EmptyTree => CompletedType(NoType)
     // idnet or select?
     case other =>
       val resolvedSel = resolveSelectors(other, parentLookupScope)

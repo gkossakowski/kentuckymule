@@ -176,19 +176,7 @@ class ValDefCompleter(sym: ValDefSymbol, valDef: ValDef, val lookupScope: Lookup
   def isCompleted: Boolean = cachedInfo != null
 }
 
-abstract class TypeDefCompleter(sym: TypeDefSymbol) extends Completer(sym)
-
-// TODO: remove this once type members with bounds are implemented
-class StubTypeDefCompleter(sym: TypeDefSymbol) extends TypeDefCompleter(sym) {
-  private var cachedInfo: Type = _
-  override def isCompleted: Boolean = cachedInfo != null
-  override def complete()(implicit context: Context): CompletionResult = {
-    cachedInfo = NoType
-    CompletedType(cachedInfo)
-  }
-}
-
-class TypeAliasCompleter(sym: TypeDefSymbol, typeDef: TypeDef, val lookupScope: LookupScope) extends TypeDefCompleter(sym) {
+class TypeDefCompleter(sym: TypeDefSymbol, typeDef: TypeDef, val lookupScope: LookupScope) extends Completer(sym) {
   private var cachedInfo: TypeAliasInfoType = _
   def complete()(implicit context: Context): CompletionResult = try {
     val rhsType: Type = {

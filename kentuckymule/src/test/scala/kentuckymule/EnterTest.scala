@@ -927,6 +927,28 @@ object EnterTest extends TestSuite {
       val LookedupSymbol(barSym: ValDefSymbol) = Asym.info.lookup("bar".toTermName)
       assert(barSym.info.resultType == SymRef(Asym))
     }
+    'typeWithABound {
+      // `foo.type` is resolved to the type of `foo` and we forget about the singleton type
+      val src =
+        """class A {
+          |  type T <: B
+          |  val foo: T
+          |  val bar: foo.X
+          |}
+          |class B {
+          |  class X
+          |}""".stripMargin
+      val jobQueue = new JobQueue
+      enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val Xsym = classes("X".toTypeName)
+      val LookedupSymbol(barSym: ValDefSymbol) = Asym.info.lookup("bar".toTermName)
+      assert(barSym.info.resultType == SymRef(Xsym))
+    }
     'superInPath {
       // `foo.type` is resolved to the type of `foo` and we forget about the singleton type
       val src =

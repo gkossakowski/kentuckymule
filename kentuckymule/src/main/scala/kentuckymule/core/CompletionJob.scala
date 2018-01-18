@@ -49,11 +49,6 @@ class CompletionJob private(val completer: Completer, val queueStore: QueueJobSt
           spawnMembersCompletionJobs(classSym)
         } else emptySpawnedJobs
         CompleteResult(spawnedJobs)
-      // TODO: remove special treatment of StubTypeDefCompleter once poly type aliases are implemented
-      case CompletedType(NoType) if completer.isInstanceOf[StubTypeDefCompleter] =>
-        val typeDefSym = completer.sym.asInstanceOf[TypeDefSymbol]
-        typeDefSym.info = NoType
-        CompleteResult(emptySpawnedJobs)
       case CompletedType(tpe: Type) =>
         typeAssigner(completer.sym, tpe)
         CompleteResult(emptySpawnedJobs)
