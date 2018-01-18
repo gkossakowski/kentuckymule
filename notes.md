@@ -776,6 +776,163 @@ few more benefits in addition to adhering to principles I started off with:
   3. Tracking progress of typechecking is easy: I just check the size of the
   work queue.
 
+# Completers job queue and cycle detection
+
+On January 17 of 2018, I finished a redesign of the completers queue. The core
+concern of completers queue is scheduling and an execution of jobs according to
+a dependency graph that is not known upfront. The dependency graph is computed
+piecemeal by executing completers and collecting missing dependencies. Only
+completers that haven't ran yet are considered as missing dependencies.
+
+Above, in the "Completers design" section, I described the origins of the coopertive multitasking design of completers. I speculated in that section what
+capabilities the cooperative multitasking could unlock.
+
+The redesigned completers queue takes these earlier speculations and turns them
+ into an implementation.
+ The queue:
+
+  * tracks completers dependencies that are returned upon their execution
+  * schedules completers to execute
+  * detects cycles in completer dependencies with almost no additional
+    overhead(!)
+
+To my astonishment, I came up with a design of completers queue that
+can safely run in parallel with a minimal coordination and therefore is
+almost lock-free. This is a very surprsing side effect of me thinking how
+to detect cycles with a minimal overhead.
+
+To explain the new design, let me describe the previous way of scheduling
+completers. During the tree walk, when I enter all symbols to symbol table,
+I also schedule the corresponding completers. Completers for entered symbols
+are appended to the queue in the order of symbol creation. The order in the
+queue doesn't matter at this stage, though. Once the queue execution starts,
+the queue picks up a completer from the head of the queue, runs it and can
+receive either of the two results:
+
+  * completed type for a symbol
+  * dependency on a symbol that doesn't have a completed type (its
+    completer hasn't ran yet)
+
+The first case is straightforward: the completer did its job and is removed
+from the queue. In the second case, we append to the queue two jobs:
+
+  * the blocking completer that hasn't ran yet and blocks the completer we
+    just picked up from the queue
+  * the blocked completer
+
+If we picked up from queue completer `A` and it returned the dependency on
+incomplete `B`, we first append `B` and then `A` to the queue. This
+guarantees that the next time we try to run `A`, it will have `B` completed
+already.
+
+This very simple scheduling strategy worked ok to get Kentucky Mule
+off the ground. However, it can't deal with cyclic dependencies. E.g.:
+
+```scala
+class A extends B
+class B extends C
+class C extends A
+```
+
+Would result in the job queue growing indefinitely:
+
+```
+step 1: A B C
+step 2: B C B A # appened B A
+step 3: C B A C B # appended C B
+step 3: B A C B A C # appended A C
+...
+```
+
+Even if we didn't put the same job in the queue multiple times, we
+would get into an infinite loop anyways.
+
+In Kentucky Mule cycles appear only when the input Scala program has an
+illegal cycle. The result of running the queue should be an error message
+about the detected cycle.
+
+The new design of the queue keep tracks of pending jobs off the main queue.
+A job named `A` is marked as pending when it returns signaling to be blocked
+on another job `B`. `A` is also taken off the main queue. Only once `B`
+is completed, the `A` job is added back to the main queue. This scheme has
+the property that if jobs are in a cycle, they will all be marked as pending
+and taken away from the main queue. The cycle detection becomes trivial. When
+the main job queue queue becomes empty, it either:
+
+  * finished executing all jobs (all completers are done) when there're no
+    jobs marked as pending
+  * it found a cycle when there're jobs marked as pending
+
+In the example above with the `A`, `B`, `C` classes we would have:
+
+```
+step 1: A B C # A marked as pending
+step 2: B C   # B marked as pending
+step 3: C     # C marked as pending
+step 4:       # empty queue, pending jobs exist => cycle detected
+```
+
+If some blocking job does complete, its pending jobs need to be released back
+to the main queue. I implemented this by maintaing an auxiliary queue
+associated with each job. I also have a global count of all pending jobs that
+is trivial to implement and makes checking for cycle simple. This is not merely
+a performance optimisation: I don't have a registry of all auxiliary queues so
+it would be hard to find out if there're any pending jobs left.
+
+The exciting thing about this design is that we check for cycles only _once_
+during the whole execution of the job queue: when the main job queue becomes
+empty. This design permits the jobs to run in parallel at ~zero cost precisely
+because the cycle detection criteria is so simple.
+
+My redesign abstracted away completers from the queue by introduction of `QueueJob` interface (a bit simplified compared to the implementation in the
+code):
+
+```scala
+trait QueueJob {
+  def complete(): JobResult
+  def isCompleted: Boolean
+  val queueStore: QueueJobStore
+}
+```
+
+The job returns a result that is an ADT:
+
+```scala
+sealed abstract class JobResult
+case class CompleteResult(spawnedJobs: Seq[QueueJob]) extends JobResult
+case class IncompleteResult(blockingJob: QueueJob) extends JobResult
+```
+
+The `spawnedJobs` is a bit of a technical detail not essential for
+understanding how the queue is implemented. Check the code comments
+for why `spawnedJobs` are there.
+
+Each job has the `QueueJobStore` associated with it and that's where the
+queue stores pending completers blocked on a given job.
+
+Let's now look at the performance cost of the additional bookkeeping
+necessary to implement this queue algorithm.
+
+The performance before job queue work:
+
+```
+# 6de307222a49c65fa149e4261018e2a167a485d5
+[info] Benchmark                            Mode  Cnt     Score    Error  Units
+[info] BenchmarkScalap.completeMemberSigs  thrpt  120  1927.406 ± 13.310  ops/s
+```
+
+with all job queue changes:
+
+```
+# ab6dd8280ac9cade0f87893924f884e46d8a28dc
+[info] Benchmark                            Mode  Cnt     Score   Error  Units
+[info] BenchmarkScalap.completeMemberSigs  thrpt  120  1821.394 ± 9.491  ops/s
+```
+
+I lost ~110ops which is 5.5% of performance. This is actually really good
+result for such a substantial piece of work like major queue refactor and cycle detection algorithm. And let's not forget that 1820ops/s corresponds to
+over 3.6 million lines of scalap code per second.
+
 # Extracting dependencies from a symbol table
 
 ## Intro
