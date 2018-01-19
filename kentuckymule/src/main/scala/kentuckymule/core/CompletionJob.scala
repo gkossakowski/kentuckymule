@@ -23,7 +23,24 @@ class CompletionJob private(val completer: Completer, val queueStore: QueueJobSt
   assert(completer != null)
 
   override def complete(memberListOnly: Boolean)(implicit ctx: Context): JobResult = {
-    val completerResult = completer.complete()
+    // this is a hacky way to enforce that owners of a class or type def are completed
+    // TODO: figure out more systematic way of handling this, should we enforce this dependency in completers, here
+    // or somewhere else? in which cases of the owner -> member relationship there's a dependency on completers?
+    completer.sym match {
+      case td: TypeDefSymbol =>
+        if (!td.enclosingClass.isComplete)
+          return IncompleteResult(CompletionJob.createOrFetch(td.enclosingClass.completer))
+      case cls: ClassSymbol =>
+        if (!cls.owner.isComplete)
+          return IncompleteResult(CompletionJob.createOrFetch(cls.owner.completer))
+      case _ => ()
+    }
+    val completerResult =
+      try {
+        completer.complete()
+      } catch {
+        case ex: Exception => throw new Exception(s"Failed to run completer for ${completer.sym}", ex)
+      }
     completerResult match {
       case CompletedType(tpe: ClassInfoType) =>
         val classSym = tpe.clsSym
