@@ -45,7 +45,9 @@ class Enter(jobQueue: JobQueue) {
                                          parentScope: LookupScope) extends LookupScope {
     def this(classSym: ClassSymbol, parentScope: LookupScope) = this(classSym, null, parentScope)
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
-      val classFoundSym = classSym.lookup(name)
+      if (!classSym.isComplete)
+        return IncompleteDependency(classSym)
+      val classFoundSym = classSym.info.lookup(name)
       if (classFoundSym != NoSymbol)
         return LookedupSymbol(classFoundSym)
       if (imports != null) {
@@ -67,7 +69,9 @@ class Enter(jobQueue: JobQueue) {
                                           parentScope: LookupScope) extends LookupScope {
     def this(moduleSym: ModuleSymbol, parentScope: LookupScope) = this(moduleSym, null, parentScope)
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
-      val foundSym = moduleSym.lookup(name)
+      if (!moduleSym.isComplete)
+        return IncompleteDependency(moduleSym)
+      val foundSym = moduleSym.info.lookup(name)
       if (foundSym != NoSymbol)
         LookedupSymbol(foundSym)
       else {

@@ -600,6 +600,31 @@ val enter = enterToSymbolTable(ctx, jobQueue)(src)
         assert(Aparents.head == SymRef(Bsym))
       }
     }
+    'objectInheritedMember {
+      val src =
+        """|class A { class Foo }
+           |object B extends A {
+           |  def abc: Foo
+           |}
+        """.stripMargin
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
+      val allPaths = descendantPathsFromRoot()
+      val classes = allPaths.flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val objects = allPaths.flatten.collect {
+        case modSym: ModuleSymbol => modSym.name -> modSym
+      }.toMap
+      val Foosym = classes("Foo".toTypeName)
+      val Bsym = objects("B".toTermName)
+      locally {
+        val abcSym = Bsym.info.lookup("abc".toTermName).asInstanceOf[DefDefSymbol]
+        val abcResultType = abcSym.info.resultType
+        assert(abcResultType == SymRef(Foosym))
+      }
+    }
     'cyclicTypeParents {
       val src =
         """
