@@ -156,7 +156,7 @@ object ScalaLibHelper {
       val clsInfo = if (sym.clsSym.isComplete)
           sym.clsSym.info
         else
-          return IncompleteDependency(sym)
+          return IncompleteDependency(sym.clsSym)
       CompletedType(new ModuleInfoType(sym, clsInfo))
     }
     override def isCompleted: Boolean = false
