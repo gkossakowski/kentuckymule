@@ -41,8 +41,7 @@ class CompletionJob private(val completer: Completer, val queueStore: QueueJobSt
         typeAssigner(completer.sym, tpe)
         CompleteResult(emptySpawnedJobs)
       // error cases
-      case incomplete@(IncompleteDependency(_: TypeParameterSymbol) | IncompleteDependency(NoSymbol) |
-                       IncompleteDependency(_: PackageSymbol)) =>
+      case incomplete@(IncompleteDependency(_: TypeParameterSymbol) | IncompleteDependency(NoSymbol)) =>
         sys.error(s"Unexpected incomplete dependency $incomplete")
       case completionResult: IncompleteDependency =>
         val completionJob = CompletionJob.createOrFetch(completionResult.sym.completer)
