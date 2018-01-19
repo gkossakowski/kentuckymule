@@ -264,7 +264,7 @@ class Enter(jobQueue: JobQueue) {
     override def enclosingClass: LookupAnswer = NotFound
   }
 
-  private class LookupScopeContext(imports: ImportsCollector, val parentScope: LookupScope) {
+  private class LookupScopeContext(imports: ImportsCollector, parentScope: LookupScope) {
     private var cachedSimpleMemberLookupScope: LookupScope = parentScope
     def addImport(imp: Import): Unit = {
       cachedSimpleMemberLookupScope = null
@@ -305,7 +305,7 @@ class Enter(jobQueue: JobQueue) {
       if (cachedSimpleMemberLookupScope != null)
         cachedSimpleMemberLookupScope
       else {
-        cachedSimpleMemberLookupScope = parentScope.addImports(imports.snapshot())
+        cachedSimpleMemberLookupScope = parentScopeWithImports()
         cachedSimpleMemberLookupScope
       }
     }
@@ -324,6 +324,10 @@ class Enter(jobQueue: JobQueue) {
       } else {
         simpleMemberLookupScope()
       }
+
+    def newMemberLookupScope(): LookupScope = {
+      simpleMemberLookupScope()
+    }
   }
 
   private def enterTree(tree: Tree, owner: Symbol, parentLookupScopeContext: LookupScopeContext)(implicit context: Context): Unit = tree match {
@@ -353,7 +357,7 @@ class Enter(jobQueue: JobQueue) {
       }
       modOwner.addChild(modSym)
       locally {
-        val completer = new TemplateMemberListCompleter(modClsSym, tmpl, lookupScopeContext.parentScope)
+        val completer = new TemplateMemberListCompleter(modClsSym, tmpl, parentLookupScopeContext.newMemberLookupScope())
         jobQueue.queueCompleter(completer, pushToTheEnd = !isPackageObject)
         modClsSym.completer = completer
       }
@@ -390,10 +394,10 @@ class Enter(jobQueue: JobQueue) {
         }
       }
 
-      val lookupScopeContext = classSignatureLookupScopeContext.pushClassLookupScope(classSym)
-      val completer = new TemplateMemberListCompleter(classSym, tmpl, lookupScopeContext.parentScope)
+      val completer = new TemplateMemberListCompleter(classSym, tmpl, classSignatureLookupScopeContext.newMemberLookupScope())
       jobQueue.queueCompleter(completer)
       classSym.completer = completer
+      val lookupScopeContext = classSignatureLookupScopeContext.pushClassLookupScope(classSym)
       for (stat <- tmpl.body) enterTree(stat, classSym, lookupScopeContext)
     // type member (with bounds)
     case TypeDef(name, _: TypeBoundsTree) =>
