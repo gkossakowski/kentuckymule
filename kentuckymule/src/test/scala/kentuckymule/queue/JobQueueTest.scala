@@ -4,7 +4,7 @@ import java.util
 
 import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.core.Contexts.ContextBase
-import kentuckymule.queue.JobQueue.{CollectingPendingJobsQueueStrategy, CompleterStats, JobDependencyCycle}
+import kentuckymule.queue.JobQueue.{CollectingPendingJobsQueueStrategy, CompleterStats, IllegalJobSelfDependency, JobDependencyCycle}
 import kentuckymule.queue.QueueJob.{CompleteResult, IncompleteResult}
 import utest._
 
@@ -80,6 +80,16 @@ object JobQueueTest extends TestSuite {
       val expectedCycleSet = Set(testJob1, testJob2, testJob3)
       val actualCycleSet = foundCycle.toSet
       assert(expectedCycleSet == actualCycleSet)
+    }
+    'rejectJobCycleOnItself {
+      val jobQueue = new JobQueue(queueStrategy = CollectingPendingJobsQueueStrategy)
+      val testJob = new TestJob()
+      testJob.deps = testJob :: Nil
+      jobQueue.queueJob(testJob)
+      val ex = intercept[IllegalJobSelfDependency] {
+        jobQueue.processJobQueue()
+      }
+      assert(ex.job == testJob)
     }
   }
 

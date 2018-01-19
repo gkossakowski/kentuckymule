@@ -55,6 +55,8 @@ class JobQueue(memberListOnly: Boolean = false, queueStrategy: QueueStrategy = C
             case cr: CompleteResult =>
               completeJob(completionJob, cr)
             case IncompleteResult(blockingJob) =>
+              if (blockingJob == completionJob)
+                throw new IllegalJobSelfDependency(blockingJob)
               missedDeps += 1
               queueIncompleteDependencyJobs(attemptedJob = completionJob, blockingJob = blockingJob)
           }
@@ -158,6 +160,8 @@ object JobQueue {
   sealed trait QueueStrategy
   case object RolloverQeueueStrategy extends QueueStrategy
   case object CollectingPendingJobsQueueStrategy extends QueueStrategy
+
+  class IllegalJobSelfDependency(val job: QueueJob) extends Exception(s"Illegal dependency of a job on itself: $job")
 
   /**
     * Find dependency cycle amongst jobs passed as an argument. It reconstructs dependencies by
