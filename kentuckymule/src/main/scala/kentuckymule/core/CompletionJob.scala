@@ -31,7 +31,7 @@ class CompletionJob private(val completer: Completer, val queueStore: QueueJobSt
         if (!td.enclosingClass.isComplete)
           return IncompleteResult(CompletionJob.createOrFetch(td.enclosingClass.completer))
       case cls: ClassSymbol =>
-        if (!cls.owner.isComplete)
+        if (!cls.owner.isComplete && !cls.owner.isInstanceOf[PackageSymbol])
           return IncompleteResult(CompletionJob.createOrFetch(cls.owner.completer))
       case _ => ()
     }

@@ -12,7 +12,7 @@ import dotc.core.Decorators._
 import dotc.core.Names.{Name, TypeName}
 import dotty.tools.dotc.core.TypeOps.AppliedTypeMemberDerivation
 import kentuckymule.queue.{JobQueue, QueueJob}
-import kentuckymule.queue.JobQueue.JobDependencyCycle
+import kentuckymule.queue.JobQueue.{CompleterStats, JobDependencyCycle}
 import utest._
 
 object EnterTest extends TestSuite {
@@ -289,6 +289,29 @@ object EnterTest extends TestSuite {
       val dLookupScope = dCompleter.lookupScope
       val ans = dLookupScope.lookup("C".toTypeName)(ctx)
       assert(ans.isInstanceOf[LookedupSymbol])
+    }
+    'packageObjectInheritsFromTheSamePackageMember {
+      val src =
+        """
+          |package foo {
+          |  package bar {
+          |    class A {
+          |      class B
+          |    }
+          |  }
+          |}
+          |package foo {
+          |  package object bar extends A
+          |}""".stripMargin
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      val queueResult = jobQueue.processJobQueue()(ctx)
+      assert(queueResult.isInstanceOf[CompleterStats])
+      val fooPkg = ctx.definitions.rootPackage.info.lookup("foo".toTermName)
+      val barPkg = fooPkg.info.lookup("bar".toTermName)
+      val barPkgMembers = barPkg.info.asInstanceOf[PackageInfoType].members.map(_.name).toSet
+      val expectedMembers = Set("A".toTypeName, "B".toTypeName, "package".toTermName)
+      assert(barPkgMembers == expectedMembers)
     }
     'predefAndScalaPackagePrecedence {
       val src =

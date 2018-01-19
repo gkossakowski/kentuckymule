@@ -239,12 +239,29 @@ class Enter(jobQueue: JobQueue) {
 
   }
 
+  // the `isForPackageObject` exists solely to support package objects that
+  // inherit from classes in the same package:
+  // package foo {
+  //   class A
+  // }
+  // package object foo extends A
+  // this structure is extremely weird and, honestly, ill-defined but it's
+  // supported in Scala (sadly)
+  // the ill-defined part comes from the fact that `package object foo` both
+  // contributes members to `foo` and consumes them at the same time
+  // the `isForPackageObject` disabled lookup via info (which would lead to
+  // a cycle) and performs lookup via `decls` which escapes the cycle because
+  // it only includes members that are syntactically entered into a package
   class PackageLookupScope private(val pkgSym: Symbol,
                                    val parent: LookupScope,
-                                   val imports: ImportsLookup) extends LookupScope {
-    def this(pkgSym: Symbol, parent: LookupScope) = this(pkgSym, parent, null)
+                                   val imports: ImportsLookup,
+                                  isForPackageObject: Boolean) extends LookupScope {
+    def this(pkgSym: Symbol, parent: LookupScope, isForPackageObject: Boolean) =
+      this(pkgSym, parent, null, isForPackageObject)
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
-      val pkgMember = if (!pkgSym.isComplete) {
+      val pkgMember = if (isForPackageObject) {
+        pkgSym.lookup(name)
+      } else if (!pkgSym.isComplete) {
         return IncompleteDependency(pkgSym)
       } else {
         pkgSym.info.lookup(name)
@@ -263,7 +280,7 @@ class Enter(jobQueue: JobQueue) {
     }
 
     override def addImports(imports: ImportsLookup): LookupScope =
-      new PackageLookupScope(pkgSym, parent, imports)
+      new PackageLookupScope(pkgSym, parent, imports, isForPackageObject)
 
     override def enclosingClass: LookupAnswer = NotFound
   }
@@ -280,8 +297,8 @@ class Enter(jobQueue: JobQueue) {
       else
         parentScope
     }
-    def pushPackageLookupScope(pkgSym: PackageSymbol): LookupScopeContext = {
-      val pkgLookupScope = new PackageLookupScope(pkgSym, parentScopeWithImports())
+    def pushPackageLookupScope(pkgSym: PackageSymbol, isForPackageObjectLookup: Boolean): LookupScopeContext = {
+      val pkgLookupScope = new PackageLookupScope(pkgSym, parentScopeWithImports(), isForPackageObjectLookup)
       val pkgImports = new ImportsCollector(pkgLookupScope)
       new LookupScopeContext(pkgImports, pkgLookupScope)
     }
@@ -337,7 +354,7 @@ class Enter(jobQueue: JobQueue) {
   private def enterTree(tree: Tree, owner: Symbol, parentLookupScopeContext: LookupScopeContext)(implicit context: Context): Unit = tree match {
     case PackageDef(ident, stats) =>
       val pkgSym = expandQualifiedPackageDeclaration(ident, owner)
-      val lookupScopeContext = parentLookupScopeContext.pushPackageLookupScope(pkgSym)
+      val lookupScopeContext = parentLookupScopeContext.pushPackageLookupScope(pkgSym, isForPackageObjectLookup = false)
       for (stat <- stats) enterTree(stat, pkgSym, lookupScopeContext)
     case imp: Import =>
       parentLookupScopeContext.addImport(imp)
@@ -352,16 +369,15 @@ class Enter(jobQueue: JobQueue) {
         assert(modOwner.isInstanceOf[PackageSymbol], "package object has to be declared inside of a package (enforced by syntax)")
         modOwner.asInstanceOf[PackageSymbol].packageObject = modSym
       }
-      val lookupScopeContext = if (isPackageObject) {
-        parentLookupScopeContext.
-          pushPackageLookupScope(modOwner.asInstanceOf[PackageSymbol]).
-          pushModuleLookupScope(modSym)
-      } else {
-        parentLookupScopeContext.pushModuleLookupScope(modSym)
-      }
       modOwner.addChild(modSym)
       locally {
-        val completer = new TemplateMemberListCompleter(modClsSym, tmpl, parentLookupScopeContext.newMemberLookupScope())
+        val moduleSignatureLookupScopeContext = if (isPackageObject) {
+          parentLookupScopeContext.
+            pushPackageLookupScope(modOwner.asInstanceOf[PackageSymbol], isForPackageObjectLookup = true)
+        } else {
+          parentLookupScopeContext
+        }
+        val completer = new TemplateMemberListCompleter(modClsSym, tmpl, moduleSignatureLookupScopeContext.newMemberLookupScope())
         jobQueue.queueCompleter(completer, pushToTheEnd = !isPackageObject)
         modClsSym.completer = completer
       }
@@ -370,7 +386,14 @@ class Enter(jobQueue: JobQueue) {
         jobQueue.queueCompleter(completer, pushToTheEnd = !isPackageObject)
         modSym.completer = completer
       }
-      for (stat <- tmpl.body) enterTree(stat, modClsSym, lookupScopeContext)
+      val moduleSignatureLookupScopeContext = if (isPackageObject) {
+        parentLookupScopeContext.
+          pushPackageLookupScope(modOwner.asInstanceOf[PackageSymbol], isForPackageObjectLookup = false)
+      } else {
+        parentLookupScopeContext
+      }
+      val templateMemberListLookupScopeContext = moduleSignatureLookupScopeContext.pushModuleLookupScope(modSym)
+      for (stat <- tmpl.body) enterTree(stat, modClsSym, templateMemberListLookupScopeContext)
     // class or trait
     case t@TypeDef(name, tmpl: Template) if t.isClassDef =>
       val classSym = ClassSymbol(name, owner)
