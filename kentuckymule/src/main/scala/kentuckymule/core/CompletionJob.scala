@@ -61,9 +61,8 @@ class CompletionJob private(val completer: Completer, val queueStore: QueueJobSt
       case defSym: DefDefSymbol => jobs.add(CompletionJob.createOrFetch(defSym.completer))
       case valSym: ValDefSymbol => jobs.add(CompletionJob.createOrFetch(valSym.completer))
       case _: ClassSymbol | _: ModuleSymbol =>
-      case decl@(_: TypeDefSymbol) =>
-        if (ctx.verbose)
-          println(s"Ignoring type def $decl in ${sym.name}")
+      case typeDefSym@(_: TypeDefSymbol) =>
+        jobs.add(CompletionJob.createOrFetch(typeDefSym.completer))
       case decl@(_: TypeParameterSymbol | _: PackageSymbol | NoSymbol) =>
         sys.error(s"Unexpected class declaration: $decl")
     }

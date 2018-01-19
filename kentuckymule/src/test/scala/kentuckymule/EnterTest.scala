@@ -714,6 +714,29 @@ val enter = enterToSymbolTable(ctx, jobQueue)(src)
         assert(bResultType == SymRef(fooSym))
       }
     }
+    'typeAliasInherited {
+      val src =
+        """|class Foo
+           |class Bar {
+           |  type T = Foo
+           |}
+           |class Baz extends Bar {
+           |  def abc: T
+           |}
+           |
+        """.stripMargin
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val bazSym = classes("Baz".toTypeName)
+      val abcSym = bazSym.info.lookup("abc".toTermName)
+      val tSym = bazSym.info.lookup("T".toTypeName)
+      val abcResultType = abcSym.info.asInstanceOf[MethodInfoType].resultType
+      assert(abcResultType == SymRef(tSym))
+    }
     'defTupleReturn {
       val src = "class A { def a[T,U](x: T): (T, U) }"
       val jobQueue = new JobQueue
