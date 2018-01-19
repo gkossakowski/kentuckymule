@@ -19,14 +19,15 @@ object ScalaLibHelper {
     enterStubClasses(ioPkg, "ByteArrayOutputStream", "OutputStreamWriter", "PrintStream", "IOException", "Writer",
     "Serializable", "ObjectOutputStream", "ObjectInputStream", "File", "FileReader", "Reader", "PrintWriter",
     "FileInputStream", "PrintStream", "Closeable", "InputStream", "PushbackReader", "BufferedReader",
-      "InputStreamReader", "OutputStream")
+      "InputStreamReader", "OutputStream", "Flushable", "InterruptedIOException", "FilterInputStream", "FilterOutputStream",
+    "PipedInputStream", "PipedOutputStream", "FileOutputStream")
 
     // enter java.util
     val javaUtilPkg = enterStubPackage("util", javaPkg)
     enterStubClasses(javaUtilPkg, "Collection", "NoSuchElementException", "WeakHashMap", "Arrays",
     "ConcurrentModificationException", "Enumeration", "Dictionary", "Properties", "Comparator", "Iterator", "List",
     "Set", "Map", "AbstractCollection", "AbstractCollection", "AbstractList", "AbstractSet", "AbstractMap", "Properties",
-    "Random")
+    "Random", "Locale")
 
     locally {
       val javaUtilMapObj = enterStubObject(javaUtilPkg, "Map")
@@ -42,7 +43,7 @@ object ScalaLibHelper {
     enterStubClasses(javaUtilConcurrentPkg, "ForkJoinWorkerThread", "ForkJoinTask", "Callable",
       "Executor", "ExecutorService", "ThreadFactory", "TimeUnit", "CountDownLatch", "LinkedTransferQueue",
       "RecursiveAction", "RecursiveTask", "ThreadLocalRandom", "ExecutionException", "CancellationException",
-      "TimeoutException", "ConcurrentMap")
+      "TimeoutException", "ConcurrentMap", "LinkedBlockingQueue")
 
     // enter java.util.concurrent.ForkJoinPool and .ForkJoinWorkerThreadFactory
     {
@@ -55,7 +56,7 @@ object ScalaLibHelper {
 
     // enter java.util.concurrent.atomic
     val javaUtilConcurrentAtomicPkg = enterStubPackage("atomic", javaUtilConcurrentPkg)
-    enterStubClasses(javaUtilConcurrentAtomicPkg, "AtomicInteger", "AtomicReference")
+    enterStubClasses(javaUtilConcurrentAtomicPkg, "AtomicInteger", "AtomicReference", "AtomicReferenceFieldUpdater")
 
     // java.util.concurrent.locks
     val javaUtilConcurrentLocksPkg = enterStubPackage("locks", javaUtilConcurrentPkg)
@@ -69,7 +70,11 @@ object ScalaLibHelper {
       "UnsupportedOperationException", "IllegalArgumentException", "NumberFormatException", "AbstractMethodError",
       "InterruptedException", "System", "StringBuilder", "StackOverflowError", "Cloneable", "InheritableThreadLocal",
       "Object", "ClassLoader", "Character", "Short", "Boolean", "Float", "Comparable", "Thread", "Byte",
-      "Iterable", "Runtime")
+      "Iterable", "Runtime", "Process", "ProcessBuilder", "StringBuffer", "Appendable")
+    locally {
+      val threadObj = enterStubObject(javaLangPkg, "Thread")
+      enterStubClass(threadObj, "UncaughtExceptionHandler")
+    }
 
     // enter java.lang.ref
     val javaLangRefPkg = enterStubPackage("ref", javaLangPkg)
@@ -83,7 +88,7 @@ object ScalaLibHelper {
     // enter java.lang.invoke
     val javaLangInvoke = enterStubPackage("invoke", javaLangPkg)
     locally {
-      enterStubClasses(javaLangInvoke, "SerializedLambda")
+      enterStubClasses(javaLangInvoke, "SerializedLambda", "MethodHandle")
       val methodHandlesObj = enterStubObject(javaLangInvoke, "MethodHandles")
       enterStubClass(methodHandlesObj, "Lookup")
     }
