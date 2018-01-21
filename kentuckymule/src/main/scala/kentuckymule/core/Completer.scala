@@ -75,7 +75,12 @@ class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val l
             case Right(derivation) => derivation
           }
           for (m <- parentInfo.members.iterator) {
-            if (!m.isComplete)
+            // we only derive inherited defs and vals at the moment so we only need to make sure
+            // these members are complete below.
+            // TODO: figure out some less ad-hoc rule, also should we derive inherited classes here or have
+            // some other mechanism?
+            val eligibleForDerivation = m.isInstanceOf[DefDefSymbol] || m.isInstanceOf[ValDefSymbol]
+            if (eligibleForDerivation && !m.isComplete)
               return IncompleteDependency(m)
             val derivedInheritedMember = appliedTypeMemberDerivation.deriveInheritedMemberOfAppliedType(m)
             info.members.enter(derivedInheritedMember)
