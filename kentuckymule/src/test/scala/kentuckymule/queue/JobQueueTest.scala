@@ -81,6 +81,23 @@ object JobQueueTest extends TestSuite {
       val actualCycleSet = foundCycle.toSet
       assert(expectedCycleSet == actualCycleSet)
     }
+    'twoElementCycle {
+      val jobQueue = new JobQueue(queueStrategy = CollectingPendingJobsQueueStrategy)
+      val testJob1, testJob2 = new TestJob()
+      testJob1.deps = testJob2 :: Nil
+      testJob2.deps = testJob1 :: Nil
+      jobQueue.queueJob(testJob1)
+      jobQueue.queueJob(testJob2)
+      val JobDependencyCycle(foundCycle) = jobQueue.processJobQueue()
+
+      // none of the jobs in the cycle should be completed
+      assert(!testJob1.isCompleted)
+      assert(!testJob2.isCompleted)
+
+      val expectedCycleSet = Set(testJob1, testJob2)
+      val actualCycleSet = foundCycle.toSet
+      assert(expectedCycleSet == actualCycleSet)
+    }
     'rejectJobCycleOnItself {
       val jobQueue = new JobQueue(queueStrategy = CollectingPendingJobsQueueStrategy)
       val testJob = new TestJob()
