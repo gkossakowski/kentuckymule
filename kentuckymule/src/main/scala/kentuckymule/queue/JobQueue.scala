@@ -43,7 +43,7 @@ class JobQueue(memberListOnly: Boolean = false, queueStrategy: QueueStrategy = C
       while (!completionJobs.isEmpty) {
         steps += 1
         if (ctx.verbose)
-          println(s"Step $steps/${steps + completionJobs.size - 1}")
+          println(s"Step $steps/${steps + completionJobs.size - 1} (pendingJobs = $pendingJobsCount)")
         val completionJob = completionJobs.remove()
         if (ctx.verbose)
           println(s"Trying to complete $completionJob")
@@ -80,12 +80,14 @@ class JobQueue(memberListOnly: Boolean = false, queueStrategy: QueueStrategy = C
   }
 
   private def queueIncompleteDependencyJobs(attemptedJob: QueueJob,
-                                            blockingJob: QueueJob): Unit = {
+                                            blockingJob: QueueJob)(implicit ctx: Context): Unit = {
     queueStrategy match {
       case RolloverQeueueStrategy =>
         queueJob(blockingJob)
         queueJob(attemptedJob)
       case CollectingPendingJobsQueueStrategy =>
+        if (ctx.verbose)
+          println(s"Adding $attemptedJob as pending job to the blocking job $blockingJob")
         addPendingJob(queueJob = blockingJob, pendingJob = attemptedJob)
         // this conditional is crucial for queue cycle detection
         // we only add a job if it's not queued yet which means that it's
@@ -97,8 +99,11 @@ class JobQueue(memberListOnly: Boolean = false, queueStrategy: QueueStrategy = C
         // - queued (sits in the main queue)
         // - pending (sits in the auxiliary queue of pending jobs of another job)
         // TODO: make these state transitions more explicit with a simple state machine
-        if (!blockingJob.queueStore.queued)
+        if (!blockingJob.queueStore.queued) {
+          if (ctx.verbose)
+            println(s"The blocking job hasn't been scheduled yet queuing $blockingJob")
           queueJob(blockingJob)
+        }
     }
   }
 
@@ -110,21 +115,26 @@ class JobQueue(memberListOnly: Boolean = false, queueStrategy: QueueStrategy = C
     possiblyPendingJobs.add(pendingJob)
   }
 
-  private def flushPendingJobs(queueJob: QueueJob): Unit = {
+  private def flushPendingJobs(queueJob: QueueJob)(implicit ctx: Context): Unit = {
     val pendingJobs = queueJob.queueStore.pendingJobs
     if (pendingJobs != null) {
+      if (ctx.verbose) {
+        println(s"Flushing ${pendingJobs.size} pending jobs of $queueJob")
+        pendingJobs.forEach(job => println(s"\t$job"))
+      }
       appendAllJobs(pendingJobs)
       pendingJobsCount -= pendingJobs.size()
       pendingJobs.clear()
     }
   }
 
-  private def completeJob(attemptedCompletionJob: QueueJob, completeResult: CompleteResult): Unit = {
+  private def completeJob(attemptedCompletionJob: QueueJob, completeResult: CompleteResult)
+                         (implicit ctx: Context): Unit = {
     appendAllJobs(completeResult.spawnedJobs)
     postComplete(attemptedCompletionJob)
   }
 
-  private def postComplete(completionJob: QueueJob): Unit = {
+  private def postComplete(completionJob: QueueJob)(implicit ctx: Context): Unit = {
     queueStrategy match {
       case RolloverQeueueStrategy => ()
       case CollectingPendingJobsQueueStrategy =>
