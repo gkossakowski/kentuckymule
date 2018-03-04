@@ -5,6 +5,7 @@ import java.nio.file.{FileSystems, Files}
 import dotty.tools.dotc.core.Contexts.Context
 import kentuckymule.core._
 import kentuckymule.core.Symbols.{ClassSymbol, ModuleSymbol, PackageSymbol, StubClassSymbol, StubModuleSymbol, Symbol}
+import kentuckymule.core.Types.{ClassInfoType, ModuleInfoType}
 import kentuckymule.queue.JobQueue
 
 object ScalaLibHelper {
@@ -143,43 +144,62 @@ object ScalaLibHelper {
   }
 
   private class StubClassCompleter(sym: ClassSymbol) extends Completer(sym) {
+    var cachedInfo: ClassInfoType = _
     override def complete()(implicit context: Context): CompletionResult = {
-      import kentuckymule.core.Types._
-      CompletedType(new ClassInfoType(sym, Nil))
+      if (cachedInfo == null) {
+        import kentuckymule.core.Types._
+        cachedInfo = new ClassInfoType(sym, Nil)
+        cachedInfo.members.enterAll(sym.decls)
+      }
+      CompletedType(cachedInfo)
     }
-    override def isCompleted: Boolean = false
+    override def isCompleted: Boolean = cachedInfo != null
   }
 
   private class StubModuleCompleter(sym: ModuleSymbol) extends Completer(sym) {
+    var cachedInfo: ModuleInfoType = _
     override def complete()(implicit context: Context): CompletionResult = {
       import kentuckymule.core.Types._
-      val clsInfo = if (sym.clsSym.isComplete)
+      if (cachedInfo == null) {
+        val clsInfo = if (sym.clsSym.isComplete)
           sym.clsSym.info
         else
           return IncompleteDependency(sym.clsSym)
-      CompletedType(new ModuleInfoType(sym, clsInfo))
+        cachedInfo = new ModuleInfoType(sym, clsInfo)
+      }
+      CompletedType(cachedInfo)
     }
-    override def isCompleted: Boolean = false
+    override def isCompleted: Boolean = cachedInfo != null
   }
 
-  private def enterStubClasses(pkg: PackageSymbol, classNames: String*)(implicit context: Context): Unit = {
+  private def enterStubClasses(pkg: PackageSymbol, classNames: String*)
+                              (implicit jobQueue: JobQueue, context: Context): Unit = {
     for (className <- classNames) {
       enterStubClass(pkg, className)
     }
   }
 
-  private def enterStubClass(parent: Symbol, className: String)(implicit context: Context): StubClassSymbol = {
+  private def enterStubClass(parent: StubModuleSymbol, className: String)
+                            (implicit jobQueue: JobQueue, context: Context): StubClassSymbol = {
+    enterStubClass(parent.clsSym, className)
+  }
+
+  private def enterStubClass(parent: Symbol, className: String)
+                            (implicit jobQueue: JobQueue, context: Context): StubClassSymbol = {
     val cls = new StubClassSymbol(className.toTypeName, parent)
     cls.completer = new StubClassCompleter(cls)
+    jobQueue.queueCompleter(cls.completer)
     parent.addChild(cls)
     cls
   }
 
-  private def enterStubObject(parent: Symbol, objectName: String)(implicit context: Context): StubModuleSymbol = {
+  private def enterStubObject(parent: Symbol, objectName: String)
+                             (implicit jobQueue: JobQueue, context: Context): StubModuleSymbol = {
     val modClsSym = new StubClassSymbol(objectName.toTypeName.moduleClassName, parent)
     modClsSym.completer = new StubClassCompleter(modClsSym)
     val modSym = new StubModuleSymbol(objectName.toTermName, modClsSym, parent)
     modSym.completer = new StubModuleCompleter(modSym)
+    jobQueue.queueCompleter(modSym.completer)
     parent.addChild(modSym)
     modSym
   }
