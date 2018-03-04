@@ -10,6 +10,7 @@ import utest._
 
 import scala.collection.JavaConverters._
 
+//noinspection ComparingLength
 object JobQueueTest extends TestSuite {
   def initCtx: Context = (new ContextBase).initialCtx
   val tests = this {
@@ -68,7 +69,7 @@ object JobQueueTest extends TestSuite {
       jobQueue.queueJob(testJob2)
       jobQueue.queueJob(testJob1)
       jobQueue.queueJob(testJob3)
-      val JobDependencyCycle(foundCycle) = jobQueue.processJobQueue()
+      val JobDependencyCycle(foundCycles) = jobQueue.processJobQueue()
 
       assert(testJob4.isCompleted)
 
@@ -78,7 +79,8 @@ object JobQueueTest extends TestSuite {
       assert(!testJob3.isCompleted)
 
       val expectedCycleSet = Set(testJob1, testJob2, testJob3)
-      val actualCycleSet = foundCycle.toSet
+      assert(foundCycles.size == 1)
+      val actualCycleSet = foundCycles.head.toSet
       assert(expectedCycleSet == actualCycleSet)
     }
     'twoElementCycle {
@@ -88,14 +90,36 @@ object JobQueueTest extends TestSuite {
       testJob2.deps = testJob1 :: Nil
       jobQueue.queueJob(testJob1)
       jobQueue.queueJob(testJob2)
-      val JobDependencyCycle(foundCycle) = jobQueue.processJobQueue()
+      val JobDependencyCycle(foundCycles) = jobQueue.processJobQueue()
 
       // none of the jobs in the cycle should be completed
       assert(!testJob1.isCompleted)
       assert(!testJob2.isCompleted)
 
       val expectedCycleSet = Set(testJob1, testJob2)
-      val actualCycleSet = foundCycle.toSet
+      assert(foundCycles.size == 1)
+      val actualCycleSet = foundCycles.head.toSet
+      assert(expectedCycleSet == actualCycleSet)
+    }
+    'jobDependsOnCycle {
+      val jobQueue = new JobQueue(queueStrategy = CollectingPendingJobsQueueStrategy)
+      val testJob1, testJob2, testJob3 = new TestJob()
+      testJob1.deps = testJob2 :: Nil
+      testJob2.deps = testJob1 :: Nil
+      testJob3.deps = testJob1 :: Nil
+      jobQueue.queueJob(testJob1)
+      jobQueue.queueJob(testJob2)
+      jobQueue.queueJob(testJob3)
+      val JobDependencyCycle(foundCycles) = jobQueue.processJobQueue()
+
+      // none of the jobs in the cycle or depending on a cycle should be completed
+      assert(!testJob1.isCompleted)
+      assert(!testJob2.isCompleted)
+      assert(!testJob3.isCompleted)
+
+      val expectedCycleSet = Set(testJob1, testJob2)
+      assert(foundCycles.size == 1)
+      val actualCycleSet = foundCycles.head.toSet
       assert(expectedCycleSet == actualCycleSet)
     }
     'rejectJobCycleOnItself {

@@ -15,6 +15,7 @@ import kentuckymule.queue.{JobQueue, QueueJob}
 import kentuckymule.queue.JobQueue.{CompleterStats, JobDependencyCycle}
 import utest._
 
+//noinspection ComparingLength
 object EnterTest extends TestSuite {
   def initCtx = (new ContextBase).initialCtx
   val tests = this {
@@ -657,8 +658,9 @@ val enter = enterToSymbolTable(ctx, jobQueue)(src)
           |class D extends C""".stripMargin
       val jobQueue = new JobQueue
       val enter = enterToSymbolTable(ctx, jobQueue)(src)
-      val JobDependencyCycle(foundCycle) = jobQueue.processJobQueue()
-      assert(foundCycle.length == 3)
+      val JobDependencyCycle(foundCycles) = jobQueue.processJobQueue()
+      assert(foundCycles.length == 1)
+      val foundCycle = foundCycles.head
       val symbolsInCycle = foundCycle collect {
         case cj: CompletionJob => cj.completer.sym
       }

@@ -4,9 +4,9 @@ import dotty.tools.dotc.core.Contexts.{Context, ContextBase}
 import kentuckymule.core.Symbols.{ClassSymbol, Symbol}
 import dotty.tools.dotc.util.{NoSource, SourceFile}
 import dotty.tools.dotc.{CompilationUnit, parsing}
-import kentuckymule.core.{DependenciesExtraction, Enter}
+import kentuckymule.core.{CompletionJob, DependenciesExtraction, Enter}
 import kentuckymule.queue.JobQueue
-import kentuckymule.queue.JobQueue.{CompleterStats, JobQueueProgressListener, JobQueueResult, NopJobQueueProgressListener}
+import kentuckymule.queue.JobQueue._
 
 import scala.reflect.io.PlainFile
 
@@ -116,6 +116,17 @@ object Main {
 
     val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
     val jobQueueResult = jobQueue.processJobQueue(progressListener)(context)
+    jobQueueResult match {
+      case JobDependencyCycle(foundCycles) =>
+        println()
+        println(s"Found cycle(s)!")
+        foundCycles.zipWithIndex.foreach { case (cycle, i) =>
+          println("Cycle $i")
+          cycle.foreach(job => println(s"\t$job"))
+        }
+        return jobQueueResult
+      case _ =>
+    }
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()
     import scala.collection.JavaConverters._

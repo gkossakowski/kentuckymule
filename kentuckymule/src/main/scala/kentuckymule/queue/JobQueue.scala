@@ -71,7 +71,7 @@ class JobQueue(memberListOnly: Boolean = false, queueStrategy: QueueStrategy = C
         throw ex
     }
     if (pendingJobsCount > 0) {
-      val cycle = jobsFindCycle(possiblyPendingJobs)
+      val cycle = jobsFindAllCycles(possiblyPendingJobs)
       JobDependencyCycle(cycle)
     } else {
       listener.allComplete()
@@ -156,7 +156,7 @@ class JobQueue(memberListOnly: Boolean = false, queueStrategy: QueueStrategy = C
 object JobQueue {
   sealed trait JobQueueResult
   case class CompleterStats(processedJobs: Int, dependencyMisses: Int) extends JobQueueResult
-  case class JobDependencyCycle(foundCycle: Seq[QueueJob]) extends JobQueueResult
+  case class JobDependencyCycle(foundCycles: Seq[Seq[QueueJob]]) extends JobQueueResult
 
   trait JobQueueProgressListener {
     def thick(queueSize: Int, completed: Int): Unit
@@ -187,7 +187,7 @@ object JobQueue {
     * the dependencies but they can be returned in arbitrary rotation.
     */
   //noinspection ReferenceMustBePrefixed
-  private def jobsFindCycle(jobs: util.List[QueueJob])(implicit ctx: Context): Seq[QueueJob] = {
+  private def jobsFindAllCycles(jobs: util.List[QueueJob])(implicit ctx: Context): Seq[Seq[QueueJob]] = {
     import scala.collection.mutable.{Map, Set, Buffer}
     val deps: Map[QueueJob, QueueJob] = Map.empty[QueueJob, QueueJob]
     val pendingJobs: Set[QueueJob] = Set.empty[QueueJob]
@@ -210,12 +210,14 @@ object JobQueue {
         }
       }
     }
+    // all elements from loops we've seen so far
+    val loopElements: Set[QueueJob] = Set.empty
     // walk the `deps` graph, starting from a passed `job` and return the first encountered
     // element that is known to be a part of a loop
     def findLoopElement(job: QueueJob): QueueJob = {
       val visited: Set[QueueJob] = Set.empty
       var current: QueueJob = job
-      while (!visited.contains(current)) {
+      while (!visited.contains(current) && !loopElements.contains(current)) {
         visited.add(current)
         current = deps.getOrElse(current,
           throw new IllegalArgumentException(s"Failed to find cycle for job = $job"))
@@ -232,7 +234,19 @@ object JobQueue {
       } while (current != loopJob)
       visitedBuf
     }
-    val loopJob = findLoopElement(pendingJobs.head)
-    collectLoopElements(loopJob)
+    val cycles = Buffer.empty[Seq[QueueJob]]
+    pendingJobs.foreach { pendingJob =>
+      if (!loopElements.contains(pendingJob)) {
+        val loopJob = findLoopElement(pendingJob)
+        val loop = collectLoopElements(loopJob)
+        // check whether pending job is not pointing at a loop that has been already processed
+        if (!loopElements.contains(loopJob)) {
+          val loop = collectLoopElements(loopJob)
+          loopElements ++= loop
+          cycles += loop
+        }
+      }
+    }
+    cycles
   }
 }
