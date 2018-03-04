@@ -42,13 +42,23 @@ object Main {
     try {
       for (i <- 1 to 1) {
         ctx.definitions.rootPackage.clear()
-        val CompleterStats(jobsNumber, dependencyMisses) = {
+        val jobQueueResult = {
           srcsToProcess match {
             case "scalalib" => processScalaLib(ctx)
             case "scalap" => processScalap(ctx)
           }
         }
-        println(s"Number of jobs processed: $jobsNumber out of which $dependencyMisses finished with dependency miss")
+        jobQueueResult match {
+          case JobDependencyCycle(foundCycles) =>
+            println()
+            println(s"Found ${foundCycles.size} cycle(s)!")
+            foundCycles.zipWithIndex.foreach { case (cycle, j) =>
+              println(s"Cycle $j")
+              cycle.foreach(job => println(s"\t$job"))
+            }
+          case CompleterStats(jobsNumber, dependencyMisses) =>
+            println(s"Number of jobs processed: $jobsNumber out of which $dependencyMisses finished with dependency miss")
+        }
       }
     } finally {
       println(s"It took ${System.currentTimeMillis() - start} ms")
@@ -74,7 +84,7 @@ object Main {
       enter.enterCompilationUnit(compilationUnit)(context)
 
     val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
-    val jobQueueResult = jobQueue.processJobQueue(progressListener)(context)
+    val jobQueueResult = jobQueue.processJobQueue(listener = progressListener)(context)
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()
     import scala.collection.JavaConverters._
@@ -115,7 +125,7 @@ object Main {
       enter.enterCompilationUnit(compilationUnit)(context)
 
     val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
-    val jobQueueResult = jobQueue.processJobQueue(progressListener)(context)
+    val jobQueueResult = jobQueue.processJobQueue(listener = progressListener)(context)
     jobQueueResult match {
       case JobDependencyCycle(foundCycles) =>
         println()

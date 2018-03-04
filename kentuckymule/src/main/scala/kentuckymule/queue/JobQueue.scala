@@ -35,8 +35,19 @@ class JobQueue(memberListOnly: Boolean = false, queueStrategy: QueueStrategy = C
     queueJob.queueStore.queued = true
   }
 
-  def processJobQueue(listener: JobQueueProgressListener = NopJobQueueProgressListener)(implicit ctx: Context):
-  JobQueueResult = {
+  /**
+    * Processes jobs in the job queue until either queue is emptied or no progress can be made due to detected
+    * cycles between jobs.
+    * @param computeCycles indicates whether precise cycles should be calculated for all jobs found to be in cyclic
+    *                      dependency. The reason this parameter exists is that computing cycles is a very slow
+    *                      operation so one might want to disable it in e.g. benchmarks.
+    * @param listener a listener used to report on progression of processing the job queue
+    * @param ctx dotty's context that is passed down to jobs
+    * @return a job queue result that is either CompleterStats or JobDependencyCycle
+    */
+  def processJobQueue(computeCycles: Boolean = true,
+                      listener: JobQueueProgressListener = NopJobQueueProgressListener)
+                     (implicit ctx: Context): JobQueueResult = {
     var steps = 0
     var missedDeps = 0
     try {
@@ -55,10 +66,12 @@ class JobQueue(memberListOnly: Boolean = false, queueStrategy: QueueStrategy = C
             case cr: CompleteResult =>
               completeJob(completionJob, cr)
             case IncompleteResult(blockingJob) =>
-              if (blockingJob == completionJob)
+              if (blockingJob == completionJob) {
                 throw new IllegalJobSelfDependency(blockingJob)
-              missedDeps += 1
-              queueIncompleteDependencyJobs(attemptedJob = completionJob, blockingJob = blockingJob)
+              } else {
+                missedDeps += 1
+                queueIncompleteDependencyJobs(attemptedJob = completionJob, blockingJob = blockingJob)
+              }
           }
         } else {
           postComplete(completionJob)
@@ -71,8 +84,11 @@ class JobQueue(memberListOnly: Boolean = false, queueStrategy: QueueStrategy = C
         throw ex
     }
     if (pendingJobsCount > 0) {
-      val cycle = jobsFindAllCycles(possiblyPendingJobs)
-      JobDependencyCycle(cycle)
+      val cycles =
+        if (computeCycles)
+          jobsFindAllCycles(possiblyPendingJobs)
+        else Seq.empty
+      JobDependencyCycle(cycles)
     } else {
       listener.allComplete()
       CompleterStats(steps, missedDeps)
