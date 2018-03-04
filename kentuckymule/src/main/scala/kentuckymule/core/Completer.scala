@@ -47,7 +47,12 @@ class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val l
       }
       remainingParents = remainingParents.tail
     }
-    val info = new ClassInfoType(clsSym, asScalaList(resolvedParents))
+    val selfInfo =
+      if (clsSym.selfValDef == null) null
+      else if (!clsSym.selfValDef.isComplete)
+        return IncompleteDependency(clsSym.selfValDef)
+      else clsSym.selfValDef.info
+    val info = new ClassInfoType(clsSym, asScalaList(resolvedParents), selfInfo)
     var i = 0
     while (i < resolvedParents.size()) {
       val parentType = resolvedParents.get(i)

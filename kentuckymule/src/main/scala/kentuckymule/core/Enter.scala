@@ -47,6 +47,12 @@ class Enter(jobQueue: JobQueue) {
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
       if (!classSym.isComplete)
         return IncompleteDependency(classSym)
+      val selfFoundSym =
+        if (classSym.info.selfInfo != null)
+          classSym.info.selfInfo.lookup(name)
+        else NoSymbol
+      if (selfFoundSym != NoSymbol)
+        return LookedupSymbol(selfFoundSym)
       val classFoundSym = classSym.info.lookup(name)
       if (classFoundSym != NoSymbol)
         return LookedupSymbol(classFoundSym)
@@ -363,7 +369,7 @@ class Enter(jobQueue: JobQueue) {
       val isPackageObject = md.mods is Flags.Package
       val modName = if (isPackageObject) nme.PACKAGE else name
       val modOwner = if (isPackageObject) lookupOrCreatePackage(name, owner) else owner
-      val modClsSym = ClassSymbol(modName.moduleClassName, owner)
+      val modClsSym = ClassSymbol(modName.moduleClassName, owner, null)
       val modSym = ModuleSymbol(modName, modClsSym, owner)
       if (isPackageObject) {
         assert(modOwner.isInstanceOf[PackageSymbol], "package object has to be declared inside of a package (enforced by syntax)")
@@ -396,7 +402,12 @@ class Enter(jobQueue: JobQueue) {
       for (stat <- tmpl.body) enterTree(stat, modClsSym, templateMemberListLookupScopeContext)
     // class or trait
     case t@TypeDef(name, tmpl: Template) if t.isClassDef =>
-      val classSym = ClassSymbol(name, owner)
+      val selfValSym = tmpl.self match {
+        case EmptyValDef => null
+        case ValDef(selfDefName, _, _) =>
+          ValDefSymbol(selfDefName)
+      }
+      val classSym = ClassSymbol(name, owner, selfValSym)
       // t.tParams is empty for classes, the type parameters are accessible thorugh its primary constructor
       foreachWithIndex(tmpl.constr.tparams) { (tParam, tParamIndex) =>
         // TODO: setup completers for TypeDef (resolving bounds, etc.)
@@ -423,6 +434,12 @@ class Enter(jobQueue: JobQueue) {
 
       val completer = new TemplateMemberListCompleter(classSym, tmpl, classSignatureLookupScopeContext.newMemberLookupScope())
       jobQueue.queueCompleter(completer)
+      if (selfValSym != null) {
+        val selfCompleter =
+          new ValDefCompleter(selfValSym, tmpl.self, classSignatureLookupScopeContext.newValDefLookupScope(selfValSym))
+        selfValSym.completer = selfCompleter
+        jobQueue.queueCompleter(selfCompleter)
+      }
       classSym.completer = completer
       val lookupScopeContext = classSignatureLookupScopeContext.pushClassLookupScope(classSym)
       for (stat <- tmpl.body) enterTree(stat, classSym, lookupScopeContext)

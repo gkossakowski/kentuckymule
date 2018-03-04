@@ -113,7 +113,7 @@ object ScalapHelper {
   private class StubClassCompleter(sym: ClassSymbol) extends Completer(sym) {
     override def complete()(implicit context: Context): CompletionResult = {
       import kentuckymule.core.Types._
-      CompletedType(new ClassInfoType(sym, Nil))
+      CompletedType(new ClassInfoType(sym, Nil, null))
     }
     override def isCompleted: Boolean = false
   }

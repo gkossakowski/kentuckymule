@@ -44,7 +44,7 @@ object Types {
   /** A marker trait for types that can be types of values or that are higher-kinded  */
   trait ValueType extends ValueTypeOrProto
 
-  final class ClassInfoType(val clsSym: ClassSymbol, val parents: List[Type]) extends TypeType {
+  final class ClassInfoType(val clsSym: ClassSymbol, val parents: List[Type], val selfInfo: ValInfoType) extends TypeType {
     val members: MutableScope = newScope
 
     override def typeSymbol: Symbol = clsSym

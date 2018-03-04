@@ -153,7 +153,7 @@ object ScalaLibHelper {
     override def complete()(implicit context: Context): CompletionResult = {
       if (cachedInfo == null) {
         import kentuckymule.core.Types._
-        cachedInfo = new ClassInfoType(sym, Nil)
+        cachedInfo = new ClassInfoType(sym, Nil, null)
         cachedInfo.members.enterAll(sym.decls)
       }
       CompletedType(cachedInfo)

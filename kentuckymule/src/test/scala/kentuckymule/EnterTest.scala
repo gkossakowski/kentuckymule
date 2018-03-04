@@ -787,6 +787,21 @@ object EnterTest extends TestSuite {
       val abcResultType = abcSym.info.asInstanceOf[MethodInfoType].resultType
       assert(abcResultType == SymRef(tSym))
     }
+    'selfType {
+      val src =
+        """
+          |trait Foo[T] {
+          |  class Inner
+          |}
+          |class Bar[T] { self: Foo[T] =>
+          |  def a: Inner
+          |}
+        """.stripMargin
+      val jobQueue = new JobQueue
+      enterToSymbolTable(ctx, jobQueue)(src)
+      val queueResult = jobQueue.processJobQueue()
+      assertMatch(queueResult) { case _: CompleterStats => }
+    }
     'defTupleReturn {
       val src = "class A { def a[T,U](x: T): (T, U) }"
       val jobQueue = new JobQueue

@@ -10,7 +10,8 @@ object ScopeTest extends TestSuite {
   val tests = this {
     implicit val ctx = initCtx.fresh
     'nestedScope {
-      val sym1 :: sym2 :: sym3 :: Nil = List("Outer1", "Outer2", "Inner").map(_.toTypeName).map(ClassSymbol(_, NoSymbol))
+      val sym1 :: sym2 :: sym3 :: Nil = List("Outer1", "Outer2", "Inner").map(_.toTypeName).
+        map(ClassSymbol(_, NoSymbol, null))
       val outerScope = Scopes.newScope
       outerScope.enter(sym1)
       assert(outerScope.size == 1)
@@ -31,7 +32,8 @@ object ScopeTest extends TestSuite {
       assert(nestedScope.lookup("Outer2".toTypeName) != NoSymbol)
     }
     'enterAll {
-      val sym1 :: sym2 :: sym3 :: Nil = List("C1", "C2", "C3").map(_.toTypeName).map(ClassSymbol(_, NoSymbol))
+      val sym1 :: sym2 :: sym3 :: Nil = List("C1", "C2", "C3").map(_.toTypeName).
+        map(ClassSymbol(_, NoSymbol, null))
       val scope1 = Scopes.newScope
       scope1.enter(sym1)
       scope1.enter(sym2)
