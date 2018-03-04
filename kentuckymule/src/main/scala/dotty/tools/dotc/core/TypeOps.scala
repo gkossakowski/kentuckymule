@@ -89,7 +89,7 @@ object TypeOps {
       var remainingVParamTypes = paramTypes.head
       var modifiedVParam = false
       val paramTypesBuf = new util.ArrayList[Type]()
-      while (remainingVParamTypes.nonEmpty) {
+      while (listNonEmpty(remainingVParamTypes)) {
         val vParamType = remainingVParamTypes.head
         val vParamType1 = substituteTypeArgs(vParamType, substitutionMap)
         modifiedVParam = modifiedVParam || (vParamType ne vParamType1)
@@ -102,6 +102,11 @@ object TypeOps {
       MethodInfoType(t.defDefSymbol, paramTypes1, resultType1)
     else
       t
+  }
+
+  private def listNonEmpty(xs: List[_]): Boolean = xs match {
+    case _: ::[_] => true
+    case _ => false
   }
 
   private def substituteTypeArgs(t: Type, substitutionMap: SubstitutionMap): Type = t match {
