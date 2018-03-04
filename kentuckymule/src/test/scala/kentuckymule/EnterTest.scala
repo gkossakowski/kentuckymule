@@ -250,6 +250,23 @@ object EnterTest extends TestSuite {
       }
 
     }
+    'importFromObject - pending {
+      val src =
+        """
+          |package a {
+          |  package b {
+          |    import A._
+          |    object A extends B
+          |  }
+          |  class B
+          |}
+        """.stripMargin
+      val jobQueue = new JobQueue
+      enterToSymbolTable(ctx, jobQueue)(src)
+      val queueResult = jobQueue.processJobQueue()(ctx)
+      // no cycles
+      assertMatch(queueResult) { case _: CompleterStats => }
+    }
     'packageObject {
       val src = "package foo; package object bar { class D }; package bar { class C }"
       val jobQueue = new JobQueue
