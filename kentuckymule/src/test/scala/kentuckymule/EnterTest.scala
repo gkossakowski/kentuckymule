@@ -927,16 +927,25 @@ object EnterTest extends TestSuite {
       val barSym = Asym.info.lookup("bar".toTermName).asInstanceOf[ValDefSymbol]
       assert(barSym.info.resultType == SymRef(Asym))
     }
-    'superInPath - pending {
+    'superInPath {
       // `foo.type` is resolved to the type of `foo` and we forget about the singleton type
       val src =
         """
-          |class A {
-          |  class X
+          |trait A1 {
+          |  class X1
           |}
-          |class B extends A {
-          |  class X
-          |  val foo: super.X
+          |trait A2 {
+          |  class X2
+          |}
+          |trait A3 {
+          |  class X2
+          |}
+          |abstract class B extends A1 with A2 with A3 {
+          |  class X1
+          |  class X2
+          |  val foo: super.X1
+          |  val bar: super.X2
+          |  val xyz: super[A2].X2
           |}""".stripMargin
       val jobQueue = new JobQueue
       val enter = enterToSymbolTable(ctx, jobQueue)(src)
@@ -944,11 +953,19 @@ object EnterTest extends TestSuite {
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap - "X".toTypeName // remove X there are two classes named `X` and the hashmap will pick one arbitrarily
-      val Asym = classes("A".toTypeName)
+      val A1sym = classes("A1".toTypeName)
+      val A2sym = classes("A2".toTypeName)
+      val A3sym = classes("A3".toTypeName)
       val Bsym = classes("B".toTypeName)
-      val XinAsym = Asym.info.lookup("X".toTypeName)
+      val X1inAsym = A1sym.info.lookup("X1".toTypeName)
+      val X2inA2sym = A2sym.info.lookup("X2".toTypeName)
+      val X2inA3sym = A3sym.info.lookup("X2".toTypeName)
       val fooSym = Bsym.info.lookup("foo".toTermName).asInstanceOf[ValDefSymbol]
-      assert(fooSym.info.resultType == SymRef(XinAsym))
+      val barSym = Bsym.info.lookup("bar".toTermName).asInstanceOf[ValDefSymbol]
+      val xyzSym = Bsym.info.lookup("xyz".toTermName).asInstanceOf[ValDefSymbol]
+      assert(fooSym.info.resultType == SymRef(X1inAsym))
+      assert(barSym.info.resultType == SymRef(X2inA3sym))
+      assert(xyzSym.info.resultType == SymRef(X2inA2sym))
     }
   }
 

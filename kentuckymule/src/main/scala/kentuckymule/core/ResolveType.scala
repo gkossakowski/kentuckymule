@@ -5,9 +5,10 @@ import java.util
 import dotty.tools.dotc.ast.Trees._
 import dotty.tools.dotc.ast.untpd.{EmptyTree, Function, InfixOp, Parens, PostfixOp, Tree, Tuple}
 import dotty.tools.dotc.core.Contexts.Context
+import dotty.tools.dotc.core.Names.{TypeName, Name}
 import dotty.tools.dotc.core.StdNames.{nme, tpnme}
 import kentuckymule.core.Enter.{LookupScope, functionNamesByArity}
-import kentuckymule.core.Symbols.{ClassSymbol, ModuleSymbol, Symbol, ValDefSymbol, NoSymbol}
+import kentuckymule.core.Symbols.{ClassSymbol, ModuleSymbol, NoSymbol, Symbol, ValDefSymbol}
 import kentuckymule.core.Types.{AppliedType, SymRef, TupleType, Type, WildcardType}
 
 object ResolveType {
@@ -15,6 +16,27 @@ object ResolveType {
   def resolveSelectors(t: Tree, parentLookupScope: LookupScope)(implicit context: Context): LookupAnswer =
     t match {
       case Ident(identName) => parentLookupScope.lookup(identName)
+      // TODO: special case super selector; implementing it properly is tricky and would require
+      // a redesign of this class. All intermediate (recursive) steps return symbols as a result but for
+      // super one should return a compound type representing all parents. I side-step this issue by
+      // collapsing two steps into one: 1. the super resolution 2. selecting a member
+      // this way I can implement selecting a member in a special way that does scan all parents
+      // however, this doesn't take into account any type applications that falls into the general category
+      // of supporting As Seen From
+      // having said that, I believe that the approximation below should be enough to support the scala standard
+      // library; supporting the full As Seen From would pretty laborious but it most likely wouldn't change the
+      // performance of Kentucky Mule and it wouldn't give much of an insight into any unknown difficulties
+      // in other words: implementing ASF here would be laborious but pretty predictable
+      case Select(Super(qual, mix), selName) =>
+        val enclosingClass = resolveSelectors(qual, parentLookupScope) match {
+          case LookedupSymbol(clsSymbol: ClassSymbol) => clsSymbol
+          case other => return other
+        }
+        if (!enclosingClass.isComplete)
+          IncompleteDependency(enclosingClass)
+        else {
+          findInParents(enclosingClass.info.parents, mix, selName)
+        }
       case Select(qual, selName) =>
         val ans = resolveSelectors(qual, parentLookupScope)
         ans match {
@@ -29,11 +51,47 @@ object ResolveType {
           case _ => ans
         }
       // TODO: right now we interpret C.super[M] as just C.super (M is ignored)
-      case Super(qual, _) => resolveSelectors(qual, parentLookupScope)
+      case Super(qual, _) =>
+        val enclosingClass = resolveSelectors(qual, parentLookupScope) match {
+          case LookedupSymbol(clsSymbol: ClassSymbol) => clsSymbol
+          case other => return other
+        }
+        if (!enclosingClass.isComplete)
+          IncompleteDependency(enclosingClass)
+        else {
+          LookedupSymbol(enclosingClass.info.parents.head.typeSymbol)
+        }
       case This(tpnme.EMPTY) => parentLookupScope.enclosingClass
       case This(thisQual) => parentLookupScope.lookup(thisQual)
       case _ => sys.error(s"Unhandled tree $t at ${t.pos}")
     }
+
+  // this method might be a little bit inefficient due to use of stack for the reverse order traversal
+  // but I hope that's not a big deal given that it's used only for lookups for paths that contain `super`
+  private def findInParents(parents: List[Type], parentName: TypeName, selectorName: Name)
+                           (implicit ctx: Context): LookupAnswer = {
+    // search over parents in the reverse order
+    def loop(remainingParents: List[Type]): LookupAnswer = {
+      remainingParents match {
+        case Nil => NotFound
+        case x :: xs =>
+          val tailResult = loop(xs)
+          tailResult match {
+            case NotFound =>
+              // here I encoded an implication: parentName != tpnme.EMPTY ==> x.typeSymbol.name == parentName
+              if (parentName == tpnme.EMPTY || x.typeSymbol.name == parentName) {
+                val xLookup = x.lookup(selectorName)
+                if (xLookup != NoSymbol)
+                  LookedupSymbol(xLookup)
+                else
+                  NotFound
+              } else NotFound
+            case other => other
+          }
+      }
+    }
+    loop(parents)
+  }
 
   def resolveTypeTree(t: Tree, parentLookupScope: LookupScope)(implicit context: Context): CompletionResult = t match {
     case AppliedTypeTree(tpt, args) =>
