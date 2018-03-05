@@ -10,9 +10,7 @@ import dotc.{CompilationUnit, ast}
 import dotc.core.Decorators._
 import dotc.core.StdNames._
 import Symbols._
-import Types._
-import dotc.core.{Decorators, Flags, Scopes, TypeOps}
-import dotty.tools.dotc.core.TypeOps.AppliedTypeMemberDerivation
+import dotc.core.Flags
 import CollectionUtils._
 import kentuckymule.queue.JobQueue
 
@@ -47,15 +45,15 @@ class Enter(jobQueue: JobQueue) {
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
       if (!classSym.isComplete)
         return IncompleteDependency(classSym)
-      val selfFoundSym =
+      val selfLookupAns =
         if (classSym.info.selfInfo != null)
           classSym.info.selfInfo.lookup(name)
-        else NoSymbol
-      if (selfFoundSym != NoSymbol)
-        return LookedupSymbol(selfFoundSym)
-      val classFoundSym = classSym.info.lookup(name)
-      if (classFoundSym != NoSymbol)
-        return LookedupSymbol(classFoundSym)
+        else NotFound
+      if (selfLookupAns != NotFound)
+        return selfLookupAns
+      val classLookupAns = classSym.info.lookup(name)
+      if (classLookupAns != NotFound)
+        return classLookupAns
       if (imports != null) {
         val impFoundSym = imports.lookup(name)
         impFoundSym match {
@@ -78,8 +76,8 @@ class Enter(jobQueue: JobQueue) {
       if (!moduleSym.isComplete)
         return IncompleteDependency(moduleSym)
       val foundSym = moduleSym.info.lookup(name)
-      if (foundSym != NoSymbol)
-        LookedupSymbol(foundSym)
+      if (foundSym != NotFound)
+        foundSym
       else {
         if (imports != null) {
           val ans = imports.lookup(name)
@@ -143,11 +141,11 @@ class Enter(jobQueue: JobQueue) {
       if (scalaPkg != NoSymbol) {
         if (!scalaPkg.isComplete)
           return IncompleteDependency(scalaPkg)
-        val sym = scalaPkg.info.lookup(name)
-        if (sym == NoSymbol)
-          NotFound
-        else
-          return LookedupSymbol(sym)
+        val answer = scalaPkg.info.lookup(name)
+        answer match {
+          case NotFound =>
+          case other => return other
+        }
       }
       locally {
         val javaPkg = context.definitions.rootPackage.lookup(nme.java)
@@ -195,9 +193,9 @@ class Enter(jobQueue: JobQueue) {
       if (predefSymbol != NoSymbol) {
         if (!predefSymbol.isComplete)
           return IncompleteDependency(predefSymbol)
-        val sym = predefSymbol.info.lookup(name)
-        if (sym != NoSymbol)
-          return LookedupSymbol(sym)
+        val lookupAnswer = predefSymbol.info.lookup(name)
+        if (lookupAnswer != NotFound)
+          return lookupAnswer
       }
       parentScope.lookup(name)
     }
@@ -262,18 +260,19 @@ class Enter(jobQueue: JobQueue) {
                                    val parent: LookupScope,
                                    val imports: ImportsLookup,
                                   isForPackageObject: Boolean) extends LookupScope {
+    import kentuckymule.core.LookupAnswer.symToLookupAnswer
     def this(pkgSym: Symbol, parent: LookupScope, isForPackageObject: Boolean) =
       this(pkgSym, parent, null, isForPackageObject)
     override def lookup(name: Name)(implicit context: Context): LookupAnswer = {
-      val pkgMember = if (isForPackageObject) {
-        pkgSym.lookup(name)
+      val pkgMemberLookupAnswer = if (isForPackageObject) {
+        symToLookupAnswer(pkgSym.lookup(name))
       } else if (!pkgSym.isComplete) {
         return IncompleteDependency(pkgSym)
       } else {
         pkgSym.info.lookup(name)
       }
-      if (pkgMember != NoSymbol)
-        LookedupSymbol(pkgMember)
+      if (pkgMemberLookupAnswer != NotFound)
+        pkgMemberLookupAnswer
       else {
         if (imports != null) {
           val ans = imports.lookup(name)
@@ -609,8 +608,22 @@ object Enter {
             case Pair(Ident(selName), Ident(selRenamedTo)) => (selName, selRenamedTo)
           }
           if (name != nme.WILDCARD) {
-            val termSym = lookupMember(exprSym, name)
-            val typeSym = lookupMember(exprSym, name.toTypeName)
+            val termSym: Symbol = {
+              val lookupAnswer = lookupMember(exprSym, name)
+              lookupAnswer match {
+                case LookedupSymbol(sym) => sym
+                case NotFound => NoSymbol
+                case id: IncompleteDependency => return id
+              }
+            }
+            val typeSym: Symbol = {
+              val lookupAnswer = lookupMember(exprSym, name.toTypeName)
+              lookupAnswer match {
+                case LookedupSymbol(sym) => sym
+                case NotFound => NoSymbol
+                case id: IncompleteDependency => return id
+              }
+            }
             if (termSym == NoSymbol && typeSym == NoSymbol)
               return NotFound
             new ImportSelectorResolved(termSym, typeSym, renamedTo)
@@ -634,7 +647,7 @@ object Enter {
       isComplete = true
       result
     }
-    def matches(name: Name)(implicit context: Context): Symbol = {
+    def matches(name: Name)(implicit context: Context): LookupAnswer = {
       assert(isComplete, s"the import node hasn't been completed: $importNode")
       var i = 0
       var seenNameInSelectors = false
@@ -658,7 +671,7 @@ object Enter {
           } else NoSymbol
         }
         if (sym != NoSymbol)
-          return sym
+          return LookedupSymbol(sym)
         i += 1
       }
       // if not seen before, consider the final wildcard import
@@ -668,11 +681,11 @@ object Enter {
       //   x1, …, xn, y1,…,yn are also made available under their own unqualified names.
       if (!seenNameInSelectors && hasFinalWildcard) {
         exprSym0.info.lookup(name)
-      } else NoSymbol
+      } else NotFound
     }
   }
 
-  private def lookupMember(sym: Symbol, name: Name)(implicit context: Context): Symbol = {
+  private def lookupMember(sym: Symbol, name: Name)(implicit context: Context): LookupAnswer = {
     assert(sym.isComplete, s"Can't look up a member $name in a symbol that is not completed yet: $sym")
     sym match {
       case clsSym: ClassSymbol => clsSym.info.lookup(name)
@@ -735,9 +748,9 @@ object Enter {
       var i = lastCompleterIndex
       while (i >= 0) {
         val completedImport = importCompleters.get(i)
-        val sym = completedImport.matches(name)
-        if (sym != NoSymbol)
-          return LookedupSymbol(sym)
+        val lookupAnswer = completedImport.matches(name)
+        if (lookupAnswer != NotFound)
+          return lookupAnswer
         i -= 1
       }
       NotFound

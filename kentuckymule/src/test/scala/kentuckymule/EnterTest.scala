@@ -325,8 +325,8 @@ object EnterTest extends TestSuite {
       val enter = enterToSymbolTable(ctx, jobQueue)(src)
       val queueResult = jobQueue.processJobQueue()(ctx)
       assert(queueResult.isInstanceOf[CompleterStats])
-      val fooPkg = ctx.definitions.rootPackage.info.lookup("foo".toTermName)
-      val barPkg = fooPkg.info.lookup("bar".toTermName)
+      val LookedupSymbol(fooPkg) = ctx.definitions.rootPackage.info.lookup("foo".toTermName)
+      val LookedupSymbol(barPkg) = fooPkg.info.lookup("bar".toTermName)
       val barPkgMembers = barPkg.info.asInstanceOf[PackageInfoType].members.map(_.name).toSet
       val expectedMembers = Set("A".toTypeName, "B".toTypeName, "package".toTermName)
       assert(barPkgMembers == expectedMembers)
@@ -361,7 +361,7 @@ object EnterTest extends TestSuite {
         val ClookupScope = templateCompleters("C").lookupScope
         val predef = objects("Predef".toTermName)
         val aInPredef = predef.info.lookup("A".toTypeName)
-        val LookedupSymbol(aResolvedFromC) = ClookupScope.lookup("A".toTypeName)
+        val aResolvedFromC = ClookupScope.lookup("A".toTypeName)
         assert(aResolvedFromC == aInPredef)
       }
       locally {
@@ -394,7 +394,7 @@ object EnterTest extends TestSuite {
       val classes = allPaths.flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
-      val fooSym = ctx.definitions.rootPackage.info.lookup("foo".toTermName)
+      val LookedupSymbol(fooSym) = ctx.definitions.rootPackage.info.lookup("foo".toTermName)
       assert(fooSym.isInstanceOf[PackageSymbol])
       val Asym = classes("A".toTypeName)
       val Bsym = classes("B".toTypeName)
@@ -661,7 +661,7 @@ object EnterTest extends TestSuite {
       val Foosym = classes("Foo".toTypeName)
       val Bsym = objects("B".toTermName)
       locally {
-        val abcSym = Bsym.info.lookup("abc".toTermName).asInstanceOf[DefDefSymbol]
+        val LookedupSymbol(abcSym: DefDefSymbol) = Bsym.info.lookup("abc".toTermName)
         val abcResultType = abcSym.info.resultType
         assert(abcResultType == SymRef(Foosym))
       }
@@ -799,8 +799,8 @@ object EnterTest extends TestSuite {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       val bazSym = classes("Baz".toTypeName)
-      val abcSym = bazSym.info.lookup("abc".toTermName)
-      val tSym = bazSym.info.lookup("T".toTypeName)
+      val LookedupSymbol(abcSym) = bazSym.info.lookup("abc".toTermName)
+      val LookedupSymbol(tSym) = bazSym.info.lookup("T".toTypeName)
       val abcResultType = abcSym.info.asInstanceOf[MethodInfoType].resultType
       assert(abcResultType == SymRef(tSym))
     }
@@ -924,7 +924,7 @@ object EnterTest extends TestSuite {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
       val Asym = classes("A".toTypeName)
-      val barSym = Asym.info.lookup("bar".toTermName).asInstanceOf[ValDefSymbol]
+      val LookedupSymbol(barSym: ValDefSymbol) = Asym.info.lookup("bar".toTermName)
       assert(barSym.info.resultType == SymRef(Asym))
     }
     'superInPath {
@@ -957,15 +957,15 @@ object EnterTest extends TestSuite {
       val A2sym = classes("A2".toTypeName)
       val A3sym = classes("A3".toTypeName)
       val Bsym = classes("B".toTypeName)
-      val X1inAsym = A1sym.info.lookup("X1".toTypeName)
-      val X2inA2sym = A2sym.info.lookup("X2".toTypeName)
-      val X2inA3sym = A3sym.info.lookup("X2".toTypeName)
-      val fooSym = Bsym.info.lookup("foo".toTermName).asInstanceOf[ValDefSymbol]
-      val barSym = Bsym.info.lookup("bar".toTermName).asInstanceOf[ValDefSymbol]
-      val xyzSym = Bsym.info.lookup("xyz".toTermName).asInstanceOf[ValDefSymbol]
-      assert(fooSym.info.resultType == SymRef(X1inAsym))
-      assert(barSym.info.resultType == SymRef(X2inA3sym))
-      assert(xyzSym.info.resultType == SymRef(X2inA2sym))
+      val LookedupSymbol(x1inAsym) = A1sym.info.lookup("X1".toTypeName)
+      val LookedupSymbol(x2inA2sym) = A2sym.info.lookup("X2".toTypeName)
+      val LookedupSymbol(x2inA3sym) = A3sym.info.lookup("X2".toTypeName)
+      val LookedupSymbol(fooSym: ValDefSymbol) = Bsym.info.lookup("foo".toTermName)
+      val LookedupSymbol(barSym: ValDefSymbol) = Bsym.info.lookup("bar".toTermName)
+      val LookedupSymbol(xyzSym: ValDefSymbol) = Bsym.info.lookup("xyz".toTermName)
+      assert(fooSym.info.resultType == SymRef(x1inAsym))
+      assert(barSym.info.resultType == SymRef(x2inA3sym))
+      assert(xyzSym.info.resultType == SymRef(x2inA2sym))
     }
   }
 

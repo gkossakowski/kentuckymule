@@ -42,11 +42,7 @@ object ResolveType {
         ans match {
           case LookedupSymbol(qualSym) =>
             if (qualSym.isComplete) {
-              val selSym = qualSym.info.lookup(selName)
-              if (selSym != NoSymbol)
-                LookedupSymbol(selSym)
-              else
-                NotFound
+              qualSym.info.lookup(selName)
             } else IncompleteDependency(qualSym)
           case _ => ans
         }
@@ -80,11 +76,7 @@ object ResolveType {
             case NotFound =>
               // here I encoded an implication: parentName != tpnme.EMPTY ==> x.typeSymbol.name == parentName
               if (parentName == tpnme.EMPTY || x.typeSymbol.name == parentName) {
-                val xLookup = x.lookup(selectorName)
-                if (xLookup != NoSymbol)
-                  LookedupSymbol(xLookup)
-                else
-                  NotFound
+                x.lookup(selectorName)
               } else NotFound
             case other => other
           }
@@ -193,10 +185,11 @@ object ResolveType {
         resolvedQualifier.typeSymbol.info.lookup(name)
       else
         return IncompleteDependency(resolvedQualifier.typeSymbol)
-      if (resolvedSelect != NoSymbol)
-        CompletedType(SymRef(resolvedSelect))
-      else
-        NotFound
+      resolvedSelect match {
+        case LookedupSymbol(selectSym) => CompletedType(SymRef(selectSym))
+        case NotFound => NotFound
+        case id: IncompleteDependency => id
+      }
     case SingletonTypeTree(ref) =>
       def symRefAsCompletionResult(sym: Symbol): CompletionResult =
         if (sym.isComplete) CompletedType(SymRef(sym)) else IncompleteDependency(sym)

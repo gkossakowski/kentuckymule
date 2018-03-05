@@ -5,6 +5,7 @@ package core
 import kentuckymule.core.Types._
 import Contexts._
 import dotty.tools.dotc.core.Names.Name
+import kentuckymule.core.LookupAnswer
 import kentuckymule.core.Symbols._
 
 object Definitions {
@@ -39,35 +40,35 @@ class Definitions {
 
   object ByteType extends Type {
     override def typeSymbol: Symbol = ???
-    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): LookupAnswer = ???
   }
   object ShortType extends Type  {
     override def typeSymbol: Symbol = ???
-    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): LookupAnswer = ???
   }
   object CharType extends Type  {
     override def typeSymbol: Symbol = ???
-    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): LookupAnswer = ???
   }
   object IntType extends Type  {
     override def typeSymbol: Symbol = ???
-    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): LookupAnswer = ???
   }
   object LongType extends Type  {
     override def typeSymbol: Symbol = ???
-    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): LookupAnswer = ???
   }
   object DoubleType extends Type  {
     override def typeSymbol: Symbol = ???
-    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): LookupAnswer = ???
   }
   object FloatType extends Type  {
     override def typeSymbol: Symbol = ???
-    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): LookupAnswer = ???
   }
   object BooleanType extends Type  {
     override def typeSymbol: Symbol = ???
-    override def lookup(name: Name)(implicit contexts: Context): Symbol = ???
+    override def lookup(name: Name)(implicit contexts: Context): LookupAnswer = ???
   }
 
   val rootPackage: PackageSymbol = {
