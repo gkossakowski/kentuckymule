@@ -130,7 +130,7 @@ object Symbols {
     override def isComplete: Boolean = info != null
     override def completer: Completer = throw new UnsupportedOperationException("type parameters do not have type completers")
   }
-  sealed case class DefDefSymbol(override val name: TermName) extends TermSymbol(name) {
+  sealed case class DefDefSymbol(override val name: TermName, owner: Symbol) extends TermSymbol(name) {
     var info: MethodInfoType = _
     var completer: DefDefCompleter = _
     val typeParams: MutableScope = Scopes.newScope
@@ -139,7 +139,8 @@ object Symbols {
     }
     override def isComplete: Boolean = completer.isCompleted
   }
-  final class InheritedDefDefSymbol(name: TermName, info0: MethodInfoType) extends DefDefSymbol(name) {
+  final class InheritedDefDefSymbol(name: TermName, info0: MethodInfoType, owner: Symbol)
+    extends DefDefSymbol(name, owner) {
     info = info0
     override def completeInfo()(implicit context: Context): CompletionResult = CompletedType(info)
     override def isComplete: Boolean = true

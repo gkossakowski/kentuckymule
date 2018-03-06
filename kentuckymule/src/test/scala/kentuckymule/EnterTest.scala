@@ -776,7 +776,7 @@ object EnterTest extends TestSuite {
         val resultTypeAliasInfo = resultTypeAlias.asInstanceOf[TypeDefSymbol].info.asInstanceOf[TypeAliasInfoType]
         val typeAliasRhs = resultTypeAliasInfo.rhsType.asInstanceOf[AppliedType]
         val appliedTypeMemberDerivation = AppliedTypeMemberDerivation.createForDealiasedType(typeAliasRhs).right.get
-        val derivedBInfo = appliedTypeMemberDerivation.deriveInheritedMemberOfAppliedType(bSym).info
+        val derivedBInfo = appliedTypeMemberDerivation.deriveInheritedMemberOfAppliedType(bSym, baseSym).info
         val bResultType = derivedBInfo.asInstanceOf[ValInfoType].resultType
         assert(bResultType == SymRef(fooSym))
       }

@@ -87,7 +87,7 @@ class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val l
             val eligibleForDerivation = m.isInstanceOf[DefDefSymbol] || m.isInstanceOf[ValDefSymbol]
             if (eligibleForDerivation && !m.isComplete)
               return IncompleteDependency(m)
-            val derivedInheritedMember = appliedTypeMemberDerivation.deriveInheritedMemberOfAppliedType(m)
+            val derivedInheritedMember = appliedTypeMemberDerivation.deriveInheritedMemberOfAppliedType(m, clsSym)
             info.members.enter(derivedInheritedMember)
           }
         case other =>

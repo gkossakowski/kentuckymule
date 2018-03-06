@@ -460,7 +460,7 @@ class Enter(jobQueue: JobQueue) {
       valSym.completer = completer
       owner.addChild(valSym)
     case t: DefDef =>
-      val defSym = DefDefSymbol(t.name)
+      val defSym = DefDefSymbol(t.name, owner)
       var remainingTparams = t.tparams
       var tParamIndex = 0
       foreachWithIndex(t.tparams) { (tParam, tParamIndex) =>

@@ -18,11 +18,11 @@ object TypeOps {
     *
     */
   class AppliedTypeMemberDerivation private(private val substitutionMap: SubstitutionMap) {
-    def deriveInheritedMemberOfAppliedType(m: Symbol): Symbol = {
+    def deriveInheritedMemberOfAppliedType(m: Symbol, owner: Symbol): Symbol = {
       m match {
-        case d@DefDefSymbol(name) =>
+        case d@DefDefSymbol(name, _) =>
           assert(d.isComplete, d)
-          new InheritedDefDefSymbol(name, substituteTypeArgs(d.info, substitutionMap))
+          new InheritedDefDefSymbol(name, substituteTypeArgs(d.info, substitutionMap), owner)
         case v@ValDefSymbol(name) =>
           assert(v.isComplete, v)
           new InheritedValDefSymbol(name, substituteTypeArgs(v.info, substitutionMap))
