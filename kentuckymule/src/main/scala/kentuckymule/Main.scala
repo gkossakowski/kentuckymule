@@ -126,14 +126,9 @@ object Main {
 
     val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
     val jobQueueResult = jobQueue.processJobQueue(listener = progressListener)(context)
+    println()
     jobQueueResult match {
-      case JobDependencyCycle(foundCycles) =>
-        println()
-        println(s"Found cycle(s)!")
-        foundCycles.zipWithIndex.foreach { case (cycle, i) =>
-          println("Cycle $i")
-          cycle.foreach(job => println(s"\t$job"))
-        }
+      case JobDependencyCycle(_) =>
         return jobQueueResult
       case _ =>
     }
