@@ -989,6 +989,20 @@ object EnterTest extends TestSuite {
       assert(barSym.info.resultType == SymRef(x2inA3sym))
       assert(xyzSym.info.resultType == SymRef(x2inA2sym))
     }
+    'fBoundedPolymorphism {
+      // `foo.type` is resolved to the type of `foo` and we forget about the singleton type
+      val src =
+        """
+          |class Foo[T]
+          |class Bar[T] extends Foo[Bar[T]]
+          |""".stripMargin
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+    }
   }
 
   final def pending(body: => Unit): Unit = {
