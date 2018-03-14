@@ -255,8 +255,15 @@ object EnterTest extends TestSuite {
         """
           |package a {
           |  package b {
-          |    import A._
-          |    object A extends B
+          |    // this wildcard import is ok: it forces completion of `C` that is not dependent on `A` below
+          |    import C._
+          |    // import A._ causes a cyclic error also in scalac; only importing a specific name
+          |    // avoids the cycle
+          |    import A.X
+          |    object A extends B {
+          |      class X
+          |    }
+          |    object C
           |  }
           |  class B
           |}
