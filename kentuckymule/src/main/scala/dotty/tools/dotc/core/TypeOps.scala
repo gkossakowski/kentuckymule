@@ -2,7 +2,7 @@ package dotty.tools.dotc.core
 
 import java.util
 
-import kentuckymule.core.IncompleteDependency
+import kentuckymule.core.{CompletedType, CompletionResult, IncompleteDependency}
 import kentuckymule.core.Symbols._
 import kentuckymule.core.Types._
 
@@ -18,16 +18,20 @@ object TypeOps {
     *
     */
   class AppliedTypeMemberDerivation private(private val substitutionMap: SubstitutionMap) {
-    def deriveInheritedMemberOfAppliedType(m: Symbol, owner: Symbol): Symbol = {
+    def deriveInheritedMemberInfoOfAppliedType(m: Symbol): CompletionResult = {
       m match {
-        case d@DefDefSymbol(name, _) =>
-          assert(d.isComplete, d)
-          new InheritedDefDefSymbol(name, substituteTypeArgs(d.info, substitutionMap), owner)
+        case d: DefDefSymbol =>
+          if (!d.isComplete)
+            return IncompleteDependency(d)
+          CompletedType(substituteTypeArgs(d.info, substitutionMap))
         case v@ValDefSymbol(name) =>
-          assert(v.isComplete, v)
-          new InheritedValDefSymbol(name, substituteTypeArgs(v.info, substitutionMap))
-        case other => other
+          if (!v.isComplete)
+            return IncompleteDependency(v)
+          CompletedType(substituteTypeArgs(v.info, substitutionMap))
       }
+    }
+    def deriveInheritedMemberInfoOfAppliedType(memberInfo: Type): CompletionResult = {
+      CompletedType(substituteTypeArgs(memberInfo, substitutionMap))
     }
   }
 

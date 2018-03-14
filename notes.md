@@ -933,6 +933,107 @@ I lost ~110ops which is 5.5% of performance. This is actually really good
 result for such a substantial piece of work like major queue refactor and cycle detection algorithm. And let's not forget that 1820ops/s corresponds to
 over 3.6 million lines of scalap code per second.
 
+# As Seen From
+
+The As Seen From algorithm sits at the core of Scala's typechcking rules.
+It determines how signatures of members defined in classes are computed and
+how they do they incorporate contextual information: type parameters and
+type members.
+
+## Inherited members and type parameters (March 11th, 2018)
+
+Kentucky Mule had a hacky mechanism for dealing with inherited members and their signatures. The idea was to precompute all members for all classes.
+Each member of a class is either directly declared or inherited from a
+parent template (class or trait). By precomputing members I mean two things:
+
+  * each member is enter to a collection of members for a given class
+  * each member has a precomputed signature that takes into account
+    type arguments for type parameters of parent types of a class
+
+Let's consider an example:
+
+```
+class A[T] {
+  def foo(x: T): T = x
+}
+class B extends A[Int] {
+  def bar: Int = 123
+}
+```
+
+In the example above, the class `A` has one member: method `foo`
+with a method signature `(A.T) => T`.
+The class `B` has two members:
+
+  1. the method `foo` with the signature `(Int) => Int`
+  2. the method `bar` with the signature `() => Int`
+
+The method `foo` is inherited from `A` and it's signature is
+determined by substituting the type parameter `A.T` with the
+type argument `Int`. The type argument is passed to the parent
+type `A` in the declaration of the class `B`.
+
+The substitution is specified by the (Rule 3)[https://gist.github.com/gkossakowski/2f6fe6b51d1dd640f462a20e5560bcf2#rule-3-type-parameters]
+of the As Seen From algorithm that I studied in detail before.
+
+The motivation for precomputing all inherited members is to shift
+the cost of As Seen From from each use site (e.g. reference of a
+member) to the declaration site. The underlying assumption was that
+it would be cheaper to precompute these members once than to apply
+As Seen From repeatedly whenever a reference to a member occurs.
+
+Kentucky Mule's hacky mechanism for substitution was to introduce a
+`InheritedDefDefSymbol` that would represent an inherited member with
+the type computed that takes into account type argument subsitutions.
+I expected that in the future it would also include subsitutions coming
+from refined type members.
+
+Precalculating members of all classes is a quadratic problem dependent
+both on the number of declared members and the depth of the inheritance chain.
+I skimmed over the quadratic complexity while working on typechecking scalap
+because the inheritance chains were shallow in that project. I knew I'd have
+to revisit how I treat inherited members once I start working on typechecking
+the Scala library that has collection design known for both the large number
+of declarations (operations on collections) and deep inheritance hierarchy.
+
+I took a closer look at the cost of precomputing all members of all classes
+in Scala's standard library. To get a sense of the number of members we can
+expect, I ran this computation:
+
+```
+scala> :power
+Power mode enabled. :phase is at typer.
+import scala.tools.nsc._, intp.global._, definitions._
+Try :help or completions for vals._ and power._
+
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+def countMembersKM(s: Symbol): Int = {
+  s.baseClasses.filterNot(_ == s).map(countMembersKM).sum + s.info.decls.size
+}
+
+// Exiting paste mode, now interpreting.
+
+countMembersKM: (s: $r.intp.global.Symbol)Int
+
+scala> countMembersKM(symbolOf[List[_]])
+res0: Int = 579552
+```
+
+Ooops. I see over half a million members computed for all base classes of the
+`List` type. Generalizing this to all types, we get at least 3.5 million of
+members. The quadratic blowup of members that I wondered about is real.
+
+My decision is to get rid of precomputing of all inherited members and revisit
+the subject in the future when it will be more clear how often I need to run
+a complicated As Seen From computation.
+
+For now both `InheritedDefDefSymbol` and `InheritedValDefSymbol` will be removed. The only thing that remains is copying members from parent classes
+to the class's `members` collection. This is meant to optimize a fast lookup
+of members. I'll come back to measuring whether copying members across scopes
+is cheaper than performing recursive lookups.
+
 # Extracting dependencies from a symbol table
 
 ## Intro

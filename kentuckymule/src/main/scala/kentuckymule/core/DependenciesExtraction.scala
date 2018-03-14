@@ -54,8 +54,6 @@ class DependenciesExtraction(topLevelOnly: Boolean) {
         }
       case modSymbol: ModuleSymbol =>
         walkSymbol(modSymbol.clsSym, ownerClass)
-      case _: InheritedDefDefSymbol | _: InheritedValDefSymbol =>
-        // do nothing, dependency is recorded just for the parent class that declares def or val
       case valSymbol: ValDefSymbol =>
         val valInfo = valSymbol.info
         walkType(valInfo.resultType, ownerClass)

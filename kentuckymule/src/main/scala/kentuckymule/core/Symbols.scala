@@ -102,7 +102,7 @@ object Symbols {
   }
   final class StubModuleSymbol(name: Name, clsSym: StubClassSymbol, owner: Symbol) extends
     ModuleSymbol(name, clsSym, owner)
-  sealed case class ValDefSymbol(override val name: TermName) extends TermSymbol(name) {
+  final case class ValDefSymbol(override val name: TermName) extends TermSymbol(name) {
     var info: ValInfoType = _
     var completer: ValDefCompleter = _
     def completeInfo()(implicit context: Context): CompletionResult = {
@@ -130,7 +130,7 @@ object Symbols {
     override def isComplete: Boolean = info != null
     override def completer: Completer = throw new UnsupportedOperationException("type parameters do not have type completers")
   }
-  sealed case class DefDefSymbol(override val name: TermName, owner: Symbol) extends TermSymbol(name) {
+  final case class DefDefSymbol(override val name: TermName, owner: Symbol) extends TermSymbol(name) {
     var info: MethodInfoType = _
     var completer: DefDefCompleter = _
     val typeParams: MutableScope = Scopes.newScope
@@ -138,17 +138,6 @@ object Symbols {
       completer.complete()
     }
     override def isComplete: Boolean = completer.isCompleted
-  }
-  final class InheritedDefDefSymbol(name: TermName, info0: MethodInfoType, owner: Symbol)
-    extends DefDefSymbol(name, owner) {
-    info = info0
-    override def completeInfo()(implicit context: Context): CompletionResult = CompletedType(info)
-    override def isComplete: Boolean = true
-  }
-  final class InheritedValDefSymbol(name: TermName, info0: ValInfoType) extends ValDefSymbol(name) {
-    info = info0
-    override def completeInfo()(implicit context: Context): CompletionResult = CompletedType(info)
-    override def isComplete: Boolean = true
   }
 
   object NoSymbol extends Symbol("<none>".toTermName) {

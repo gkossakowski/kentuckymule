@@ -3,6 +3,7 @@ package kentuckymule.core
 import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.core.Names.Name
 import dotty.tools.dotc.core.Scopes._
+import dotty.tools.dotc.core.TypeOps.AppliedTypeMemberDerivation
 import dotty.tools.sharable
 import kentuckymule.core.Symbols._
 import kentuckymule.core.LookupAnswer.symToLookupAnswer
@@ -45,13 +46,43 @@ object Types {
   /** A marker trait for types that can be types of values or that are higher-kinded  */
   trait ValueType extends ValueTypeOrProto
 
-  final class ClassInfoType(val clsSym: ClassSymbol, val parents: List[Type], val selfInfo: ValInfoType) extends TypeType {
+  final class ClassInfoType(val clsSym: ClassSymbol,
+                            val parents: List[Type],
+                            val selfInfo: ValInfoType) extends TypeType {
     val members: MutableScope = newScope
+
+    var parentMemberDerivation: List[Option[AppliedTypeMemberDerivation]] = _
 
     override def typeSymbol: Symbol = clsSym
 
     override def lookup(name: Name)(implicit contexts: Context): LookupAnswer =
       symToLookupAnswer(members.lookup(name))
+
+    def asSeenFromThis_slow(s: Symbol)(implicit context: Context): CompletionResult = {
+      if (clsSym.decls.lookupAll(s.name).contains(s)) {
+        assert(s.isComplete, s)
+        CompletedType(s.info)
+      } else {
+        (parents zip parentMemberDerivation) foreach {
+          case (at: AppliedType, Some(appliedTypeMemberDerivation)) =>
+            if (at.lookup(s.name) == LookedupSymbol(s)) {
+              val parentDerivedType = at.typeSymbol match {
+                case parentCls: ClassSymbol =>
+                  val parentDerived = parentCls.info.asSeenFromThis_slow(s)
+                  parentDerived match {
+                    case CompletedType(parentClassDerivedType) =>
+                      parentClassDerivedType
+                    case _ => return parentDerived
+                  }
+                case parentTypeDef: TypeDefSymbol =>
+                  s.info
+              }
+              return appliedTypeMemberDerivation.deriveInheritedMemberInfoOfAppliedType(parentDerivedType)
+            }
+        }
+        NotFound
+      }
+    }
   }
 
   final class ModuleInfoType(val modSym: ModuleSymbol, modClassInfoType: ClassInfoType) extends TermType {

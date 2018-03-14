@@ -35,6 +35,7 @@ class ModuleCompleter(modSym: ModuleSymbol) extends Completer(modSym) {
 
 class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val lookupScope: LookupScope) extends Completer(clsSym) {
   private var cachedInfo: ClassInfoType = _
+  val inheritedMembers: util.ArrayList[Symbol] = new util.ArrayList[Symbol]()
   def complete()(implicit context: Context): CompletionResult = {
     val resolvedParents = new util.ArrayList[Type]()
     var remainingParents = tmpl.parents
@@ -52,6 +53,7 @@ class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val l
       else if (!clsSym.selfValDef.isComplete)
         return IncompleteDependency(clsSym.selfValDef)
       else clsSym.selfValDef.info
+    val resolvedDerivations = new util.ArrayList[Option[AppliedTypeMemberDerivation]]()
     val info = new ClassInfoType(clsSym, asScalaList(resolvedParents), selfInfo)
     var i = 0
     while (i < resolvedParents.size()) {
@@ -79,22 +81,20 @@ class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val l
             case Left(incompleteDependency) => return incompleteDependency
             case Right(derivation) => derivation
           }
+          resolvedDerivations.add(Some(appliedTypeMemberDerivation))
           for (m <- parentInfo.members.iterator) {
-            // we only derive inherited defs and vals at the moment so we only need to make sure
-            // these members are complete below.
-            // TODO: figure out some less ad-hoc rule, also should we derive inherited classes here or have
-            // some other mechanism?
-            val eligibleForDerivation = m.isInstanceOf[DefDefSymbol] || m.isInstanceOf[ValDefSymbol]
-            if (eligibleForDerivation && !m.isComplete)
-              return IncompleteDependency(m)
-            val derivedInheritedMember = appliedTypeMemberDerivation.deriveInheritedMemberOfAppliedType(m, clsSym)
-            info.members.enter(derivedInheritedMember)
+            val inheritedMember = m match {
+              case other => other
+            }
+            info.members.enter(inheritedMember)
           }
         case other =>
+          resolvedDerivations.add(None)
           info.members.enterAll(parentInfo.members)
       }
       i += 1
     }
+    info.parentMemberDerivation = asScalaList(resolvedDerivations)
     info.members.enterAll(clsSym.decls)
     cachedInfo = info
     CompletedType(info)

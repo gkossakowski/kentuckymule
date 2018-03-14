@@ -572,8 +572,9 @@ object EnterTest extends TestSuite {
       val Tsym = Asym.typeParams.lookup("T".toTypeName)
       assert(Tsym != NoSymbol)
       locally {
-        val aDefSym = Bsym.info.members.lookup("a".toTermName)(ctx).asInstanceOf[ValDefSymbol]
-        val SymRef(resultTypeSym) = aDefSym.info.resultType
+        val aDefSym = Bsym.info.members.lookup("a".toTermName)(ctx)
+        val CompletedType(aDefTypeInB: ValInfoType) = Bsym.info.asSeenFromThis_slow(aDefSym)
+        val SymRef(resultTypeSym) = aDefTypeInB.resultType
         val Csym = classes("C".toTypeName)
         assert(resultTypeSym == Csym)
       }
@@ -598,12 +599,14 @@ object EnterTest extends TestSuite {
       val Ysym = classes("Y".toTypeName)
       locally {
         val aValSym = Csym.info.members.lookup("a".toTermName).asInstanceOf[ValDefSymbol]
-        val SymRef(resultTypeSym) = aValSym.info.resultType
+        val CompletedType(aValInfoInC: ValInfoType) = Csym.info.asSeenFromThis_slow(aValSym)
+        val SymRef(resultTypeSym) = aValInfoInC.resultType
         assert(resultTypeSym == Ysym)
       }
       locally {
         val bValSym = Csym.info.members.lookup("b".toTermName).asInstanceOf[ValDefSymbol]
-        val SymRef(resultTypeSym) = bValSym.info.resultType
+        val CompletedType(bValInfoInC: ValInfoType) = Csym.info.asSeenFromThis_slow(bValSym)
+        val SymRef(resultTypeSym) = bValInfoInC.resultType
         assert(resultTypeSym == Xsym)
       }
     }
@@ -743,8 +746,9 @@ object EnterTest extends TestSuite {
         // if a type alias was resolved correctly, we should find the `c` method that is inherited from the C
         // class
         val dDefInA = Asym.info.members.lookup("d".toTermName)
+        val CompletedType(dDefInfoInA: MethodInfoType) = Asym.info.asSeenFromThis_slow(dDefInA)
         assert(dDefInA != NoSymbol)
-        val dResultType = dDefInA.asInstanceOf[DefDefSymbol].info.resultType
+        val dResultType = dDefInfoInA.resultType
         assert(dResultType == SymRef(Dsym))
       }
     }
@@ -776,8 +780,9 @@ object EnterTest extends TestSuite {
         val resultTypeAliasInfo = resultTypeAlias.asInstanceOf[TypeDefSymbol].info.asInstanceOf[TypeAliasInfoType]
         val typeAliasRhs = resultTypeAliasInfo.rhsType.asInstanceOf[AppliedType]
         val appliedTypeMemberDerivation = AppliedTypeMemberDerivation.createForDealiasedType(typeAliasRhs).right.get
-        val derivedBInfo = appliedTypeMemberDerivation.deriveInheritedMemberOfAppliedType(bSym, baseSym).info
-        val bResultType = derivedBInfo.asInstanceOf[ValInfoType].resultType
+        val CompletedType(derivedBInfo: ValInfoType) =
+          appliedTypeMemberDerivation.deriveInheritedMemberInfoOfAppliedType(bSym)
+        val bResultType = derivedBInfo.resultType
         assert(bResultType == SymRef(fooSym))
       }
     }
