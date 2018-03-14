@@ -55,6 +55,8 @@ object Symbols {
           sym.info = tpe
         case sym: DefDefSymbol =>
           sym.info = tpe.asInstanceOf[MethodInfoType]
+        case sym: ImportSymbol =>
+          sym.info = tpe
         case sym =>
           sys.error(s"Invalid symbol $sym")
       }
@@ -144,5 +146,11 @@ object Symbols {
     def info: Type = NoType
     def isComplete: Boolean = true
     override def completer: Completer = throw new UnsupportedOperationException("NoSymbol doesn't have type completer")
+  }
+
+  case class ImportSymbol() extends Symbol("<none>".toTermName) {
+    var info: Type = _
+    var completer: ImportCompleter = _
+    override def isComplete: Boolean = info != null
   }
 }

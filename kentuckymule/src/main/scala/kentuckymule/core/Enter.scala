@@ -12,6 +12,7 @@ import dotc.core.StdNames._
 import Symbols._
 import dotc.core.Flags
 import CollectionUtils._
+import kentuckymule.core.Types.SymRef
 import kentuckymule.queue.JobQueue
 
 /**
@@ -579,7 +580,9 @@ object Enter {
     def addImports(imports: ImportsLookup): LookupScope
   }
 
-  private class ImportCompleter(val importNode: Import) {
+  class ImportCompleter(val importSymbol: ImportSymbol,
+                                val importNode: Import,
+                               val parentLookupWithPreceedingImports: LookupScope) extends Completer(importSymbol) {
 
     private class ImportSelectorResolved(val termSym: Symbol, val typeSym: Symbol, renamedTo: Name) {
       val typeNameRenamed: TypeName = if (renamedTo != null) renamedTo.toTypeName else null
@@ -588,59 +591,64 @@ object Enter {
     private var exprSym0: Symbol = _
     private var resolvedSelectors: util.ArrayList[ImportSelectorResolved] = _
     private var hasFinalWildcard: Boolean = false
-    private var isComplete: Boolean = false
-    def complete(parentLookupScope: LookupScope)(implicit context: Context): LookupAnswer = {
+    var isCompleted: Boolean = false
+    def complete()(implicit context: Context): CompletionResult = {
       val Import(expr, selectors) = importNode
-      val exprAns = ResolveType.resolveSelectors(expr, parentLookupScope)
-      val result = mapCompleteAnswer(exprAns) { exprSym =>
-        this.exprSym0 = exprSym
-        val resolvedSelectors = mapToArrayList(selectors) { selector =>
-          val (name, renamedTo) = selector match {
-            case Ident(selName) => (selName, selName)
-            case Pair(Ident(selName), Ident(selRenamedTo)) => (selName, selRenamedTo)
-          }
-          if (name != nme.WILDCARD) {
-            val termSym: Symbol = {
-              val lookupAnswer = lookupMember(exprSym, name)
-              lookupAnswer match {
-                case LookedupSymbol(sym) => sym
-                case NotFound => NoSymbol
-                case id: IncompleteDependency => return id
-              }
+      val exprAns = ResolveType.resolveSelectors(expr, parentLookupWithPreceedingImports)
+      val result = exprAns match {
+        case NotFound => NotFound
+        case ic: IncompleteDependency => ic
+        case LookedupSymbol(exprSym) =>
+          if (!exprSym.isComplete)
+            return IncompleteDependency(exprSym)
+          this.exprSym0 = exprSym
+          val resolvedSelectors = mapToArrayList(selectors) { selector =>
+            val (name, renamedTo) = selector match {
+              case Ident(selName) => (selName, selName)
+              case Pair(Ident(selName), Ident(selRenamedTo)) => (selName, selRenamedTo)
             }
-            val typeSym: Symbol = {
-              val lookupAnswer = lookupMember(exprSym, name.toTypeName)
-              lookupAnswer match {
-                case LookedupSymbol(sym) => sym
-                case NotFound => NoSymbol
-                case id: IncompleteDependency => return id
+            if (name != nme.WILDCARD) {
+              val termSym: Symbol = {
+                val lookupAnswer = lookupMember(exprSym, name)
+                lookupAnswer match {
+                  case LookedupSymbol(lookedupSym) => lookedupSym
+                  case NotFound => NoSymbol
+                  case id: IncompleteDependency => return id
+                }
               }
+              val typeSym: Symbol = {
+                val lookupAnswer = lookupMember(exprSym, name.toTypeName)
+                lookupAnswer match {
+                  case LookedupSymbol(lookedupSym) => lookedupSym
+                  case NotFound => NoSymbol
+                  case id: IncompleteDependency => return id
+                }
+              }
+              if (termSym == NoSymbol && typeSym == NoSymbol)
+                return NotFound
+              new ImportSelectorResolved(termSym, typeSym, renamedTo)
+            } else {
+              // parser guarantees that the wildcard name can only appear at the end of
+              // the selector list and we check for possible null value below
+              // signalling the wildcard selector via a null value is really wonky but
+              // I'm doing it for one reason: I'm paranoid about performance and don't
+              // want to scan the selectors list twice
+              null
             }
-            if (termSym == NoSymbol && typeSym == NoSymbol)
-              return NotFound
-            new ImportSelectorResolved(termSym, typeSym, renamedTo)
-          } else {
-            // parser guarantees that the wildcard name can only appear at the end of
-            // the selector list and we check for possible null value below
-            // signalling the wildcard selector via a null value is really wonky but
-            // I'm doing it for one reason: I'm paranoid about performance and don't
-            // want to scan the selectors list twice
-            null
           }
-        }
-        val selectorsSize = resolvedSelectors.size()
-        if (selectorsSize > 0 && resolvedSelectors.get(selectorsSize-1) == null) {
-          resolvedSelectors.remove(selectorsSize-1)
-          hasFinalWildcard = true
-        }
-        this.resolvedSelectors = resolvedSelectors
-        exprSym
+          val selectorsSize = resolvedSelectors.size()
+          if (selectorsSize > 0 && resolvedSelectors.get(selectorsSize-1) == null) {
+            resolvedSelectors.remove(selectorsSize-1)
+            hasFinalWildcard = true
+          }
+          this.resolvedSelectors = resolvedSelectors
+          isCompleted = true
+          CompletedType(SymRef(exprSym))
       }
-      isComplete = true
       result
     }
     def matches(name: Name)(implicit context: Context): LookupAnswer = {
-      assert(isComplete, s"the import node hasn't been completed: $importNode")
+      assert(isCompleted, s"the import node hasn't been completed: $importNode")
       var i = 0
       var seenNameInSelectors = false
       while (i < resolvedSelectors.size) {
@@ -699,48 +707,35 @@ object Enter {
   }
 
   class ImportsCollector(parentLookupScope: LookupScope) {
-    private val importCompleters: util.ArrayList[ImportCompleter] = new util.ArrayList[ImportCompleter]()
+    private val importSymbols: util.ArrayList[ImportSymbol] = new util.ArrayList[ImportSymbol]()
     def append(imp: Import): Unit = {
-      importCompleters.add(new ImportCompleter(imp))
+      val importSymbol = new ImportSymbol
+      val proceedingImports = new ImportsLookup(importSymbols, parentLookupScope)()
+      val parentLookupWithImports = parentLookupScope.addImports(proceedingImports)
+      importSymbol.completer = new ImportCompleter(importSymbol, imp, parentLookupWithImports)
+      importSymbols.add(importSymbol)
     }
     def snapshot(): ImportsLookup = {
-      new ImportsLookup(importCompleters, parentLookupScope)()
+      new ImportsLookup(importSymbols, parentLookupScope)()
     }
-    def isEmpty: Boolean = importCompleters.isEmpty
+    def isEmpty: Boolean = importSymbols.isEmpty
   }
 
-  class ImportsLookup(importCompleters: util.ArrayList[ImportCompleter], parentLookupScope: LookupScope)
-                     (lastCompleterIndex: Int = importCompleters.size - 1) {
-    private var allComplete: Boolean = false
-
-
-    private def resolveImports()(implicit context: Context): Symbol = {
-      var i: Int = 0
-      while (i <= lastCompleterIndex) {
-        val importsCompletedSoFar = new ImportsLookup(importCompleters, parentLookupScope)(lastCompleterIndex = i-1)
-        importsCompletedSoFar.allComplete = true
-        val parentLookupWithImports = parentLookupScope.addImports(importsCompletedSoFar)
-        val impCompleter = importCompleters.get(i)
-        impCompleter.complete(parentLookupWithImports) match {
-          case _: LookedupSymbol =>
-          case IncompleteDependency(sym) => return sym
-          case NotFound => sys.error(s"couldn't resolve import ${impCompleter.importNode}")
-        }
-        i += 1
-      }
-      allComplete = true
-      null
-    }
+  class ImportsLookup(importSymbols: util.ArrayList[ImportSymbol], parentLookupScope: LookupScope)
+                     (lastCompleterIndex: Int = importSymbols.size - 1) {
     def lookup(name: Name)(implicit context: Context): LookupAnswer = {
-      if (!allComplete) {
-        val sym = resolveImports()
-        if (sym != null)
-          return IncompleteDependency(sym)
-      }
       var i = lastCompleterIndex
       while (i >= 0) {
-        val completedImport = importCompleters.get(i)
-        val lookupAnswer = completedImport.matches(name)
+        val importSymbol = importSymbols.get(i)
+        val importCompleter = importSymbol.completer
+        if (!importCompleter.isCompleted) {
+          val completionResult = importCompleter.complete()
+          completionResult match {
+            case ic: IncompleteDependency => return ic
+            case _: CompletedType =>
+          }
+        }
+        val lookupAnswer = importSymbol.completer.matches(name)
         if (lookupAnswer != NotFound)
           return lookupAnswer
         i -= 1
