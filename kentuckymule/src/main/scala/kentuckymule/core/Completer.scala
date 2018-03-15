@@ -83,10 +83,7 @@ class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val l
           }
           resolvedDerivations.add(Some(appliedTypeMemberDerivation))
           for (m <- parentInfo.members.iterator) {
-            val inheritedMember = m match {
-              case other => other
-            }
-            info.members.enter(inheritedMember)
+            info.members.enter(m)
           }
         case other =>
           resolvedDerivations.add(None)
