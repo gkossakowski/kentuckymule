@@ -250,7 +250,7 @@ object EnterTest extends TestSuite {
       }
 
     }
-    'importFromObject - pending {
+    'importFromObject {
       val src =
         """
           |package a {

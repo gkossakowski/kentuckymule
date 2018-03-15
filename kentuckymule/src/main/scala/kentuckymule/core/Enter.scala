@@ -648,7 +648,8 @@ object Enter {
       result
     }
     def matches(name: Name)(implicit context: Context): LookupAnswer = {
-      assert(isCompleted, s"the import node hasn't been completed: $importNode")
+      if (!isCompleted)
+        return IncompleteDependency(importSymbol)
       var i = 0
       var seenNameInSelectors = false
       while (i < resolvedSelectors.size) {
@@ -682,6 +683,23 @@ object Enter {
       if (!seenNameInSelectors && hasFinalWildcard) {
         exprSym0.info.lookup(name)
       } else NotFound
+    }
+    def possiblyMatches(name: Name): Boolean = {
+      val Import(_, selectors) = importNode
+      var remainingSelectors = selectors
+      while (remainingSelectors.nonEmpty) {
+        val selector = remainingSelectors.head
+        selector match {
+          case Ident(identName) =>
+            if (identName == name.toTermName || identName == name.toTypeName || identName == nme.WILDCARD)
+              return true
+          case Pair(_, Ident(identName)) =>
+            if (identName == name.toTermName || identName == name.toTypeName)
+              return true
+        }
+        remainingSelectors = remainingSelectors.tail
+      }
+      false
     }
   }
 
@@ -728,16 +746,18 @@ object Enter {
       while (i >= 0) {
         val importSymbol = importSymbols.get(i)
         val importCompleter = importSymbol.completer
-        if (!importCompleter.isCompleted) {
+        if (!importCompleter.isCompleted && importCompleter.possiblyMatches(name)) {
           val completionResult = importCompleter.complete()
           completionResult match {
             case ic: IncompleteDependency => return ic
             case _: CompletedType =>
           }
         }
-        val lookupAnswer = importSymbol.completer.matches(name)
-        if (lookupAnswer != NotFound)
-          return lookupAnswer
+        if (importCompleter.isCompleted) {
+          val lookupAnswer = importSymbol.completer.matches(name)
+          if (lookupAnswer != NotFound)
+            return lookupAnswer
+        }
         i -= 1
       }
       NotFound
