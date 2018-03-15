@@ -50,9 +50,7 @@ class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val l
     }
     val selfInfo =
       if (clsSym.selfValDef == null) null
-      else if (!clsSym.selfValDef.isComplete)
-        return IncompleteDependency(clsSym.selfValDef)
-      else clsSym.selfValDef.info
+      else SymRef(clsSym.selfValDef)
     val resolvedDerivations = new util.ArrayList[Option[AppliedTypeMemberDerivation]]()
     val info = new ClassInfoType(clsSym, asScalaList(resolvedParents), selfInfo)
     var i = 0

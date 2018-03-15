@@ -48,7 +48,7 @@ object Types {
 
   final class ClassInfoType(val clsSym: ClassSymbol,
                             val parents: List[Type],
-                            val selfInfo: ValInfoType) extends TypeType {
+                            val selfInfo: Type) extends TypeType {
     val members: MutableScope = newScope
 
     var parentMemberDerivation: List[Option[AppliedTypeMemberDerivation]] = _
