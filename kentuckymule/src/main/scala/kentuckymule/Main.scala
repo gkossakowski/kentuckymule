@@ -108,6 +108,7 @@ object Main {
   }
 
   def processScalaLib(implicit context: Context): JobQueueResult = {
+    Timer.init()
     import java.nio.file.Paths
     println("Calculating outline types for scala library sources...")
     val scalaLibDir = Paths.get("./sample-projects/scala/src/library").toAbsolutePath.toString
@@ -118,6 +119,7 @@ object Main {
       unit.untpdTree = parser.parse()
       unit
     }
+    Timer.sinceInit("Parsing done")
     val jobQueue = new JobQueue(memberListOnly = false)
     val enter = new Enter(jobQueue)
     ScalaLibHelper.enterStabSymbolsForScalaLib(jobQueue, enter, context)
@@ -127,6 +129,7 @@ object Main {
     val progressListener = if (context.verbose) NopJobQueueProgressListener else new ProgressBarListener
     val jobQueueResult = jobQueue.processJobQueue(listener = progressListener)(context)
     println()
+    Timer.sinceInit("Job queue processed")
     jobQueueResult match {
       case JobDependencyCycle(_) =>
         return jobQueueResult
@@ -134,12 +137,15 @@ object Main {
     }
     val depsExtraction = new DependenciesExtraction(topLevelOnly = true)
     val (classes, deps) = depsExtraction.extractAllDependencies()
+    Timer.sinceInit("Deps extracted")
     import scala.collection.JavaConverters._
     val sccResult@TarjanSCC.SCCResult(components, edges) =
       TarjanSCC.collapsedGraph[ClassSymbol](classes.asScala, from => deps.get(from).asScala)
+    Timer.sinceInit("Tarjan done")
     println(s"Found ${components.size} dependency groups")
     def printSymbol(cls: ClassSymbol): String = s"${cls.owner.name}.${cls.name}"
     val longestPath = TarjanSCC.longestPath(sccResult)
+    Timer.sinceInit("Longest path computed")
     println(s"Printing the longest (${longestPath.size}) dependency path ")
     for (component <- longestPath) {
       val symbols = component.vertices
