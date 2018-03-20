@@ -3,7 +3,7 @@ package kentuckymule.core
 import dotty.tools.dotc.core.Contexts.Context
 import Symbols._
 import Types._
-import com.google.common.collect.{ImmutableMultimap, ImmutableSet}
+import com.google.common.collect.{ImmutableMultimap, ImmutableSet, Sets}
 
 /**
   * Extracts class dependencies from Symbols entered into Symbol Table.
@@ -42,6 +42,7 @@ class DependenciesExtraction(topLevelOnly: Boolean) {
     assert(symbol.isComplete, symbol)
     symbol match {
       case clsSymbol: ClassSymbol =>
+        clsSymbol.visitedInDepsExtraction = true
         val newOwnerClass = if (topLevelOnly) ownerClass else clsSymbol
         classes.add(clsSymbol)
         val clsType = clsSymbol.info
@@ -49,7 +50,10 @@ class DependenciesExtraction(topLevelOnly: Boolean) {
         val members = clsType.members.toArray
         var i = 0
         while (i < members.length) {
-          walkSymbol(members(i), newOwnerClass)
+          val member = members(i)
+          if (!member.visitedInDepsExtraction) {
+            walkSymbol(members(i), newOwnerClass)
+          }
           i += 1
         }
       case modSymbol: ModuleSymbol =>

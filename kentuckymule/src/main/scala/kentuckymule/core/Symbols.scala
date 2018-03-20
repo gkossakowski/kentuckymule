@@ -34,6 +34,10 @@ object Symbols {
     def decls: Scope = scope
 
     def completer: Completer
+
+    // TODO: switch to `PerSymbolStore` trait that can be subclassed for various per-symbol store
+    // implementations
+    var visitedInDepsExtraction: Boolean = false
   }
 
   // TODO: the global pattern match on symbols + casts is very ugly but it's done for performance reasons
