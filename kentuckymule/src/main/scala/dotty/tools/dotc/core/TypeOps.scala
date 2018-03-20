@@ -88,8 +88,8 @@ object TypeOps {
     val resultType = t.resultType
     val paramTypes = t.paramTypes
     val resultType1 = substituteTypeArgs(resultType, substitutionMap)
-    assert(paramTypes.size <= 1, "Only one parameter list is supported for methods")
-    val paramTypes1 = if (paramTypes.size == 1) {
+//    assert(paramTypes.size <= 1, "Only one parameter list is supported for methods")
+    val paramTypes1 = if (paramTypes.lengthCompare(1) == 0) {
       var remainingVParamTypes = paramTypes.head
       var modifiedVParam = false
       val paramTypesBuf = new util.ArrayList[Type]()
