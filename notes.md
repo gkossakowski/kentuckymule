@@ -1034,6 +1034,73 @@ to the class's `members` collection. This is meant to optimize a fast lookup
 of members. I'll come back to measuring whether copying members across scopes
 is cheaper than performing recursive lookups.
 
+## Collapsing inherited members (or not) (March 20, 2018)
+
+Kentucky Mule copies members from parent classes. It does it for two reasons:
+
+  1. To experiment with faster lookup
+  2. To implement a crude version of As Seen From (discussed above)
+
+I'm going to write a short note on the 1. The idea was to collapse member lookup
+of a class into a single hashtable lookup. The class can have multiple parents that
+all contribute declarations. I collapse member lookup by copying members from all
+parents into a single hashtable.
+
+I want to highlight that this strategy leads to an `O(n^2)` growth of members
+in a chain of inheritance. Let's consider an example:
+
+```scala
+class A1 { def a1: Int }
+class A2 extends A1 { def a2: Int }
+class A3 extends A2 { def a3: Int }
+...
+class A10 extends A9 { def a10: Int }
+```
+
+The class `A10` has ten members. It transitively collected declarations
+`a9` ... `a1`. In this simple example the problem doesn't look too bad
+but `O(n^2)` should be always a worrisome behavior. While testing Kentucky Mule
+against the Scala's Standard Library, I noticed that dependency extraction
+and cycle collapse both take a long time: several seconds. The dependency
+extraction (the simple symbol table traversal) was taking longer than completing
+all the types. The problem was with the number of symbols traversed:
+over 3.5 million.
+
+The strategy of collapsing all members into a single hashtable was motivated
+by the observation that the write to a hash table is done just once but
+lookups are performed many more times. My logic was that traversing all
+parents and asking them for members might be too expensive for every lookup.
+
+Switching between strategies was easy. The benchmarks show that there's
+almost no drop in completer's performance.
+
+Collapsed members:
+
+```
+[info] Result "kentuckymule.bench.BenchmarkScalaLib.completeMemberSigs":
+[info]   6.052 ±(99.9%) 0.109 ops/s [Average]
+[info]   (min, avg, max) = (5.560, 6.052, 6.546), stdev = 0.243
+[info]   CI (99.9%): [5.943, 6.161] (assumes normal distribution)
+[info] # Run complete. Total time: 00:02:21
+[info] Benchmark                              Mode  Cnt  Score   Error  Units
+[info] BenchmarkScalaLib.completeMemberSigs  thrpt   60  6.052 ± 0.109  ops/s
+```
+
+Traversing the parents for a lookup:
+
+```
+[info] Result "kentuckymule.bench.BenchmarkScalaLib.completeMemberSigs":
+[info]   5.935 ±(99.9%) 0.034 ops/s [Average]
+[info]   (min, avg, max) = (5.763, 5.935, 6.113), stdev = 0.075
+[info]   CI (99.9%): [5.902, 5.969] (assumes normal distribution)
+[info] # Run complete. Total time: 00:02:15
+[info] Benchmark                              Mode  Cnt  Score   Error  Units
+[info] BenchmarkScalaLib.completeMemberSigs  thrpt   60  5.935 ± 0.034  ops/s
+```
+
+With no noticeable difference in performance, I'm going to change member
+lookup to traversing the parents.
+
 # Extracting dependencies from a symbol table
 
 ## Intro
