@@ -784,14 +784,16 @@ a dependency graph that is not known upfront. The dependency graph is computed
 piecemeal by executing completers and collecting missing dependencies. Only
 completers that haven't ran yet are considered as missing dependencies.
 
-Above, in the "Completers design" section, I described the origins of the coopertive multitasking design of completers. I speculated in that section what
+Above, in the "Completers design" section, I described the origins of the
+cooperative multitasking design of completers. I speculated in that section what
 capabilities the cooperative multitasking could unlock.
 
 The redesigned completers queue takes these earlier speculations and turns them
  into an implementation.
- The queue:
 
-  * tracks completers dependencies that are returned upon their execution
+The queue:
+
+  * tracks completers' dependencies that are returned upon their execution
   * schedules completers to execute
   * detects cycles in completer dependencies with almost no additional
     overhead(!)
@@ -851,17 +853,17 @@ In Kentucky Mule cycles appear only when the input Scala program has an
 illegal cycle. The result of running the queue should be an error message
 about the detected cycle.
 
-The new design of the queue keep tracks of pending jobs off the main queue.
-A job named `A` is marked as pending when it returns signaling to be blocked
-on another job `B`. `A` is also taken off the main queue. Only once `B`
+The new design of the queue keeps track of pending jobs off the main queue.
+A job named `A` is marked as pending when it returns a result that says
+`A` is blocked on another job `B`. `A` is taken off the main queue. Only once `B`
 is completed, the `A` job is added back to the main queue. This scheme has
 the property that if jobs are in a cycle, they will all be marked as pending
-and taken away from the main queue. The cycle detection becomes trivial. When
-the main job queue queue becomes empty, it either:
+and taken off from the main queue. The cycle detection becomes trivial. When
+the main job queue becomes empty, it either:
 
-  * finished executing all jobs (all completers are done) when there're no
+  * finished executing all jobs (all completers are done) in case there're no
     jobs marked as pending
-  * it found a cycle when there're jobs marked as pending
+  * it found a cycle in case there're jobs marked as pending
 
 In the example above with the `A`, `B`, `C` classes we would have:
 
@@ -875,8 +877,8 @@ step 4:       # empty queue, pending jobs exist => cycle detected
 If some blocking job does complete, its pending jobs need to be released back
 to the main queue. I implemented this by maintaing an auxiliary queue
 associated with each job. I also have a global count of all pending jobs that
-is trivial to implement and makes checking for cycle simple. This is not merely
-a performance optimisation: I don't have a registry of all auxiliary queues so
+is trivial to implement and makes checking for a cycle simple. This is not merely
+a performance optimization: I don't have a registry of all auxiliary queues so
 it would be hard to find out if there're any pending jobs left.
 
 The exciting thing about this design is that we check for cycles only _once_
