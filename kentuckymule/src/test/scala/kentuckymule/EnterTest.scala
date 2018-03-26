@@ -910,6 +910,29 @@ object EnterTest extends TestSuite {
       val barSym = Asym.info.lookup("bar".toTermName).asInstanceOf[ValDefSymbol]
       assert(barSym.info.resultType == SymRef(Asym))
     }
+    'superInPath - pending {
+      // `foo.type` is resolved to the type of `foo` and we forget about the singleton type
+      val src =
+        """
+          |class A {
+          |  class X
+          |}
+          |class B extends A {
+          |  class X
+          |  val foo: super.X
+          |}""".stripMargin
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      jobQueue.processJobQueue()
+      val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap - "X".toTypeName // remove X there are two classes named `X` and the hashmap will pick one arbitrarily
+      val Asym = classes("A".toTypeName)
+      val Bsym = classes("B".toTypeName)
+      val XinAsym = Asym.info.lookup("X".toTypeName)
+      val fooSym = Bsym.info.lookup("foo".toTermName).asInstanceOf[ValDefSymbol]
+      assert(fooSym.info.resultType == SymRef(XinAsym))
+    }
   }
 
   final def pending(body: => Unit): Unit = {
