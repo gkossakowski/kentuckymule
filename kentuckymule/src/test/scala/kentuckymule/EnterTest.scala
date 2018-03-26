@@ -897,6 +897,14 @@ val enter = enterToSymbolTable(ctx, jobQueue)(src)
     }
   }
 
+  final def pending(body: => Unit): Unit = {
+    try body
+    catch {
+      case _: java.lang.AssertionError => return
+    }
+    asserts.Util.assertError("pending test passed", Seq.empty)
+  }
+
   private def enterToSymbolTable(ctx: Context, jobQueue: JobQueue)(srcs: String*): Enter = {
     val units = srcs.map(src => compilationUnitFromString(src, ctx))
     val enter = new Enter(jobQueue)
