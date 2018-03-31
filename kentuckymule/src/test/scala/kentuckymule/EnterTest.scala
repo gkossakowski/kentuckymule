@@ -60,7 +60,7 @@ object EnterTest extends TestSuite {
     }
     'constructorMultipleParamList {
       val src = "class Foo(val x: Foo)(val y: Foo)"
-      
+
       val jobQueue = new JobQueue
       val enter = enterToSymbolTable(ctx, jobQueue)(src)
       jobQueue.processJobQueue()(ctx)
@@ -120,7 +120,7 @@ object EnterTest extends TestSuite {
     }
     'importFromVal {
       val src = "class A(b: B) { import b.C; def c: C }; class B { class C }"
-      
+
       val jobQueue = new JobQueue
       val enter = enterToSymbolTable(ctx, jobQueue)(src)
       jobQueue.processJobQueue()(ctx)
@@ -431,9 +431,9 @@ object EnterTest extends TestSuite {
     }
     'completeMemberInfo {
       val src = "class A extends B { def a: A }; class B { def b: B }"
-      
-val jobQueue = new JobQueue
-val enter = enterToSymbolTable(ctx, jobQueue)(src)
+
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
       jobQueue.processJobQueue()(ctx)
 
       val classes = descendantPathsFromRoot().flatten.collect {
@@ -460,7 +460,7 @@ val enter = enterToSymbolTable(ctx, jobQueue)(src)
     }
     'memberInfoRefersToImport {
       val src = "class A { def a: A; import B.BB; def b: BB }; object B { class BB }"
-      
+
       val jobQueue = new JobQueue
       val enter = enterToSymbolTable(ctx, jobQueue)(src)
       jobQueue.processJobQueue()(ctx)
