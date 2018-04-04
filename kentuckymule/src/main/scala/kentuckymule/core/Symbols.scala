@@ -56,7 +56,7 @@ object Symbols {
         case sym: ValDefSymbol =>
           sym.info = tpe.asInstanceOf[ValInfoType]
         case sym: TypeDefSymbol =>
-          sym.info = tpe
+          sym.info = tpe.asInstanceOf[TypeAliasInfoType]
         case sym: DefDefSymbol =>
           sym.info = tpe.asInstanceOf[MethodInfoType]
         case sym: ImportSymbol =>
@@ -119,10 +119,7 @@ object Symbols {
   }
   final case class TypeDefSymbol(override val name: TypeName, enclosingClass: Symbol) extends TypeSymbol(name) {
     assert(enclosingClass.isInstanceOf[ClassSymbol], enclosingClass)
-    // TODO: turn it back to TypeAliasInfoType once StubTypeDefCompleter is out
-    // right now, info has type `Type` because StubTypeDefCompleter returns NoType as
-    // a result
-    var info: Type = _
+    var info: TypeAliasInfoType = _
     var completer: TypeDefCompleter = _
     val typeParams: MutableScope = Scopes.newScope
     override def isComplete: Boolean = info != null
