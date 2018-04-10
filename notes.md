@@ -600,6 +600,100 @@ assembly of the method: it's pretty simple, after all.
 Unfortunately, JITWatch was crashing for me when parsing JIT's logs and I couldn't get
 it to work. I'm just taking a note and moving on feeling slightly defeated.
 
+### Laziness of imports (April 8, 2018)
+
+On April 8, 2018 I pushed changes that make the handling of imports more lazy and I'm writing a note on why.
+I originally thought that imports can be "bundled" together and resolved in one tight loop with a great performance.
+
+Let's consider this example:
+
+```scala
+import A.X1
+import A.X2
+import A.X3
+
+class B extends X2
+
+object A {
+  class X1
+  class X2
+  class X3
+}
+```
+
+The previous strategy of handling imports would resolve them upon first
+import lookup, e.g. for the type `X2`. All imports would be resolved in
+one go, top-to-bottom. The reason why all imports were resolved is that
+the next import could depend on what the previous one imported and my
+argument was that it's cheaper to simply resolve them all in a tight loop
+than do anything more complicated. Trying to carefully track dependencies
+and introduce laziness seemed like unnecessary and potentially harmful
+to performance due to the cost of additional bookkeeping. My argument was
+that most imports will need to be resolved at some point so laziness
+doesn't add any value.
+
+However, I forgot about the scenario like this that's allowed in Scala:
+
+```scala
+package a {
+  package b {
+    // this wildcard import is ok: it forces completion of `C` that is not dependent on `A` below
+    import C._
+    // import A._ causes a cyclic error also in scalac; only importing a specific name
+    // avoids the cycle
+    import A.X
+    object A extends B {
+      class X
+    }
+    object C
+  }
+  class B
+}
+```
+
+that is: we have forward imports in Scala.
+Before changing the handling of imports,
+the `import A.X` would fail due to following cycle:
+
+  1. `import A.X` needs to query members of the object `A` so
+      that object has to be completed
+  2. during the completion of the object `A`, we need to resolve
+     the type `B` and for that we need to resolve all imports
+     in scope
+
+The patch I pushed today introduces an `ImportSymbol` on which
+I can hang a type completer. This makes each import node to be
+lazily completed when necessary.
+
+The new logic won't consider all imports but only imports possibly
+matching. The possibly matching imports are the ones with a selector
+matching the looked up identifier's name.
+
+With this change, the lookup for the type `B` doesn't trigger
+the completion of the import `A.X` because the name `B` is not matched
+by the selector `X`.
+
+This concludes my initial musings on whether imports need to be handled
+in a lazy manner. They do.
+The surprising part is that an additional laziness and the bookkeeping
+associated with it introduced a performance boost.
+
+Before the change:
+
+```
+[info] # Run complete. Total time: 00:04:08
+[info] Benchmark                            Mode  Cnt     Score   Error  Units
+[info] BenchmarkScalap.completeMemberSigs  thrpt  120  1736.439 ± 8.539  ops/s
+```
+
+and after:
+
+```
+[info] # Run complete. Total time: 00:04:08
+[info] Benchmark                            Mode  Cnt     Score   Error  Units
+[info] BenchmarkScalap.completeMemberSigs  thrpt  120  1864.463 ± 8.079  ops/s
+```
+
 ## Package objects
 
 Initially, Kentucky Mule didn't support package objects. I felt that they're
