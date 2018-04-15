@@ -80,17 +80,12 @@ class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val l
             case Right(derivation) => derivation
           }
           resolvedDerivations.add(Some(appliedTypeMemberDerivation))
-          for (m <- parentInfo.members.iterator) {
-            info.members.enter(m)
-          }
         case other =>
           resolvedDerivations.add(None)
-          info.members.enterAll(parentInfo.members)
       }
       i += 1
     }
     info.parentMemberDerivation = asScalaList(resolvedDerivations)
-    info.members.enterAll(clsSym.decls)
     cachedInfo = info
     CompletedType(info)
   }
@@ -108,8 +103,11 @@ class PackageCompleter(pkgSym: PackageSymbol) extends Completer(pkgSym) {
       val info = new PackageInfoType(pkgSym)
       // TODO: check for conflicting definitions in the package and package object, e.g.:
       // package foo { class Abc }; package object foo { class Abc }
-      if (pkgSym.packageObject != NoSymbol)
-        info.members.enterAll(pkgSym.packageObject.asInstanceOf[ModuleSymbol].info.members)
+      if (pkgSym.packageObject != NoSymbol) {
+        val pkgObjectMembersIterator = pkgSym.packageObject.asInstanceOf[ModuleSymbol].info.membersIterator
+        // TODO: implement this with a while loop
+        pkgObjectMembersIterator.foreach(sym => info.members.enter(sym))
+      }
       info.members.enterAll(pkgSym.decls)
 
       cachedInfo = info

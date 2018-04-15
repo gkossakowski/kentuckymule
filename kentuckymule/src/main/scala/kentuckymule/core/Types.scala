@@ -49,14 +49,35 @@ object Types {
   final class ClassInfoType(val clsSym: ClassSymbol,
                             val parents: List[Type],
                             val selfInfo: Type) extends TypeType {
-    val members: MutableScope = newScope
 
     var parentMemberDerivation: List[Option[AppliedTypeMemberDerivation]] = _
 
+    private val reversedParents = parents.reverse
+
+    def membersIterator: Iterator[Symbol] = (reversedParents.iterator flatMap { tpe =>
+      tpe.typeSymbol.info.asInstanceOf[ClassInfoType].membersIterator
+    }) ++ clsSym.decls.iterator
+
     override def typeSymbol: Symbol = clsSym
 
-    override def lookup(name: Name)(implicit contexts: Context): LookupAnswer =
-      symToLookupAnswer(members.lookup(name))
+    override def lookup(name: Name)(implicit contexts: Context): LookupAnswer = {
+      val clsDecl = clsSym.decls.lookup(name)
+      if (clsDecl != NoSymbol)
+        return LookedupSymbol(clsDecl)
+      var remainingReversedParents = reversedParents
+      while (remainingReversedParents.nonEmpty) {
+        val parent = remainingReversedParents.head
+        val lookupParent = parent.lookup(name)
+        lookupParent match {
+          case result: LookedupSymbol => return result
+          case result: IncompleteDependency => return result
+          case NotFound => // continue looking
+        }
+        remainingReversedParents = remainingReversedParents.tail
+      }
+      NotFound
+    }
+
 
     def asSeenFromThis_slow(s: Symbol)(implicit context: Context): CompletionResult = {
       if (clsSym.decls.lookupAll(s.name).contains(s)) {
@@ -86,11 +107,11 @@ object Types {
   }
 
   final class ModuleInfoType(val modSym: ModuleSymbol, modClassInfoType: ClassInfoType) extends TermType {
-    def members: Scope = modClassInfoType.members
+    def membersIterator: Iterator[Symbol] = modClassInfoType.membersIterator
 
     override def typeSymbol: Symbol = modSym
     override def lookup(name: Name)(implicit contexts: Context): LookupAnswer =
-      symToLookupAnswer(members.lookup(name))
+      modClassInfoType.lookup(name)
   }
 
   final case class MethodInfoType(defDefSymbol: DefDefSymbol, paramTypes: List[List[Type]], resultType: Type) extends Type {

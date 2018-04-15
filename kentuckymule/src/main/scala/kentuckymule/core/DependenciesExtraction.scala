@@ -47,7 +47,7 @@ class DependenciesExtraction(topLevelOnly: Boolean) {
         classes.add(clsSymbol)
         val clsType = clsSymbol.info
         for (p <- clsType.parents) walkType(p, newOwnerClass)
-        val members = clsType.members.toArray
+        val members = clsSymbol.decls.toArray
         var i = 0
         while (i < members.length) {
           val member = members(i)

@@ -154,7 +154,6 @@ object ScalaLibHelper {
       if (cachedInfo == null) {
         import kentuckymule.core.Types._
         cachedInfo = new ClassInfoType(sym, Nil, null)
-        cachedInfo.members.enterAll(sym.decls)
       }
       CompletedType(cachedInfo)
     }
