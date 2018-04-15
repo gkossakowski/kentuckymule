@@ -156,10 +156,16 @@ object Main {
 
   class ProgressBarListener extends JobQueueProgressListener {
     val progressBar = new ProgressBar(1)
+    var lastRerenderAt: Int = 0
     override def thick(queueSize: Int, completed: Int): Unit = {
+      val normalizedDelta = (completed - lastRerenderAt).toDouble / (queueSize + completed).toDouble
+      val rerender = normalizedDelta > 0.01 || queueSize == 0
       progressBar.total = queueSize + completed
       progressBar.curr = completed
-      progressBar.render()
+      if (rerender) {
+        progressBar.render()
+        lastRerenderAt = completed
+      }
     }
 
     override def allComplete(): Unit = println()
