@@ -214,6 +214,6 @@ object ScalaLibHelper {
     val matcher = FileSystems.getDefault.getPathMatcher("glob:**/*.scala")
     val fileStream = Files.find(projectDir, 255, (path, attrs) => matcher.matches(path))
     import scala.collection.JavaConverters._
-    fileStream.map[String](_.toAbsolutePath.toString).iterator().asScala.toArray
+    fileStream.map[String](_.toAbsolutePath.normalize().toString).iterator().asScala.toArray
   }
 }

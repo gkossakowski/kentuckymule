@@ -17,6 +17,9 @@ val kentuckymule = project.
     // https://mvnrepository.com/artifact/jline/jline
     // included for progress bar support
     libraryDependencies += "jline" % "jline" % "2.14.2",
+    libraryDependencies += "io.methvin" % "directory-watcher" % "0.5.1",
+    libraryDependencies += "io.methvin" %% "directory-watcher-better-files" % "0.5.1",
+    libraryDependencies += "com.github.pathikrit" %% "better-files" % "3.4.0",
     libraryDependencies += "com.lihaoyi" %% "utest" % "0.6.2" % "test",
     testFrameworks += new TestFramework("utest.runner.Framework")
   )
