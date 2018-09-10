@@ -5,5 +5,5 @@ object Timer {
   def init(): Unit = startTime = System.currentTimeMillis()
 
   def sinceInit(s: String): Unit =
-    println(s"[${System.currentTimeMillis()-startTime}] $s")
+    println(s"[${System.currentTimeMillis()-startTime} ms] $s")
 }
