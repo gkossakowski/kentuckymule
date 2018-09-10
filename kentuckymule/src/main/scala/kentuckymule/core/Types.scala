@@ -2,6 +2,7 @@ package kentuckymule.core
 
 import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.core.Names.Name
+import dotty.tools.dotc.core.Scopes
 import dotty.tools.dotc.core.Scopes._
 import dotty.tools.dotc.core.TypeOps.AppliedTypeMemberDerivation
 import dotty.tools.sharable
@@ -51,6 +52,8 @@ object Types {
                             val selfInfo: Type) extends TypeType {
 
     var parentMemberDerivation: List[Option[AppliedTypeMemberDerivation]] = _
+
+    val asSeenFromInheritedMembers: MutableScope = Scopes.newScope
 
     private val reversedParents = parents.reverse
 

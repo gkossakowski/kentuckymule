@@ -83,13 +83,33 @@ class TemplateMemberListCompleter(val clsSym: ClassSymbol, tmpl: Template, val l
         case other =>
           resolvedDerivations.add(None)
       }
+      {
+        info.asSeenFromInheritedMembers.enterAll(parentInfo.asSeenFromInheritedMembers)
+      }
       i += 1
     }
+    {
+      val declsIterator = clsSym.decls.iterator
+      while (declsIterator.hasNext) {
+        val decl = declsIterator.next()
+        decl match {
+          case s@(_:ValDefSymbol | _:  ClassSymbol | _: ModuleSymbol | _: TypeDefSymbol) =>
+            info.asSeenFromInheritedMembers.enter(s)
+          case _ =>
+            // e.g. DefDefSymbol is not added
+        }
+      }
+    }
     info.parentMemberDerivation = asScalaList(resolvedDerivations)
+    TemplateMemberListCompleter.asSeenFromInheritedMembersCount += info.asSeenFromInheritedMembers.size
     cachedInfo = info
     CompletedType(info)
   }
   def isCompleted: Boolean = cachedInfo != null
+}
+
+object TemplateMemberListCompleter {
+  var asSeenFromInheritedMembersCount: Int = 0
 }
 
 class PackageCompleter(pkgSym: PackageSymbol) extends Completer(pkgSym) {

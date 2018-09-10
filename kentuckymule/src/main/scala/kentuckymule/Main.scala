@@ -73,6 +73,7 @@ object Main {
       }
     }
     val totalSize = countSymbols(ctx)
+    println(s"the count is ${TemplateMemberListCompleter.asSeenFromInheritedMembersCount}")
   }
 
   def timed[T](msg: Long => String)(f: => T): T = {
