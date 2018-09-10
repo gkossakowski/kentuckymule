@@ -68,7 +68,7 @@ object Main {
 
       import scala.concurrent.ExecutionContext.Implicits.global
       watcher.start()
-      while (true) {
+      while (scala.io.StdIn.readLine != "") {
         Thread.sleep(1000)
       }
     }
