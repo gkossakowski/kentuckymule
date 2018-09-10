@@ -3,6 +3,7 @@ package kentuckymule.core
 import java.util
 
 import dotty.tools.dotc.core.Contexts.Context
+import kentuckymule.core.CompletionJob.CompletionJobException
 import kentuckymule.core.Symbols._
 import kentuckymule.core.Types.{ClassInfoType, NoType, Type}
 import kentuckymule.queue.QueueJob.{CompleteResult, IncompleteResult, JobResult}
@@ -16,6 +17,9 @@ object CompletionJob {
       completer.completionJob = new CompletionJob(completer)
     completer.completionJob
   }
+
+  case class CompletionJobException(completer: Completer, cause: Exception) extends
+    Exception(s"Failed to run completer for ${completer.sym}", cause)
 }
 
 class CompletionJob private(val completer: Completer, val queueStore: QueueJobStore = new QueueJobStore) extends QueueJob {
@@ -39,7 +43,7 @@ class CompletionJob private(val completer: Completer, val queueStore: QueueJobSt
       try {
         completer.complete()
       } catch {
-        case ex: Exception => throw new Exception(s"Failed to run completer for ${completer.sym}", ex)
+        case ex: Exception => throw CompletionJobException(completer, ex)
       }
     completerResult match {
       case CompletedType(tpe: ClassInfoType) =>

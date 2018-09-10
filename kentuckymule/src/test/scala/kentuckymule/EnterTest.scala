@@ -11,6 +11,7 @@ import dotc.core.IOUtils
 import dotc.core.Decorators._
 import dotc.core.Names.{Name, TypeName}
 import dotty.tools.dotc.core.TypeOps.AppliedTypeMemberDerivation
+import kentuckymule.core.CompletionJob.CompletionJobException
 import kentuckymule.queue.{JobQueue, QueueJob}
 import kentuckymule.queue.JobQueue.{CompleterStats, JobDependencyCycle}
 import utest._
@@ -1040,6 +1041,44 @@ object EnterTest extends TestSuite {
       val classes = descendantPaths(ctx.definitions.rootPackage).flatten.collect {
         case clsSym: ClassSymbol => clsSym.name -> clsSym
       }.toMap
+    }
+    'asSeenFromBasic - pending {
+      val src =
+        """
+          |class A {
+          |  val x: T
+          |  type T
+          |}
+          |class B extends A {
+          |  type T = C
+          |  def y: x.D
+          |}
+          |class C {
+          |  class D
+          |}
+        """.stripMargin
+      val jobQueue = new JobQueue
+      val enter = enterToSymbolTable(ctx, jobQueue)(src)
+      try jobQueue.processJobQueue() catch {
+        // we're looking up a member of a type `type T` (defined in A) that has empty bounds
+        // and is represented as an existential type; that's why we get WildcardType exception
+        // once proper support for as seen from is implemented, this code should be removed
+        case CompletionJobException(_, WildcardType.NoMembersException) =>
+          assert(false)
+      }
+      val classes = descendantPathsFromRoot().flatten.collect {
+        case clsSym: ClassSymbol => clsSym.name -> clsSym
+      }.toMap
+      val Asym = classes("A".toTypeName)
+      val Bsym = classes("B".toTypeName)
+      val LookedupSymbol(tSym) = Asym.info.lookup("T".toTypeName)
+      assert(tSym != NoSymbol)
+      locally {
+        val LookedupSymbol(yDefSym: DefDefSymbol) = Bsym.info.lookup("y".toTermName)(ctx)
+        val SymRef(resultTypeSym) = yDefSym.info.resultType
+        val Dsym = classes("D".toTypeName)
+        assert(resultTypeSym == Dsym)
+      }
     }
   }
 

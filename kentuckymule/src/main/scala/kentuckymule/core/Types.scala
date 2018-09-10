@@ -191,7 +191,9 @@ object Types {
       throw new UnsupportedOperationException("wildcard type doesn't have a type symbol associated")
 
     override def lookup(name: Name)(implicit contexts: Context): LookupAnswer =
-      throw new UnsupportedOperationException("wildcard type doesn't have any members")
+      throw NoMembersException
+
+    object NoMembersException extends UnsupportedOperationException("wildcard type doesn't have any members")
   }
 
 }
