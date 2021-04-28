@@ -20,6 +20,10 @@ The prototype in this repo computes the outline types I described in the blog
 post. The outline types enable the computation of dependencies between symbols
 in the symbol table.
 
+**Status update (August 2020)**: Kentucky Mule served its purpose as a research
+vehicle and is in retired state. More in this blog post I wrote:
+https://gkk.dev/posts/status-kentucky-mule-faster-scala-compiler
+
 ## Name
 
 Kentucky Mule is the name of a bourbon-based cocktail served at Beretta, a San
