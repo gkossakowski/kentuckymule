@@ -21,7 +21,7 @@ post. The outline types enable the computation of dependencies between symbols
 in the symbol table.
 
 **Status update (August 2020)**: Kentucky Mule served its purpose as a research
-vehicle and is in retired state. More in this blog post I wrote:
+vehicle and is retired state. More on this in the blog post I wrote:
 https://gkk.dev/posts/status-kentucky-mule-faster-scala-compiler
 
 ## Name
